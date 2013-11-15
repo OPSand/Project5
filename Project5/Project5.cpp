@@ -22,22 +22,29 @@ int _tmain(int argc, _TCHAR* argv[])
 	// randomization seed (must be negative)
 	const long IDUM = -1337;
 
+	// initialization
+	const int N = 2; // number of celestial bodies
+	const double R0 = 20.0; // initial radius in ly
+	const double AVG_M = 10.0; // solar masses
+	const double STD_M = 1.0; // solar masses
+
 	// physical constants
 	const double LY = 9.4607e15; // m
 	const double MYR = cYr * 1.0e6; // s
 	const double M_SUN = 1.9891e30; // kg
-	const double G = cG * M_SUN * pow(MYR, 2.0) / pow(LY, 3.0); // G in Myr, ly, solar masses
-	const double EPSILON = 0.0; // correction to Newton in ly to avoid infinite forces at close range
+	const double G_YLS = cG * M_SUN * pow(cYr, 2.0) / pow(LY, 3.0); // G in years, ly, solar masses
+	const double EPSILON = 0.15; // correction to Newton in ly to avoid infinite forces at close range
 
-	// initialization
-	const int N = 100; // number of celestial bodies
-	const double R0 = 20.0; // ly
-	const double AVG_M = 10.0; // solar masses
-	const double STD_M = 1.0; // solar masses
+	// calculate time scale & G in correct units
+	const double V0 = (4.0 / 3.0)* cPI *pow(R0, 3.0); // initial volume
+	const double RHO0 = N * AVG_M / V0; // initial mass density
+	const double T_CRUNCH = sqrt(3.0 * cPI / (32.0 * G_YLS * RHO0)); // crunch time in years
+	const double G = pow(cPI, 2.0) * pow(R0, 3.0) / (8 * pow(T_CRUNCH, 2.0) * AVG_M * N); // G in t_crunch, ly, solar masses
 
 	// time steps
-	const double STEP = 1.0; // step size (Myr)
+	const double CRUNCH_TIMES = 5.0; // # of crunch times to simulate for
 	const int N_STEPS = 1000; // number of steps total
+	const double STEP = 1.0; // step size (in crunch times)
 	const int PLOT_EVERY = 1; // plot every ...th step
 
 	// flags

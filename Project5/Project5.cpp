@@ -2,8 +2,10 @@
 //
 
 #include "stdafx.h"
-#include"armadillo"
-#include<list>
+#include "armadillo"
+
+#include "SolarSystem.h"
+#include "Solvers.h"
 
 using namespace arma;
 using namespace std;
@@ -14,7 +16,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	#pragma region Flags and settings
 
 	// dimensions
-	const int DIM = 2;
+	const int DIM = 3;
 
 	// number of celestial bodies
 	const int N = 2;
@@ -27,7 +29,22 @@ int _tmain(int argc, _TCHAR* argv[])
 	// flags
 	const bool USE_LEAPFROG = false; // use Leapfrog method
 	const bool USE_RK4 = true; // use Runge-Kutta method
+	const bool USE_EULER = false; // use Euler-Cromer method
 	const bool DEBUG = false; // use for debugging only
+
+	#pragma endregion
+
+	#pragma region Initialization
+
+	SolarSystem system = SolarSystem(DIM, N_STEPS, N_PLOT);
+
+	for (int i = 0; i < N; i++)
+	{
+		// TODO: add new CB and initialize with random numbers
+	}
+
+	// call this only when initialization is 100% complete
+	Solvers solv = Solvers(&system, USE_RK4, USE_LEAPFROG, USE_EULER);
 
 	#pragma endregion
 

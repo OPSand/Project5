@@ -21,9 +21,9 @@ CelestialBody::CelestialBody(const string& name, double mass, SolarSystem* syste
 
 	// default values
 	this->fixed = fixed;
-	this->position->fill(0);
-	this->velocity->fill(0);
-	this->force->fill(0);
+	this->position->fill(0.0);
+	this->velocity->fill(0.0);
+	this->force->fill(0.0);
 
 	// plot matrix
 	this->plot = new mat(system->nPlot(), this->_dim);

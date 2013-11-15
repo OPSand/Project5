@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CelestialBodyInitializer.h"
 
-void CelestialBodyInitializer::randInit(SolarSystem* system, const string& name, double avgM, double stdM, double r0, long idum)
+void CelestialBodyInitializer::randInit(SolarSystem* system, const string& name, double avgM, double stdM, double r0, long *idum, long* idum2)
 {
 	// determine mass(avgM, stdM)
 	double mass = 0.0;
@@ -9,7 +9,7 @@ void CelestialBodyInitializer::randInit(SolarSystem* system, const string& name,
 	// avoid non-positive masses
 	while (mass <= 0.0)
 	{
-		double gauss = GaussPDF::gaussian_deviate(&idum);
+		double gauss = GaussPDF::gaussian_deviate(idum);
 		mass = avgM + stdM * gauss;
 	}
 
@@ -26,14 +26,14 @@ void CelestialBodyInitializer::randInit(SolarSystem* system, const string& name,
 	for (int i = 0; i < dim; i++)
 	{
 		// ensure we are inside the din-dimensional unit sphere so the norm of the position is always less than 1
-		double uniform = GaussPDF::ran2(&idum);
+		double uniform = GaussPDF::ran2(idum2);
 		r(i) = (2.0 * uniform - 1.0) * sqrt(1.0 - norm(r, dim));
 	}
 
 	*(cb->position) = r0*r; // scale to correct radius
 }
 
-void CelestialBodyInitializer::initialize(SolarSystem* system, int n, double avgM, double stdM, double r0, long idum)
+void CelestialBodyInitializer::initialize(SolarSystem* system, int n, double avgM, double stdM, double r0, long *idum, long* idum2)
 {
 	for (int i = 0; i < n; i++)
 	{
@@ -42,6 +42,6 @@ void CelestialBodyInitializer::initialize(SolarSystem* system, int n, double avg
 		name << "Star " << i;
 
 		// Initialize CB and add to system
-		randInit(system, name.str(), avgM, stdM, r0, idum); // adds new CB to system
+		randInit(system, name.str(), avgM, stdM, r0, idum, idum2); // adds new CB to system
 	}
 }

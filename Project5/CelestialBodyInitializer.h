@@ -7,7 +7,7 @@
 static class CelestialBodyInitializer
 {
 public:
-	static void randInit(SolarSystem* system, const string& name, double avgM, double stdM, double r0, long idum);
-	static void initialize(SolarSystem* system, int n, double avgM, double stdM, double r0, long idum);
+	static void randInit(SolarSystem* system, const string& name, double avgM, double stdM, double r0, long *idum, long* idum2);
+	static void initialize(SolarSystem* system, int n, double avgM, double stdM, double r0, long *idum, long* idum2);
 };
 

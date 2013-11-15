@@ -19,11 +19,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	// dimensions
 	const int DIM = 3;
 
-	// randomization seed (must be negative)
-	const long IDUM = -1337;
+	// randomization seeds (must be negative)
+	long IDUM = -1337;
+	long IDUM2 = -1;
 
 	// initialization
-	const int N = 2; // number of celestial bodies
+	const int N = 10; // number of celestial bodies
 	const double R0 = 20.0; // initial radius in ly
 	const double AVG_M = 10.0; // solar masses
 	const double STD_M = 1.0; // solar masses
@@ -33,13 +34,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double MYR = cYr * 1.0e6; // s
 	const double M_SUN = 1.9891e30; // kg
 	const double G_YLS = cG * M_SUN * pow(cYr, 2.0) / pow(LY, 3.0); // G in years, ly, solar masses
-	const double EPSILON = 0.15; // correction to Newton in ly to avoid infinite forces at close range
+	const double EPSILON = 0.0; // correction to Newton in ly to avoid infinite forces at close range
 
 	// calculate time scale & G in correct units
 	const double V0 = (4.0 / 3.0)* cPI *pow(R0, 3.0); // initial volume [ly^3]
 	const double RHO0 = N * AVG_M / V0; // initial mass density [solar masses / ly^3]
 	const double T_CRUNCH = sqrt(3.0 * cPI / (32.0 * G_YLS * RHO0)); // crunch time [years]
-	const double G = pow(cPI, 2.0) * pow(R0, 3.0) / (8 * pow(T_CRUNCH, 2.0) * AVG_M * N); // G in t_crunch, ly, solar masses
+	const double G = G_YLS * pow(T_CRUNCH, 2.0); // G in t_crunch, ly, solar masses
 
 	// time steps
 	const int N_STEPS = 1000; // number of steps total
@@ -62,6 +63,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		cout << "T_CRUNCH = " << T_CRUNCH << endl;
 		cout << "G = " << G << endl;
+		cout << "G_YLS = " << G_YLS << endl;
 	}
 
 	// create gravity
@@ -71,10 +73,20 @@ int _tmain(int argc, _TCHAR* argv[])
 	SolarSystem system = SolarSystem(DIM, N_STEPS, PLOT_EVERY, &g);
 
 	// add N randomly initialized celestial bodies
-	CelestialBodyInitializer::initialize(&system, N, AVG_M, STD_M, R0, IDUM);
+	CelestialBodyInitializer::initialize(&system, N, AVG_M, STD_M, R0, &IDUM, &IDUM2);
 
 	// call this only when initialization is 100% complete
 	Solvers solv = Solvers(&system, USE_RK4, USE_LEAPFROG, USE_EULER);
+
+	if (DEBUG)
+	{
+		for (int i = 0; i < system.n(); i++)
+		{
+			CelestialBody* cb = system.body(i);
+			cout << "mass = " << cb->mass << endl;
+			cout << "position = " << *(cb->position) << endl << endl;
+		}
+	}
 
 	#pragma endregion
 

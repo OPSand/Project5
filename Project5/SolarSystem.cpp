@@ -2,11 +2,12 @@
 #include "SolarSystem.h"
 
 // constructor
-SolarSystem::SolarSystem(int dim, int nSteps, int plotEvery)
+SolarSystem::SolarSystem(int dim, int nSteps, int plotEvery, Gravity* grav)
 {
 	this->_dim = dim;
 	this->_nSteps = nSteps;
 	this->_nPlot = (nSteps / plotEvery);
+	this->_grav = grav;
 	this->_bodies = new vector<CelestialBody*>();
 }
 
@@ -16,6 +17,7 @@ SolarSystem::SolarSystem(const SolarSystem& other)
 	this->_dim = other._dim;
 	this->_nSteps = other._nSteps;
 	this->_nPlot = other._nPlot;
+	this->_grav = other._grav;
 
 	// deep copy
 	this->_bodies = new vector<CelestialBody*>();
@@ -48,6 +50,7 @@ SolarSystem SolarSystem::operator = (const SolarSystem& other)
 		this->_dim = other._dim;
 		this->_nSteps = other._nSteps;
 		this->_nPlot = other._nPlot;
+		this->_grav = other._grav;
 
 		// deep copy
 		this->_bodies = new vector<CelestialBody*>();
@@ -64,7 +67,7 @@ SolarSystem SolarSystem::operator = (const SolarSystem& other)
 }
 
 // set force vectors on all elements
-void SolarSystem::setForces(void)
+void SolarSystem::setForces()
 {
 	int n = this->n();
 	for( int i = 0; i < (n - 1); i++ ) // i: 0 -> n-2
@@ -87,9 +90,7 @@ void SolarSystem::setForces(void)
 				cb_j->force->fill(0.0);
 			}
 			
-			double dist = cb_i->dist(cb_j); // distance (absolute value)
-			vec r = cb_i->position_diff(cb_j); // gives the force the proper direction
-			vec F = (cG * cb_i->mass * cb_j->mass / pow(dist, 3.0)) * r; // Newton's law of gravity
+			vec F = this->_grav->force(cb_i, cb_j);
 
 			*(cb_i->force) += F; // add force contribution to i
 			*(cb_j->force) -= F; // add force contribution to j (Newton's 3rd law)

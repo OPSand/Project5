@@ -19,8 +19,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	// dimensions
 	const int DIM = 3;
 
-	// randomization seed
+	// randomization seed (must be negative)
 	const long IDUM = -1337;
+
+	// physical constants
+	const double G = cG; // G in y, ly, solar masses
+	const double EPSILON = 0.0; // correction to Newton in ly to avoid infinite forces at close range
 
 	// initialization
 	const int N = 2; // number of celestial bodies
@@ -42,8 +46,11 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	#pragma region Initialization
 
+	// create gravity
+	Gravity g = Gravity(G, EPSILON);
+
 	// create system
-	SolarSystem system = SolarSystem(DIM, N_STEPS, PLOT_EVERY);
+	SolarSystem system = SolarSystem(DIM, N_STEPS, PLOT_EVERY, &g);
 
 	// add N randomly initialized celestial bodies
 	CelestialBodyInitializer::initialize(&system, N, AVG_M, STD_M, R0, IDUM);
@@ -55,7 +62,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	#pragma region Solve and plot
 
-	solv.Solve(STEP, PLOT_EVERY); // this is where the magic happens :)
+	// this is where the magic happens :)
+	solv.Solve(STEP, PLOT_EVERY);
 
 	getchar(); // pause
 

@@ -85,6 +85,7 @@
     <ClInclude Include="CelestialBodyInitializer.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="GaussPDF.h" />
+    <ClInclude Include="Gravity.h" />
     <ClInclude Include="lib.h" />
     <ClInclude Include="SolarSystem.h" />
     <ClInclude Include="Solvers.h" />
@@ -96,6 +97,7 @@
     <ClCompile Include="CelestialBodyInitializer.cpp" />
     <ClCompile Include="constants.cpp" />
     <ClCompile Include="GaussPDF.cpp" />
+    <ClCompile Include="Gravity.cpp" />
     <ClCompile Include="lib.cpp" />
     <ClCompile Include="Project5.cpp" />
     <ClCompile Include="SolarSystem.cpp" />

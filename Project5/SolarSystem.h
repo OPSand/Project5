@@ -2,8 +2,10 @@
 
 #include "stdafx.h"
 #include "CelestialBody.h"
+#include "Gravity.h"
 
 class CelestialBody; // forward declaration to avoid circular reference
+class Gravity; // forward declaration to avoid circular reference
 
 class SolarSystem
 {
@@ -11,15 +13,16 @@ protected:
 	int _dim;
 	int _nSteps;
 	int _nPlot;
+	Gravity* _grav;
 	vector<CelestialBody*>* _bodies; // list of celestial bodies in solar system (use pointers to avoid needless copying)
 	SolarSystem add(SolarSystem other, bool plus);
 
 public:
-	SolarSystem(int dim, int nSteps, int plotEvery);
+	SolarSystem(int dim, int nSteps, int plotEvery, Gravity* grav);
 	SolarSystem(const SolarSystem& other);
 	~SolarSystem(void);
 	SolarSystem operator =(const SolarSystem& other); 
-	void setForces(void);
+	void setForces();
 	double Ep(CelestialBody*);
 
 	// return dimension of system

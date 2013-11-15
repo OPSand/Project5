@@ -33,13 +33,14 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	// flags
 	const bool USE_LEAPFROG = false; // use Leapfrog method
-	const bool USE_RK4 = false; // use Runge-Kutta method
-	const bool USE_EULER = false; // use Euler-Cromer method
+	const bool USE_RK4 = true; // use Runge-Kutta method
+	const bool USE_EULER = true; // use Euler-Cromer method
 
 	#pragma endregion
 
 	#pragma region Initialization
 
+	// create system
 	SolarSystem system = SolarSystem(DIM, N_STEPS, N_PLOT);
 
 	// add N randomly initialized celestial bodies

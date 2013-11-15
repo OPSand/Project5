@@ -57,6 +57,8 @@ void Solvers::Solve(int step, int nSteps, int plotEvery)
 	{
 		Euler(step, nSteps, plotEvery, nPlot);
 	}
+
+	cout << "DONE!" << endl << endl;
 }
 
 
@@ -182,11 +184,12 @@ void Solvers::RK4(int step, int nSteps, int plotEvery, int nPlot)
 
 	}
 
-	this->_rk4->plotDim(0, "X_rk4.dat");
-	this->_rk4->plotDim(1, "Y_rk4.dat");
-	if (this->_rk4->dim() >= 3)
+	// plot to file (independent of dimension)
+	for (int i = 0; i < this->_rk4->dim(); i++)
 	{
-		this->_rk4->plotDim(2, "Z_rk4.dat");
+		ostringstream fname = ostringstream();
+		fname << "pos" << i << "_rk4.dat";
+		this->_rk4->plotDim(i, fname.str());
 	}
 
 	cout << "Finished plotting " << nPlot << " of " << nSteps << " steps (Runge-Kutta)!" << endl << endl;
@@ -218,11 +221,12 @@ void Solvers::Leapfrog(int step, int nSteps, int plotEvery, int nPlot)
 		}
 	}
 
-	this->_leapfrog->plotDim(0, "X_leapfrog.dat");
-	this->_leapfrog->plotDim(1, "Y_leapfrog.dat");
-	if (this->_leapfrog->dim() >= 3)
+	// plot to file (independent of dimension)
+	for (int i = 0; i < this->_leapfrog->dim(); i++)
 	{
-		this->_leapfrog->plotDim(2, "Z_leapfrog.dat");
+		ostringstream fname = ostringstream();
+		fname << "pos" << i << "_leapfrog.dat";
+		this->_leapfrog->plotDim(i, fname.str());
 	}
 
 	cout << "Finished plotting " << nPlot << " of " << nSteps << " steps (Leapfrog)!" << endl << endl;
@@ -258,11 +262,12 @@ void Solvers::Euler(int step, int nSteps, int plotEvery, int nPlot)
 		}
 	}
 
-	this->_euler->plotDim(0, "X_euler.dat");
-	this->_euler->plotDim(1, "Y_euler.dat");
-	if (this->_euler->dim() >= 3)
+	// plot to file (independent of dimension)
+	for (int i = 0; i < this->_euler->dim(); i++)
 	{
-		this->_euler->plotDim(2, "Z_euler.dat");
+		ostringstream fname = ostringstream();
+		fname << "pos" << i << "_euler.dat";
+		this->_euler->plotDim(i, fname.str());
 	}
 
 	cout << "Finished plotting " << nPlot << " of " << nSteps << " steps (Euler-Cromer)!" << endl << endl;

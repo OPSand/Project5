@@ -23,13 +23,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	const int N = 2; // number of celestial bodies
 	const double R0 = 20.0; // ly
 	const double AVG_M = 10.0; // solar masses
-	const double STD_M = 1.0;
+	const double STD_M = 1.0; // solar masses
 
 	// time steps
 	const double STEP = 1.0; // step size (y)
 	const int N_STEPS = 1000; // number of steps total
 	const int PLOT_EVERY = 1; // plot every ...th step
-	const int N_PLOT = (N_STEPS / PLOT_EVERY); // how many steps we actually plot
 
 	// flags
 	const bool USE_LEAPFROG = true; // use Leapfrog method
@@ -41,7 +40,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	#pragma region Initialization
 
 	// create system
-	SolarSystem system = SolarSystem(DIM, N_STEPS, N_PLOT);
+	SolarSystem system = SolarSystem(DIM, N_STEPS, PLOT_EVERY);
 
 	// add N randomly initialized celestial bodies
 	CelestialBodyInitializer::initialize(&system, N, AVG_M, STD_M, R0);

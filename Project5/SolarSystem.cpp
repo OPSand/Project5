@@ -2,11 +2,11 @@
 #include "SolarSystem.h"
 
 // constructor
-SolarSystem::SolarSystem(int dim, int nSteps, int nPlot)
+SolarSystem::SolarSystem(int dim, int nSteps, int plotEvery)
 {
 	this->_dim = dim;
 	this->_nSteps = nSteps;
-	this->_nPlot = nPlot;
+	this->_nPlot = (nSteps / plotEvery);
 	this->_bodies = new vector<CelestialBody*>();
 }
 

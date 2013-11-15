@@ -15,7 +15,7 @@ protected:
 	SolarSystem add(SolarSystem other, bool plus);
 
 public:
-	SolarSystem(int dim, int nSteps, int nPlot);
+	SolarSystem(int dim, int nSteps, int plotEvery);
 	SolarSystem(const SolarSystem& other);
 	~SolarSystem(void);
 	SolarSystem operator =(const SolarSystem& other); 

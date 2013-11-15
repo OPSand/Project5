@@ -10,6 +10,11 @@
 #include <stdio.h>
 #include <tchar.h>
 
+#include "armadillo"
+#include <vector>
+#include <assert.h>
 
+#include "constants.h"
 
-// TODO: reference additional headers your program requires here
+using namespace arma;
+using namespace std;

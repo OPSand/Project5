@@ -47,7 +47,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	CelestialBodyInitializer::initialize(&system, N, AVG_M, STD_M, R0);
 
 	// call this only when initialization is 100% complete
-	Solvers solv = Solvers(&system, system.nSteps(), USE_RK4, USE_LEAPFROG, USE_EULER);
+	Solvers solv = Solvers(&system, USE_RK4, USE_LEAPFROG, USE_EULER);
 
 	#pragma endregion
 

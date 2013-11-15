@@ -2,13 +2,10 @@
 #include "Solvers.h"
 
 
-Solvers::Solvers(const SolarSystem* system, int nSteps, bool useRK4, bool useLeapfrog, bool useEuler)
+Solvers::Solvers(SolarSystem* system, bool useRK4, bool useLeapfrog, bool useEuler)
 {
 	// save pointer to original system
 	this->_system = system;
-
-	// number of steps
-	this->_nSteps = nSteps;
 
 	// set flags
 	this->_useRK4 = useRK4;
@@ -43,7 +40,7 @@ Solvers::~Solvers()
 
 void Solvers::Solve(int step, int plotEvery)
 {
-	for (int i = 0; i < this->_nSteps; i++) // for each time step
+	for (int i = 0; i < this->_system->nSteps(); i++) // for each time step
 	{
 		if (this->_useRK4)
 		{

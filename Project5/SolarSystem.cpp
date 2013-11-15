@@ -90,6 +90,7 @@ void SolarSystem::setForces()
 				cb_j->force->fill(0.0);
 			}
 			
+			// use Gravity object to determine force between the pair
 			vec F = this->_grav->force(cb_i, cb_j);
 
 			*(cb_i->force) += F; // add force contribution to i

@@ -23,17 +23,20 @@ int _tmain(int argc, _TCHAR* argv[])
 	const long IDUM = -1337;
 
 	// physical constants
-	const double G = cG; // G in y, ly, solar masses
+	const double LY = 9.4607e15; // m
+	const double MYR = cYr * 1.0e6; // s
+	const double M_SUN = 1.9891e30; // kg
+	const double G = cG * M_SUN * pow(MYR, 2.0) / pow(LY, 3.0); // G in Myr, ly, solar masses
 	const double EPSILON = 0.0; // correction to Newton in ly to avoid infinite forces at close range
 
 	// initialization
-	const int N = 2; // number of celestial bodies
+	const int N = 100; // number of celestial bodies
 	const double R0 = 20.0; // ly
 	const double AVG_M = 10.0; // solar masses
 	const double STD_M = 1.0; // solar masses
 
 	// time steps
-	const double STEP = 1.0; // step size (y)
+	const double STEP = 1.0; // step size (Myr)
 	const int N_STEPS = 1000; // number of steps total
 	const int PLOT_EVERY = 1; // plot every ...th step
 

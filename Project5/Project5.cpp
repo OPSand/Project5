@@ -36,25 +36,33 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double EPSILON = 0.15; // correction to Newton in ly to avoid infinite forces at close range
 
 	// calculate time scale & G in correct units
-	const double V0 = (4.0 / 3.0)* cPI *pow(R0, 3.0); // initial volume
-	const double RHO0 = N * AVG_M / V0; // initial mass density
-	const double T_CRUNCH = sqrt(3.0 * cPI / (32.0 * G_YLS * RHO0)); // crunch time in years
+	const double V0 = (4.0 / 3.0)* cPI *pow(R0, 3.0); // initial volume [ly^3]
+	const double RHO0 = N * AVG_M / V0; // initial mass density [solar masses / ly^3]
+	const double T_CRUNCH = sqrt(3.0 * cPI / (32.0 * G_YLS * RHO0)); // crunch time [years]
 	const double G = pow(cPI, 2.0) * pow(R0, 3.0) / (8 * pow(T_CRUNCH, 2.0) * AVG_M * N); // G in t_crunch, ly, solar masses
 
 	// time steps
-	const double CRUNCH_TIMES = 5.0; // # of crunch times to simulate for
 	const int N_STEPS = 1000; // number of steps total
-	const double STEP = 1.0; // step size (in crunch times)
-	const int PLOT_EVERY = 1; // plot every ...th step
+	const int N_PLOT = 1000; // number of steps to plot (must be <= N_STEPS)
+	const double CRUNCH_TIMES = 5.0; // # of crunch times to simulate for
+	const double STEP = CRUNCH_TIMES / ((double)N_STEPS - 1.0); // step size (in crunch times)
+	const int PLOT_EVERY = N_STEPS / N_PLOT; // plot every ...th step
 
 	// flags
 	const bool USE_LEAPFROG = true; // use Leapfrog method
 	const bool USE_RK4 = true; // use Runge-Kutta method
 	const bool USE_EULER = true; // use Euler-Cromer method
+	const bool DEBUG = true; // for debugging only
 
 	#pragma endregion
 
 	#pragma region Initialization
+
+	if (DEBUG)
+	{
+		cout << "T_CRUNCH = " << T_CRUNCH << endl;
+		cout << "G = " << G << endl;
+	}
 
 	// create gravity
 	Gravity g = Gravity(G, EPSILON);

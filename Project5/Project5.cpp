@@ -6,6 +6,7 @@
 
 #include "SolarSystem.h"
 #include "Solvers.h"
+#include "GaussPDF.h"
 
 using namespace arma;
 using namespace std;
@@ -30,7 +31,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const bool USE_LEAPFROG = false; // use Leapfrog method
 	const bool USE_RK4 = true; // use Runge-Kutta method
 	const bool USE_EULER = false; // use Euler-Cromer method
-	const bool DEBUG = false; // use for debugging only
+	const bool DEBUG = true; // use for debugging only
 
 	#pragma endregion
 

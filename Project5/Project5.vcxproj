@@ -83,6 +83,7 @@
   <ItemGroup>
     <ClInclude Include="CelestialBody.h" />
     <ClInclude Include="constants.h" />
+    <ClInclude Include="GaussPDF.h" />
     <ClInclude Include="lib.h" />
     <ClInclude Include="SolarSystem.h" />
     <ClInclude Include="Solvers.h" />
@@ -92,6 +93,7 @@
   <ItemGroup>
     <ClCompile Include="CelestialBody.cpp" />
     <ClCompile Include="constants.cpp" />
+    <ClCompile Include="GaussPDF.cpp" />
     <ClCompile Include="lib.cpp" />
     <ClCompile Include="Project5.cpp" />
     <ClCompile Include="SolarSystem.cpp" />

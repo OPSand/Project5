@@ -19,6 +19,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	// dimensions
 	const int DIM = 3;
 
+	// randomization seed
+	const long IDUM = -1337;
+
 	// initialization
 	const int N = 2; // number of celestial bodies
 	const double R0 = 20.0; // ly
@@ -43,7 +46,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	SolarSystem system = SolarSystem(DIM, N_STEPS, PLOT_EVERY);
 
 	// add N randomly initialized celestial bodies
-	CelestialBodyInitializer::initialize(&system, N, AVG_M, STD_M, R0);
+	CelestialBodyInitializer::initialize(&system, N, AVG_M, STD_M, R0, IDUM);
 
 	// call this only when initialization is 100% complete
 	Solvers solv = Solvers(&system, USE_RK4, USE_LEAPFROG, USE_EULER);

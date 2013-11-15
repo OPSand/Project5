@@ -33,10 +33,8 @@ void CelestialBodyInitializer::randInit(SolarSystem* system, const string& name,
 	*(cb->position) = r0*r; // scale to correct radius
 }
 
-void CelestialBodyInitializer::initialize(SolarSystem* system, int n, double avgM, double stdM, double r0)
+void CelestialBodyInitializer::initialize(SolarSystem* system, int n, double avgM, double stdM, double r0, long idum)
 {
-	long idum = -1337;
-
 	for (int i = 0; i < n; i++)
 	{
 		// Generate name

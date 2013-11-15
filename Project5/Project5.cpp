@@ -8,22 +8,28 @@
 using namespace arma;
 using namespace std;
 
+// Entry point for console application
 int _tmain(int argc, _TCHAR* argv[])
 {
-	mat A = randu<mat>(5, 5);
-	cout << det(A) << endl << endl;
+	#pragma region Flags and settings
 
-	mat L, U, P;
-	if (lu(L, U, P, A))
-	{
-		cout << "LU success!" << endl;
-		cout << L << endl << endl;
-		cout << U << endl << endl;
-	}
+	// dimensions
+	const int DIM = 2;
 
-	vec v = randu<vec>(5);
-	vec x = solve(L, v);
-	cout << x << endl << endl;
+	// number of celestial bodies
+	const int N = 2;
+
+	// time steps
+	const int N_STEPS = 1000; // number of steps total
+	const int PLOT_EVERY = 1; // plot every ...th step
+	const int N_PLOT = (N_STEPS / PLOT_EVERY); // how many steps we actually plot
+
+	// flags
+	const bool USE_LEAPFROG = false; // use Leapfrog method
+	const bool USE_RK4 = true; // use Runge-Kutta method
+	const bool DEBUG = false; // use for debugging only
+
+	#pragma endregion
 
 	getchar(); // pause
 

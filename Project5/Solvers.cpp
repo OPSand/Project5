@@ -98,7 +98,7 @@ void Solvers::Solve(int step, int plotEvery)
 }
 
 
-void Solvers::RK4(int step)
+void Solvers::RK4(double step)
 {
 	int n = this->_rk4->n();
 
@@ -214,9 +214,11 @@ void Solvers::RK4(int step)
 }
 
 
-void Solvers::Leapfrog(int step)
+void Solvers::Leapfrog(double step)
 {
 	int n = this->_leapfrog->n(); // number of celestial bodies
+
+	double halfStep = (step / 2.0);
 
 	// calculate forces/accelerations based on current postions
 	this->_leapfrog->setForces();
@@ -227,13 +229,31 @@ void Solvers::Leapfrog(int step)
 
 		if (!cb->fixed) // a fixed celestial body will never move
 		{
-			// TODO: implement Leapfrog algorithm
+			// Leapfrog algorithm, step 1
+			*(cb->velocity) += halfStep * cb->acc();
+
+			// Leapfrog algorithm, step 2
+			*(cb->position) += step * *(cb->velocity);
+		}
+	}
+
+	// calculate the forces using the new positions
+	this->_leapfrog->setForces();
+
+	for (int j = 0; j < n; j++) // for each celestial body
+	{
+		CelestialBody* cb = this->_leapfrog->body(j);
+
+		if (!cb->fixed) // a fixed celestial body will never move
+		{
+			// Leapfrog algorithm, step 3
+			*(cb->velocity) += halfStep * cb->acc();
 		}
 	}
 }
 
 
-void Solvers::Euler(int step)
+void Solvers::Euler(double step)
 {
 	int n = this->_euler->n(); // number of celestial bodies
 

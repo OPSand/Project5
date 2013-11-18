@@ -15,7 +15,6 @@ public:
 	CelestialBody(const CelestialBody &cb);
 	~CelestialBody(void);
 	CelestialBody operator = (const CelestialBody &cb);
-	void diff(void);
 	string name;
 	double mass;
 	vec* position;

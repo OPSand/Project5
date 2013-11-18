@@ -64,7 +64,6 @@ int _tmain(int argc, _TCHAR* argv[])
 		cout << "T_CRUNCH = " << T_CRUNCH << endl;
 		cout << "G = " << G << endl;
 		cout << "G_YLS = " << G_YLS << endl;
-		cout << "FORMULA = " << (3.0 * cPI / (32.0 * RHO0)) << endl;
 		cout << endl;
 	}
 
@@ -94,10 +93,17 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	#pragma region Solve and plot
 
-	cout << "E_k after: " << system.EkAvg(false) << endl;
-	cout << "E_k after (bound): " << system.EkAvg(true) << endl;
-	cout << "E_p after: " << system.EpAvg(false) << endl;
-	cout << "E_p after (bound): " << system.EpAvg(true) << endl;
+	cout << "E_k before: " << system.EkAvg(false) << endl;
+	cout << "E_k before (bound): " << system.EkAvg(true) << endl;
+	cout << "E_p before: " << system.EpAvg(false) << endl;
+	cout << "E_p before (bound): " << system.EpAvg(true) << endl;
+	cout << "E_tot before: " << (system.EpAvg(false) + system.EkAvg(false)) << endl;
+	cout << "E_tot before (bound): " << (system.EpAvg(true) + system.EkAvg(true)) << endl;
+
+	if (DEBUG)
+	{
+		system.plotRadial("test.dat", R0, 20, true);
+	}
 
 	// this is where the magic happens :)
 	system = *(solv.Solve(STEP, PLOT_EVERY));
@@ -108,6 +114,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		cout << "E_k after (bound): " << system.EkAvg(true) << endl;
 		cout << "E_p after: " << system.EpAvg(false) << endl;
 		cout << "E_p after (bound): " << system.EpAvg(true) << endl;
+		cout << "E_tot after: " << (system.EpAvg(false) + system.EkAvg(false)) << endl;
+		cout << "E_tot after (bound): " << (system.EpAvg(true) + system.EkAvg(true)) << endl;
 	}
 
 	getchar(); // pause

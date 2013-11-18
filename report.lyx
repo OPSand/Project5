@@ -109,7 +109,44 @@ Lack of a singularity in our model
 \end_layout
 
 \begin_layout Standard
-(OPS)
+While our 
+\begin_inset Quotes eld
+\end_inset
+
+universe
+\begin_inset Quotes erd
+\end_inset
+
+ has the same mass distribution as the closed universe discussed above,
+ it is not closed.
+ If it were, we would be able to go in a straight line and after travelling
+ a distance 
+\begin_inset Formula $2R$
+\end_inset
+
+, we would end up right where we started due to curvature.
+ This is not the case in our model; our geometry is flat in space.
+ Furthermore, we use Newtonian gravity and not General Relativity (i.e.
+ we take all distances at face value without factoring in the scale factor
+ of the universe).
+ While the mass will certainly clump together and reach equilibrium, space
+ itself will not shrink under the gravitational attraction, and the only
+ blueshifts (or redshifts) observed inside this model should come from the
+ peculiar motions of the celestial bodies.
+ 
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+ has no direct physical interpretation in our universe in itself - however,
+ it is easy to calculate and scales similarly to the relaxation time 
+\begin_inset Formula $\tau_{relax}$
+\end_inset
+
+, which is the time needed for the system to reach equilibrium.
+\end_layout
+
+\begin_layout Standard
+(TODO: Can we show this? Perhaps! Maybe even use it instead? :p)
 \end_layout
 
 \begin_layout Subsection

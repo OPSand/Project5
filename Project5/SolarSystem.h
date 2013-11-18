@@ -16,6 +16,7 @@ protected:
 	Gravity* _grav;
 	vector<CelestialBody*>* _bodies; // list of celestial bodies in solar system (use pointers to avoid needless copying)
 	SolarSystem add(SolarSystem other, bool plus);
+	vec centerOfMass();
 
 public:
 	SolarSystem(int dim, int nSteps, int plotEvery, Gravity* grav);
@@ -26,6 +27,7 @@ public:
 	double Ep(CelestialBody*);
 	double EpAvg(bool boundOnly);
 	double EkAvg(bool boundOnly);
+	int nBound(); // number of bound particles in the system
 
 	// return dimension of system
 	int dim(void)
@@ -66,4 +68,13 @@ public:
 	// plots all element positions if the condition is met
 	// returns true if room, false if not
 	bool plotCurrentPositions(bool condition);
+
+	// plot radial distribution of particles
+	void plotRadial(const string& path, double maxR, int boxes, bool boundOnly);
+
+	// total mass of the system
+	double totalMass();
+
+	// distance to center of mass
+	double distCoM(CelestialBody* cb);
 };

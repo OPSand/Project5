@@ -242,3 +242,96 @@ double SolarSystem::EkAvg(bool boundOnly)
 
 	return (sum / this->n());
 }
+
+int SolarSystem::nBound()
+{
+	int n = 0;
+
+	for (int i = 0; i < this->n(); i++)
+	{
+		CelestialBody* cb_i = this->body(i);
+
+		if (cb_i->isBound())
+		{
+			n += 1;
+		}
+	}
+
+	return n;
+}
+
+double SolarSystem::totalMass()
+{
+	double sum = 0.0;
+
+	for (int i = 0; i < this->n(); i++)
+	{
+		CelestialBody* cb_i = this->body(i);
+
+		sum += cb_i->mass;
+	}
+
+	return sum;
+}
+
+vec SolarSystem::centerOfMass()
+{
+	// Do not add this to the system
+	vec com = vec(this->_dim);
+	com.fill(0.0);
+
+	double totalMass = this->totalMass();
+
+	for (int i = 0; i < this->n(); i++)
+	{
+		CelestialBody* cb_i = this->body(i);
+
+		com += (cb_i->mass / totalMass) * *(cb_i->position);
+	}
+
+	return com;
+}
+
+double SolarSystem::distCoM(CelestialBody* cb)
+{
+	return norm(*(cb->position) - this->centerOfMass(), this->_dim);
+}
+
+// plot radial distribution of particles out to maxR
+// 1st column radial distance from center of mass
+// 2nd column n
+void SolarSystem::plotRadial(const string& path, double maxR, int boxes, bool boundOnly)
+{
+	double histogramWidth = (maxR / (double)boxes);
+	mat plot = mat(boxes, 2);
+	plot.fill(0.0);
+
+	for (int i = 0; i < boxes; i++)
+	{
+		// use the midpoint of the interval
+		plot(i, 0) = (i + 0.5)*histogramWidth;
+	}
+
+	for (int i = 0; i < this->n(); i++)
+	{
+		CelestialBody* cb_i = this->body(i);
+
+		if ((!boundOnly) || (cb_i->isBound()))
+		{
+			// distance to center of mass
+			double comDist = this->distCoM(cb_i);
+
+			// box to put it in
+			double box = (comDist / histogramWidth);
+
+			// don't plot if outside max radius
+			if (box <= maxR)
+			{
+				plot(i, 1) += 1.0;
+			}
+		}
+	}
+
+	// write to file
+	plot.save(path, raw_ascii);
+}

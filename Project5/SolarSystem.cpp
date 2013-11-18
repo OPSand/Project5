@@ -297,10 +297,7 @@ double SolarSystem::distCoM(CelestialBody* cb)
 	return norm(*(cb->position) - this->centerOfMass(), this->_dim);
 }
 
-// plot radial distribution of particles out to maxR
-// 1st column radial distance from center of mass
-// 2nd column n
-void SolarSystem::plotRadial(const string& path, double maxR, int boxes, bool boundOnly)
+mat SolarSystem::radialDistribution(double maxR, int boxes, bool boundOnly)
 {
 	double histogramWidth = (maxR / (double)boxes);
 	mat plot = mat(boxes, 2);
@@ -325,13 +322,12 @@ void SolarSystem::plotRadial(const string& path, double maxR, int boxes, bool bo
 			double box = (comDist / histogramWidth);
 
 			// don't plot if outside max radius
-			if (box <= maxR)
+			if (box < boxes)
 			{
-				plot(i, 1) += 1.0;
+				plot((int) box, 1) += 1.0; // drop decimal part
 			}
 		}
 	}
 
-	// write to file
-	plot.save(path, raw_ascii);
+	return plot;
 }

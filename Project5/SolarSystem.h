@@ -69,8 +69,8 @@ public:
 	// returns true if room, false if not
 	bool plotCurrentPositions(bool condition);
 
-	// plot radial distribution of particles
-	void plotRadial(const string& path, double maxR, int boxes, bool boundOnly);
+	// radial distribution of particles
+	mat radialDistribution(double maxR, int boxes, bool boundOnly);
 
 	// total mass of the system
 	double totalMass();

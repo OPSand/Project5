@@ -11,6 +11,54 @@
 using namespace arma;
 using namespace std;
 
+// fit radial distribution to curve (using least squares)
+vec radialDistFitLSq(mat radialDist, int nNR, double minR0, double maxR0, double minN0, double maxN0)
+{
+	vec ret = vec(2); // vec(0) = r0, vec(1) = n0
+
+	int boxes = radialDist.n_rows;
+	double sum;
+	double minsum;
+
+	double deltaN = (maxN0 - minN0) / (nNR - 1.0);
+	double deltaR = (maxR0 - minR0) / (nNR - 1.0);
+
+	for (int n = 0; n < nNR; n++)
+	{
+		double n0 = minN0 + n * deltaN;
+
+		for (int r = 0; r < nNR; r++)
+		{
+			double r0 = minR0 + r * deltaR;
+
+			sum = 0.0;
+			for (int i = 0; i < boxes; i++)
+			{
+				double formula = n0 / (1.0 + pow(radialDist(i, 0) / r0, 4.0));
+				sum += pow(formula - radialDist(i, 1), 2.0);
+			}
+
+			if ((n == 0) && (r == 0))
+			{
+				minsum = sum;
+				ret(0) = r0;
+				ret(1) = n0;
+			}
+			else
+			{
+				if (sum < minsum)
+				{
+					minsum = sum;
+					ret(0) = r0;
+					ret(1) = n0;
+				}
+			}
+		}
+	}
+
+	return ret;
+}
+
 // Entry point for console application
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -24,7 +72,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	long IDUM2 = -1;
 
 	// initialization
-	const int N = 10; // number of celestial bodies
+	const int N = 100; // number of celestial bodies
 	const double R0 = 20.0; // initial radius in ly
 	const double AVG_M = 10.0; // solar masses
 	const double STD_M = 1.0; // solar masses
@@ -102,7 +150,12 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	if (DEBUG)
 	{
-		system.plotRadial("test.dat", R0, 20, true);
+		mat radial = system.radialDistribution(R0, 100, true);
+		radial.save("test.dat", raw_ascii);
+
+		vec testFit = radialDistFitLSq(radial, 100, 0.0, 100.0, 0.0, 100.0);
+		cout << "r0 = " << testFit(0) << endl;
+		cout << "n0 = " << testFit(1) << endl;
 	}
 
 	// this is where the magic happens :)

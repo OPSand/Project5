@@ -5,7 +5,7 @@ void CelestialBodyInitializer::randInit(SolarSystem* system, const string& name,
 {
 	// determine mass(avgM, stdM)
 	double mass = 0.0;
-	
+
 	// avoid non-positive masses
 	while (mass <= 0.0)
 	{
@@ -20,14 +20,19 @@ void CelestialBodyInitializer::randInit(SolarSystem* system, const string& name,
 	int dim = system->dim();
 
 	vec r = vec(dim); // dim-dimensional unit vector
-	r.fill(0.0);
+	r.fill(1.0); // we need the while loop to run at least once
 
-	// for each dimension
-	for (int i = 0; i < dim; i++)
+	// ensure we are inside the din-dimensional unit sphere so the norm of the position is always less than 1
+	while (norm(r, dim) > 1.0)
 	{
-		// ensure we are inside the din-dimensional unit sphere so the norm of the position is always less than 1
-		double uniform = GaussPDF::ran2(idum2);
-		r(i) = (2.0 * uniform - 1.0) * sqrt(1.0 - norm(r, dim));
+		// for each dimension
+		for (int i = 0; i < dim; i++)
+		{
+			double uniform = GaussPDF::ran2(idum2);
+			r(i) = (2.0 * uniform - 1.0); // between -1.0 and 1.0
+
+			// r(i) = (2.0 * uniform - 1.0) * sqrt(1.0 - norm(r, dim)); // required no while loop, but do not use
+		}
 	}
 
 	*(cb->position) = r0*r; // scale to correct radius

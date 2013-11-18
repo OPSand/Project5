@@ -331,3 +331,49 @@ mat SolarSystem::radialDistribution(double maxR, int boxes, bool boundOnly)
 
 	return plot;
 }
+
+double SolarSystem::avgDistCoM(bool boundOnly)
+{
+	int n = this->n();
+	double sum = 0.0;
+
+	for (int i = 0; i < this->n(); i++)
+	{
+		CelestialBody* cb_i = this->body(i);
+
+		if ((!boundOnly) || (cb_i->isBound()))
+		{
+			sum += distCoM(cb_i);
+		}
+		else
+		{
+			n -= 1;
+		}
+	}
+
+	return (sum / n);
+}
+
+double SolarSystem::stdDevDistCoM(bool boundOnly)
+{
+	int n = this->n();
+	double sum = 0.0;
+
+	double avg = this->avgDistCoM(boundOnly);
+
+	for (int i = 0; i < this->n(); i++)
+	{
+		CelestialBody* cb_i = this->body(i);
+
+		if ((!boundOnly) || (cb_i->isBound()))
+		{
+			sum = pow((distCoM(cb_i) - avg), 2.0); // deviation squared
+		}
+		else
+		{
+			n -= 1;
+		}
+	}
+
+	return sqrt(sum / n);
+}

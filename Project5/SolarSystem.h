@@ -16,7 +16,6 @@ protected:
 	Gravity* _grav;
 	vector<CelestialBody*>* _bodies; // list of celestial bodies in solar system (use pointers to avoid needless copying)
 	SolarSystem add(SolarSystem other, bool plus);
-	vec centerOfMass();
 
 public:
 	SolarSystem(int dim, int nSteps, int plotEvery, Gravity* grav);
@@ -77,4 +76,13 @@ public:
 
 	// distance to center of mass
 	double distCoM(CelestialBody* cb);
+
+	// average distance to center of mass
+	double avgDistCoM(bool boundOnly);
+
+	// standard deviation of distance to center of mass
+	double stdDevDistCoM(bool boundOnly);
+
+	// coordinates of center of mass
+	vec centerOfMass();
 };

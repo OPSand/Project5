@@ -150,12 +150,17 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	if (DEBUG)
 	{
+		cout << "Center of mass: " << system.centerOfMass() << endl;
+
 		mat radial = system.radialDistribution(R0, 100, true);
 		radial.save("test.dat", raw_ascii);
 
 		vec testFit = radialDistFitLSq(radial, 100, 0.0, 100.0, 0.0, 100.0);
 		cout << "r0 = " << testFit(0) << endl;
 		cout << "n0 = " << testFit(1) << endl;
+
+		cout << "avg = " << system.avgDistCoM(true) << endl;
+		cout << "stdDev = " << system.stdDevDistCoM(true) << endl;
 	}
 
 	// this is where the magic happens :)

@@ -146,7 +146,7 @@ as
 \begin_layout Standard
 \begin_inset Formula 
 \[
-G=\frac{3\pi}{32\tau_{crunch}^{2}\rho_{0}}.
+G_{yr}=\frac{3\pi}{32\tau_{crunch}^{2}\rho_{0}}.
 \]
 
 \end_inset
@@ -169,16 +169,59 @@ Now we use the definitions of average mass
 \begin_layout Standard
 \begin_inset Formula 
 \[
-G=\frac{3\pi}{32\tau_{crunch}^{2}}\frac{4\pi R_{0}^{3}}{3\mu N}=\frac{\pi^{2}R_{0}^{3}}{8\tau_{crunch}^{2}\mu N}
+G_{yr}=\frac{3\pi}{32\tau_{crunch}^{2}}\frac{4\pi R_{0}^{3}}{3\mu N}=\frac{\pi^{2}R_{0}^{3}}{8\tau_{crunch}^{2}\mu N}
 \]
 
 \end_inset
 
 in units of 
+\begin_inset Formula $\frac{\ensuremath{ly^{3}}}{M_{\sun}yr^{2}}$
+\end_inset
+
+.
+ To get this in units of 
 \begin_inset Formula $\frac{\ensuremath{ly^{3}}}{M_{\sun}\tau_{crunch}^{2}}$
 \end_inset
 
- as desired.
+ as desired, we use:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+G=G_{yr}(\frac{yr}{\tau_{crunch}})^{2}=G_{yr}\tau_{crunch}^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+assuming that
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+ is given in years.
+\end_layout
+
+\begin_layout Subsection
+Gravitational potential with modified gravity
+\end_layout
+
+\begin_layout Standard
+(calculation goes here)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+E_{p}=-\frac{GMm}{\epsilon}(\tan^{-1}(\frac{r}{\epsilon})-\frac{\pi}{2})\qquad(e\ne0)
+\]
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section

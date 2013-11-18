@@ -45,7 +45,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	// time steps
 	const int N_STEPS = 1000; // number of steps total
 	const int N_PLOT = 1000; // number of steps to plot (must be <= N_STEPS)
-	const double CRUNCH_TIMES = 5.0; // # of crunch times to simulate for
+	const double CRUNCH_TIMES = 10.0; // # of crunch times to simulate for
 	const double STEP = CRUNCH_TIMES / ((double)N_STEPS - 1.0); // step size (in crunch times)
 	const int PLOT_EVERY = N_STEPS / N_PLOT; // plot every ...th step
 

@@ -31,7 +31,8 @@ void CelestialBodyInitializer::randInit(SolarSystem* system, const string& name,
 			double uniform = GaussPDF::ran2(idum2);
 			r(i) = (2.0 * uniform - 1.0); // between -1.0 and 1.0
 
-			// r(i) = (2.0 * uniform - 1.0) * sqrt(1.0 - norm(r, dim)); // required no while loop, but do not use
+			// this required no while loop, but do not use - it favorizes central locations (I think)
+			// r(i) = (2.0 * uniform - 1.0) * sqrt(1.0 - norm(r, dim));
 		}
 	}
 

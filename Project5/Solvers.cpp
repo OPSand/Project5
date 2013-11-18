@@ -59,6 +59,11 @@ SolarSystem* Solvers::Solve(double step, int plotEvery)
 			this->_euler->plotCurrentPositions(i % plotEvery == 0); // if we want to plot this step, do it
 			Euler(step); // perform step
 		}
+
+		if (i % plotEvery == 0)
+		{
+			cout << ".";
+		}
 	}
 
 	if (this->_useRK4)

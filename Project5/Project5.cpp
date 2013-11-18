@@ -163,6 +163,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		cout << "stdDev = " << system.stdDevDistCoM(true) << endl;
 	}
 
+	cout << endl << "Running simulation";
+
 	// this is where the magic happens :)
 	system = *(solv.Solve(STEP, PLOT_EVERY));
 
@@ -174,6 +176,21 @@ int _tmain(int argc, _TCHAR* argv[])
 		cout << "E_p after (bound): " << system.EpAvg(true) << endl;
 		cout << "E_tot after: " << (system.EpAvg(false) + system.EkAvg(false)) << endl;
 		cout << "E_tot after (bound): " << (system.EpAvg(true) + system.EkAvg(true)) << endl;
+
+		if (DEBUG)
+		{
+			cout << "Center of mass: " << system.centerOfMass() << endl;
+
+			mat radial = system.radialDistribution(R0, 100, true);
+			// radial.save("test.dat", raw_ascii);
+
+			vec testFit = radialDistFitLSq(radial, 100, 0.0, 100.0, 0.0, 100.0);
+			cout << "r0 = " << testFit(0) << endl;
+			cout << "n0 = " << testFit(1) << endl;
+
+			cout << "avg = " << system.avgDistCoM(true) << endl;
+			cout << "stdDev = " << system.stdDevDistCoM(true) << endl;
+		}
 	}
 
 	getchar(); // pause

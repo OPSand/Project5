@@ -109,6 +109,7 @@ CelestialBody* SolarSystem::body(int i)
 void SolarSystem::add(CelestialBody* cb)
 {
 	this->_bodies->push_back(cb); // append to end of vector
+	cb->setSystem(this); // update cb's system reference
 }
 
 // return total momentum of system
@@ -194,4 +195,40 @@ double SolarSystem::Ep(CelestialBody* cb)
 	}
 
 	return potEnergy;
+}
+
+// average potential energy
+double SolarSystem::EpAvg(bool boundOnly)
+{
+	double sum = 0.0;
+
+	for (int i = 0; i < this->n(); i++)
+	{
+		CelestialBody* cb_i = this->body(i);
+
+		if ((!boundOnly) || (cb_i->isBound()))
+		{
+			sum += this->Ep(cb_i);
+		}
+	}
+
+	return (sum / this->n());
+}
+
+// average kinetic energy
+double SolarSystem::EkAvg(bool boundOnly)
+{
+	double sum = 0.0;
+
+	for (int i = 0; i < this->n(); i++)
+	{
+		CelestialBody* cb_i = this->body(i);
+
+		if ((!boundOnly) || (cb_i->isBound()))
+		{
+			sum += cb_i->Ek();
+		}
+	}
+
+	return (sum / this->n());
 }

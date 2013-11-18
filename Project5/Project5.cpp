@@ -51,9 +51,9 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	// flags
 	const bool USE_LEAPFROG = true; // use Leapfrog method
-	const bool USE_RK4 = true; // use Runge-Kutta method
-	const bool USE_EULER = true; // use Euler-Cromer method
-	const bool DEBUG = true; // for debugging only
+	const bool USE_RK4 = false; // use Runge-Kutta method
+	const bool USE_EULER = false; // use Euler-Cromer method
+	const bool DEBUG = false; // for debugging only
 
 	#pragma endregion
 
@@ -92,8 +92,21 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	#pragma region Solve and plot
 
+	cout << "E_k after: " << system.EkAvg(false) << endl;
+	cout << "E_k after (bound): " << system.EkAvg(true) << endl;
+	cout << "E_p after: " << system.EpAvg(false) << endl;
+	cout << "E_p after (bound): " << system.EpAvg(true) << endl;
+
 	// this is where the magic happens :)
-	solv.Solve(STEP, PLOT_EVERY);
+	system = *(solv.Solve(STEP, PLOT_EVERY));
+
+	if (&system != nullptr)
+	{
+		cout << "E_k after: " << system.EkAvg(false) << endl;
+		cout << "E_k after (bound): " << system.EkAvg(true) << endl;
+		cout << "E_p after: " << system.EpAvg(false) << endl;
+		cout << "E_p after (bound): " << system.EpAvg(true) << endl;
+	}
 
 	getchar(); // pause
 

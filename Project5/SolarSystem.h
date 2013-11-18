@@ -24,6 +24,8 @@ public:
 	SolarSystem operator =(const SolarSystem& other); 
 	void setForces();
 	double Ep(CelestialBody*);
+	double EpAvg(bool boundOnly);
+	double EkAvg(bool boundOnly);
 
 	// return dimension of system
 	int dim(void)

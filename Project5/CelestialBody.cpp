@@ -30,7 +30,7 @@ CelestialBody::CelestialBody(const string& name, double mass, SolarSystem* syste
 	plot->fill(0.0);
 
 	// add to system
-	system->add(this);
+	system->add(this); // also sets this->_system
 }
 
 // copy constructor
@@ -105,24 +105,14 @@ bool CelestialBody::plotCurrentPosition()
 	}
 }
 
-// differentiate (changes the current object)
-void CelestialBody::diff()
-{
-	if( ! this->fixed ) // moving body
-	{
-		this->position = new vec(*this->velocity);
-		this->velocity = new vec(this->acc());
-	}
-	else // a fixed body will never move
-	{
-		this->position->fill(0.0);
-		this->velocity->fill(0.0);
-	}
-}
-
 // kinetic energy
 double CelestialBody::Ek()
 {
 	double v2 = dot(*(this->velocity), *(this->velocity)); // inner product equals v^2
 	return (0.5 * this->mass * v2);
+}
+
+bool CelestialBody::isBound()
+{
+	return ((this->Ek() + this->_system->Ep(this)) < 0.0);
 }

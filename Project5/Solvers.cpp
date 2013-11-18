@@ -38,7 +38,7 @@ Solvers::~Solvers()
 }
 
 
-void Solvers::Solve(double step, int plotEvery)
+SolarSystem* Solvers::Solve(double step, int plotEvery)
 {
 	for (int i = 0; i < this->_system->nSteps(); i++) // for each time step
 	{
@@ -95,6 +95,16 @@ void Solvers::Solve(double step, int plotEvery)
 	}
 
 	cout << "DONE!" << endl << endl;
+
+	// we will use leapfrog to return results
+	if (this->_useLeapfrog)
+	{
+		return this->_leapfrog;
+	}
+	else // not leapfrog
+	{
+		return nullptr;
+	}
 }
 
 

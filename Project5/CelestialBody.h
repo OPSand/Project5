@@ -28,6 +28,7 @@ public:
 protected:
 	int _dim;
 	int _currentStep; // used for plotting
+	SolarSystem* _system;
 public:
 
 	// returns the acceleration when the force is set
@@ -56,5 +57,14 @@ public:
 	void positionToFile()
 	{
 		this->plot->save(this->name + ".dat", raw_ascii);
+	}
+
+	// true if total energy is negative, false otherwise
+	bool isBound();
+
+	// set system reference
+	void setSystem(SolarSystem* system)
+	{
+		this->_system = system;
 	}
 };

@@ -36,11 +36,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double G_YLS = cG * M_SUN * pow(cYr, 2.0) / pow(LY, 3.0); // G in years, ly, solar masses
 	const double EPSILON = 0.0; // correction to Newton in ly to avoid infinite forces at close range
 
-	// calculate time scale & G in correct units
+	// calculate G in correct units
 	const double V0 = (4.0 / 3.0)* cPI *pow(R0, 3.0); // initial volume [ly^3]
 	const double RHO0 = N * AVG_M / V0; // initial mass density [solar masses / ly^3]
+	const double G = (3.0 * cPI / (32.0 * RHO0)); // G in t_crunch, ly, solar masses
 	const double T_CRUNCH = sqrt(3.0 * cPI / (32.0 * G_YLS * RHO0)); // crunch time [years]
-	const double G = G_YLS * pow(T_CRUNCH, 2.0); // G in t_crunch, ly, solar masses
 
 	// time steps
 	const int N_STEPS = 1000; // number of steps total
@@ -53,7 +53,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const bool USE_LEAPFROG = true; // use Leapfrog method
 	const bool USE_RK4 = false; // use Runge-Kutta method
 	const bool USE_EULER = false; // use Euler-Cromer method
-	const bool DEBUG = false; // for debugging only
+	const bool DEBUG = true; // for debugging only
 
 	#pragma endregion
 
@@ -64,6 +64,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		cout << "T_CRUNCH = " << T_CRUNCH << endl;
 		cout << "G = " << G << endl;
 		cout << "G_YLS = " << G_YLS << endl;
+		cout << "FORMULA = " << (3.0 * cPI / (32.0 * RHO0)) << endl;
+		cout << endl;
 	}
 
 	// create gravity

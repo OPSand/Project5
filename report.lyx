@@ -125,13 +125,17 @@ G in units of ly,
 \end_layout
 
 \begin_layout Standard
-We can rewrite
+We can rewrite 
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+ given in years
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\tau_{crunch}=\sqrt{\frac{3\pi}{32G\rho_{0}}}
+\tau_{crunch}=\sqrt{\frac{3\pi}{32G_{yr}\rho_{0}}}
 \]
 
 \end_inset
@@ -155,7 +159,38 @@ G_{yr}=\frac{3\pi}{32\tau_{crunch}^{2}\rho_{0}}.
 \end_layout
 
 \begin_layout Standard
-Now we use the definitions of average mass 
+But this is completely independent of the time unit...
+ unless of course c = 1 somewhere, relating the time and distance units.
+ In that case we have ly --> y (probably a safe bet =p).
+ 
+\end_layout
+
+\begin_layout Standard
+Switching time units to 
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+, we get that 
+\begin_inset Formula $\tau_{crunch}=1$
+\end_inset
+
+ in these units, so
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+G=\frac{3\pi}{32\rho_{0}}=\frac{\pi^{2}R_{0}^{3}}{8\mu N}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where for the latter equality we have used the definitions of average mass
+ 
 \begin_inset Formula $\mu=\frac{M}{N}$
 \end_inset
 
@@ -163,46 +198,19 @@ Now we use the definitions of average mass
 \begin_inset Formula $\rho_{0}=\frac{M}{V_{0}}=\frac{\mu N}{\frac{4}{3}\pi R_{0}^{3}}=\frac{3\mu N}{4\pi R_{0}^{3}}$
 \end_inset
 
-, and we get
+.
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
-\[
-G_{yr}=\frac{3\pi}{32\tau_{crunch}^{2}}\frac{4\pi R_{0}^{3}}{3\mu N}=\frac{\pi^{2}R_{0}^{3}}{8\tau_{crunch}^{2}\mu N}
-\]
-
+This means our gravitational constant and our time unit both depend on 
+\begin_inset Formula $N,R_{o}$
 \end_inset
 
-in units of 
-\begin_inset Formula $\frac{\ensuremath{ly^{3}}}{M_{\sun}yr^{2}}$
+ and 
+\begin_inset Formula $\mu$
 \end_inset
 
 .
- To get this in units of 
-\begin_inset Formula $\frac{\ensuremath{ly^{3}}}{M_{\sun}\tau_{crunch}^{2}}$
-\end_inset
-
- as desired, we use:
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\[
-G=G_{yr}(\frac{yr}{\tau_{crunch}})^{2}=G_{yr}\tau_{crunch}^{2}
-\]
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-assuming that
-\begin_inset Formula $\tau_{crunch}$
-\end_inset
-
- is given in years.
 \end_layout
 
 \begin_layout Subsection

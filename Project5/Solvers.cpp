@@ -38,7 +38,7 @@ Solvers::~Solvers()
 }
 
 
-void Solvers::Solve(int step, int plotEvery)
+void Solvers::Solve(double step, int plotEvery)
 {
 	for (int i = 0; i < this->_system->nSteps(); i++) // for each time step
 	{

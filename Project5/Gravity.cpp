@@ -37,3 +37,16 @@ vec Gravity::force(CelestialBody* cb_i, CelestialBody* cb_j)
 	vec F = ( this->_G * cb_i->mass * cb_j->mass / ( pow(dist, 3.0) + pow(this->_epsilon, 2.0) ) ) * r; // Newton's law of gravity
 	return F;
 }
+
+// Return potential energy of cb_i with regards to cb_j. NOTE: potential energy is negative
+double Gravity::potEnergy(CelestialBody* cb_i, CelestialBody* cb_j)
+{
+	if (this->_epsilon == 0.0)
+	{
+		return -(this->_G * cb_j->mass / cb_i->dist(cb_j));
+	}
+	else
+	{
+		return -((this->_G * cb_j->mass / this->_epsilon)*(atan(cb_i->dist(cb_j) / this->_epsilon) - (cPI/2.0)));
+	}
+}

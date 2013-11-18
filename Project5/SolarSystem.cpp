@@ -190,7 +190,7 @@ double SolarSystem::Ep(CelestialBody* cb)
 		if( i != j ) // don't add potential energy from self
 		{
 			CelestialBody* cb_j = this->body(j);
-			potEnergy -= (cG * cb_j->mass / cb_i->dist(cb_j)); // potential energy is negative
+			potEnergy += this->_grav->potEnergy(cb_i, cb_j);
 		}
 	}
 
@@ -201,6 +201,7 @@ double SolarSystem::Ep(CelestialBody* cb)
 double SolarSystem::EpAvg(bool boundOnly)
 {
 	double sum = 0.0;
+	int n = this->n();
 
 	for (int i = 0; i < this->n(); i++)
 	{
@@ -209,6 +210,10 @@ double SolarSystem::EpAvg(bool boundOnly)
 		if ((!boundOnly) || (cb_i->isBound()))
 		{
 			sum += this->Ep(cb_i);
+		}
+		else
+		{
+			n -= 1;
 		}
 	}
 
@@ -219,6 +224,7 @@ double SolarSystem::EpAvg(bool boundOnly)
 double SolarSystem::EkAvg(bool boundOnly)
 {
 	double sum = 0.0;
+	int n = this->n();
 
 	for (int i = 0; i < this->n(); i++)
 	{
@@ -227,6 +233,10 @@ double SolarSystem::EkAvg(bool boundOnly)
 		if ((!boundOnly) || (cb_i->isBound()))
 		{
 			sum += cb_i->Ek();
+		}
+		else
+		{
+			n -= 1;
 		}
 	}
 

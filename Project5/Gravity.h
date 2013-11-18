@@ -15,5 +15,6 @@ public:
 	~Gravity();
 	Gravity operator= (const Gravity& other);
 	vec force(CelestialBody* cb_i, CelestialBody* cb_j);
+	double potEnergy(CelestialBody* cb_i, CelestialBody* cb_j);
 };
 

@@ -169,10 +169,13 @@ bool SolarSystem::plotCurrentStep(bool condition)
 				success = false;
 			}
 		}
-	}
 
-	// increment step counter
-	this->_plotStep++;
+		// increment step counter
+		this->_plotStep++;
+
+		// display progress
+		cout << ".";
+	}
 
 	return success;
 }

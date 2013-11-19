@@ -19,6 +19,6 @@ protected:
 public:
 	Solvers(SolarSystem* system, bool useRK4, bool useLeapfrog, bool useEuler);
 	~Solvers();
-	SolarSystem* Solve(double step, int plotEvery);
+	SolarSystem* Solve(double step);
 };
 

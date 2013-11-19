@@ -59,6 +59,13 @@ public:
 		return this->_bodies->size();
 	}
 
+	// we plot every ..th step (may differ from the original parameter due to long division)
+	int plotEvery()
+	{
+		return (this->_nSteps / this->_nPlot);
+	}
+
+	// which
 	int plotStep()
 	{
 		return this->_plotStep;

@@ -153,7 +153,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	cout << endl << "Running simulation";
 
 	// this is where the magic happens :)
-	system = solv.Solve(STEP, PLOT_EVERY);
+	system = solv.Solve(STEP);
 
 	if (system != nullptr)
 	{

@@ -41,31 +41,26 @@ Solvers::~Solvers()
 }
 
 
-SolarSystem* Solvers::Solve(double step, int plotEvery)
+SolarSystem* Solvers::Solve(double step)
 {
 	for (int i = 0; i < this->_system->nSteps(); i++) // for each time step
 	{
 		if (this->_useRK4)
 		{
-			this->_rk4->plotCurrentStep(i % plotEvery == 0); // if we want to plot this step, do it
+			this->_rk4->plotCurrentStep(i % this->_rk4->plotEvery() == 0); // if we want to plot this step, do it
 			RK4(step); // perform step
 		}
 
 		if (this->_useLeapfrog)
 		{
-			this->_leapfrog->plotCurrentStep(i % plotEvery == 0); // if we want to plot this step, do it
+			this->_leapfrog->plotCurrentStep(i % this->_leapfrog->plotEvery() == 0); // if we want to plot this step, do it
 			Leapfrog(step); // perform step
 		}
 
 		if (this->_useEuler)
 		{
-			this->_euler->plotCurrentStep(i % plotEvery == 0); // if we want to plot this step, do it
+			this->_euler->plotCurrentStep(i % this->_euler->plotEvery() == 0); // if we want to plot this step, do it
 			Euler(step); // perform step
-		}
-
-		if (i % plotEvery == 0)
-		{
-			cout << ".";
 		}
 	}
 

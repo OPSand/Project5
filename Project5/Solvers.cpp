@@ -12,6 +12,9 @@ Solvers::Solvers(SolarSystem* system, bool useRK4, bool useLeapfrog, bool useEul
 	this->_useLeapfrog = useLeapfrog;
 	this->_useEuler = useEuler;
 
+	// calculate potential energy before copying
+	this->_system->calculateEp();
+
 	// create system copies as necessary
 	if (this->_useRK4)
 	{
@@ -104,6 +107,9 @@ SolarSystem* Solvers::Solve(double step, int plotEvery)
 	// we will use leapfrog to return results
 	if (this->_useLeapfrog)
 	{
+		// make sure potential energy is up to date
+		this->_leapfrog->calculateEp();
+
 		return this->_leapfrog;
 	}
 	else // not leapfrog
@@ -226,9 +232,6 @@ void Solvers::RK4(double step)
 	}
 
 	#pragma endregion
-
-	// update step counter of SolarSystem
-	this->_rk4->nextStep();
 }
 
 
@@ -268,9 +271,6 @@ void Solvers::Leapfrog(double step)
 			*(cb->velocity) += halfStep * cb->acc();
 		}
 	}
-
-	// update step counter of SolarSystem
-	this->_leapfrog->nextStep();
 }
 
 
@@ -294,7 +294,4 @@ void Solvers::Euler(double step)
 			*(cb->position) += step * *(cb->velocity);
 		}
 	}
-
-	// update step counter of SolarSystem
-	this->_euler->nextStep();
 }

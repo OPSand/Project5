@@ -23,6 +23,7 @@ public:
 	bool fixed;
 	mat* plot;
 	double Ek(void);
+	double Ep;
 
 protected:
 	int _dim;
@@ -47,7 +48,7 @@ public:
 		return norm(this->position_diff(cb), this->_dim);
 	}
 
-	// add current position to plot matrix (increments _currentStep afterwards)
+	// add current position to plot matrix
 	// returns true if room, false if not
 	bool plotCurrentPosition(void);
 

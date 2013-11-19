@@ -6,7 +6,7 @@ SolarSystem::SolarSystem(int dim, int nSteps, int plotEvery, Gravity* grav)
 {
 	this->_dim = dim;
 	this->_nSteps = nSteps;
-	this->_currentStep = 0;
+	this->_plotStep = 0;
 	this->_nPlot = (nSteps / plotEvery);
 	this->_grav = grav;
 	this->_bodies = new vector<CelestialBody*>();
@@ -18,7 +18,7 @@ SolarSystem::SolarSystem(const SolarSystem& other)
 {
 	this->_dim = other._dim;
 	this->_nSteps = other._nSteps;
-	this->_currentStep = other._currentStep;
+	this->_plotStep = other._plotStep;
 	this->_nPlot = other._nPlot;
 	this->_grav = other._grav;
 	this->_nBoundPlot = other._nBoundPlot;
@@ -55,7 +55,7 @@ SolarSystem SolarSystem::operator = (const SolarSystem& other)
 	{
 		this->_dim = other._dim;
 		this->_nSteps = other._nSteps;
-		this->_currentStep = other._currentStep;
+		this->_plotStep = other._plotStep;
 		this->_nPlot = other._nPlot;
 		this->_grav = other._grav;
 		this->_nBoundPlot = other._nBoundPlot;
@@ -146,6 +146,9 @@ bool SolarSystem::plotCurrentStep(bool condition)
 
 	if( condition )
 	{
+		// calculate potential energy
+		this->calculateEp();
+
 		int n = this->n();
 
 		for( int i = 0; i < n; i++ )
@@ -155,10 +158,21 @@ bool SolarSystem::plotCurrentStep(bool condition)
 				success = false; // it is sufficient that one element has no room
 			}
 			
-			
-			// plot # of bound particles
+			// plot # of bound particles (if room)
+			if (this->_plotStep < this->_nBoundPlot->n_rows)
+			{
+				this->_nBoundPlot->at(this->_plotStep, 0) = this->_plotStep;
+				this->_nBoundPlot->at(this->_plotStep, 1) = this->nBound();
+			}
+			else
+			{
+				success = false;
+			}
 		}
 	}
+
+	// increment step counter
+	this->_plotStep++;
 
 	return success;
 }
@@ -179,33 +193,28 @@ void SolarSystem::plotDim(int i, const string& path)
 	plot.save(path, raw_ascii); // save to file
 }
 
-// returns the potential energy of the element cb (if it exists in the system)
-double SolarSystem::Ep(CelestialBody* cb)
+// calculates potential energy of all particles in the system
+void SolarSystem::calculateEp()
 {
 	int n = this->n();
 
-	double potEnergy = 0;
+	for (int i = 0; i < n; i++)
+	{
+		CelestialBody* cb_i = this->body(i);
+		double potEnergy = 0;
 
-	int i = 0;
-	while( this->body(i) != cb )
-	{
-		i++; // wrong planet, increase index
-	}
-	
-	assert( i < n ); // triggers if cb is not part of the system (then i == n)
-	CelestialBody* cb_i = this->body(i);
-	
-	// for all other celestial bodies
-	for( int j = 0; j < n; j++ )
-	{
-		if( i != j ) // don't add potential energy from self
+		// for all other celestial bodies
+		for (int j = 0; j < n; j++)
 		{
-			CelestialBody* cb_j = this->body(j);
-			potEnergy += this->_grav->potEnergy(cb_i, cb_j);
+			if (i != j) // don't add potential energy from self
+			{
+				CelestialBody* cb_j = this->body(j);
+				potEnergy += this->_grav->potEnergy(cb_i, cb_j);
+			}
 		}
-	}
 
-	return potEnergy;
+		cb_i->Ep = potEnergy;
+	}
 }
 
 // average potential energy
@@ -220,7 +229,7 @@ double SolarSystem::EpAvg(bool boundOnly)
 
 		if ((!boundOnly) || (cb_i->isBound()))
 		{
-			sum += this->Ep(cb_i);
+			sum += cb_i->Ep;
 		}
 		else
 		{

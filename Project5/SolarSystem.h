@@ -16,7 +16,7 @@ protected:
 	Gravity* _grav;
 	vector<CelestialBody*>* _bodies; // list of celestial bodies in solar system (use pointers to avoid needless copying)
 	mat* _nBoundPlot;
-	int _currentStep; // used for plotting
+	int _plotStep; // used for plotting
 
 public:
 	SolarSystem(int dim, int nSteps, int plotEvery, Gravity* grav);
@@ -24,7 +24,7 @@ public:
 	~SolarSystem(void);
 	SolarSystem operator =(const SolarSystem& other); 
 	void setForces();
-	double Ep(CelestialBody*);
+	void calculateEp();
 	double EpAvg(bool boundOnly);
 	double EkAvg(bool boundOnly);
 	int nBound(); // number of bound particles in the system
@@ -44,7 +44,7 @@ public:
 	// increment the step counter
 	void nextStep()
 	{
-		this->_currentStep++;
+		this->_plotStep++;
 	}
 
 	// return number of steps to plot
@@ -59,9 +59,14 @@ public:
 		return this->_bodies->size();
 	}
 
-	int currentStep()
+	int plotStep()
 	{
-		return this->_currentStep;
+		return this->_plotStep;
+	}
+
+	Gravity* grav()
+	{
+		return this->_grav;
 	}
 
 	// return a celestial body at the index i

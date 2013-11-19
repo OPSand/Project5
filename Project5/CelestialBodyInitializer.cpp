@@ -50,4 +50,26 @@ void CelestialBodyInitializer::initialize(SolarSystem* system, int n, double avg
 		// Initialize CB and add to system
 		randInit(system, name.str(), avgM, stdM, r0, idum, idum2); // adds new CB to system
 	}
+
+	// finally, update Gravity using average mass (calculated, not avgM)
+	system->grav()->setG(G(r0, system->avgMass(), system->n()));
+}
+
+// calculate mass density in solar masses per cubic light yeats
+double CelestialBodyInitializer::rho(double r, double avgM, double n)
+{
+	double V = (4.0 / 3.0)* cPI *pow(r, 3.0); // initial volume [ly^3]
+	return (n * avgM / V); // mass density [solar masses / ly^3]
+}
+
+// calculate G in units of t_crunch, ly, solar masses
+double CelestialBodyInitializer::G(double r0, double avgM, double n)
+{
+	return (3.0 * cPI / (32.0 * rho(r0, avgM, n))); // G in t_crunch, ly, solar masses
+}
+
+// calculate t_crunch in years
+double CelestialBodyInitializer::tCrunch(double r0, double avgM, double n, double Gyls)
+{
+	return sqrt(3.0 * cPI / (32.0 * Gyls * rho(r0, avgM, n))); // crunch time [years]
 }

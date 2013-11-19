@@ -59,25 +59,6 @@ vec radialDistFitLSq(mat radialDist, int nNR, double minR0, double maxR0, double
 	return ret;
 }
 
-// calculate mass density in solar masses per cubic light yeats
-double rho(double r, double avgM, double n)
-{
-	double V = (4.0 / 3.0)* cPI *pow(r, 3.0); // initial volume [ly^3]
-	return (n * avgM / V); // mass density [solar masses / ly^3]
-}
-
-// calculate G in units of t_crunch, ly, solar masses
-inline double G(double r0, double avgM, double n)
-{
-	return (3.0 * cPI / (32.0 * rho(r0, avgM, n))); // G in t_crunch, ly, solar masses
-}
-
-// calculate t_crunch in years
-inline double tCrunch(double r0, double avgM, double n, double Gyls)
-{
-	return sqrt(3.0 * cPI / (32.0 * Gyls * rho(r0, avgM, n))); // crunch time [years]
-}
-
 // Entry point for console application
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -122,32 +103,29 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	if (DEBUG)
 	{
-		cout << "T_CRUNCH = " << tCrunch(R0, AVG_M, N, G_YLS) << endl;
-		cout << "G = " << G(R0, AVG_M, N) << endl;
+		cout << "T_CRUNCH = " << CelestialBodyInitializer::tCrunch(R0, AVG_M, N, G_YLS) << endl;
+		cout << "G = " << CelestialBodyInitializer::G(R0, AVG_M, N) << endl;
 		cout << "G_YLS = " << G_YLS << endl;
 		cout << endl;
 	}
 
 	// create gravity (we will update G later)
-	Gravity g = Gravity(G_YLS, EPSILON);
+	Gravity g = Gravity(0.0, EPSILON);
 
 	// create system
-	SolarSystem system = SolarSystem(DIM, N_STEPS, PLOT_EVERY, &g);
+	SolarSystem* system = new SolarSystem(DIM, N_STEPS, PLOT_EVERY, &g);
 
 	// add N randomly initialized celestial bodies
-	CelestialBodyInitializer::initialize(&system, N, AVG_M, STD_M, R0, &IDUM, &IDUM2);
-
-	// calculate G in correct units (using the CALCULATED average mass)
-	g.setG(G(R0, system.avgMass(), system.n()));
+	CelestialBodyInitializer::initialize(system, N, AVG_M, STD_M, R0, &IDUM, &IDUM2);
 
 	// call this only when initialization is 100% complete!
-	Solvers solv = Solvers(&system, USE_RK4, USE_LEAPFROG, USE_EULER);
+	Solvers solv = Solvers(system, USE_RK4, USE_LEAPFROG, USE_EULER);
 
 	if (DEBUG)
 	{
-		for (int i = 0; i < system.n(); i++)
+		for (int i = 0; i < system->n(); i++)
 		{
-			CelestialBody* cb = system.body(i);
+			CelestialBody* cb = system->body(i);
 			cout << "mass = " << cb->mass << endl;
 			cout << "position = " << *(cb->position) << endl << endl;
 		}
@@ -157,58 +135,61 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	#pragma region Solve and plot
 
-	cout << "E_k before: " << system.EkAvg(false) << endl;
-	cout << "E_k before (bound): " << system.EkAvg(true) << endl;
-	cout << "E_p before: " << system.EpAvg(false) << endl;
-	cout << "E_p before (bound): " << system.EpAvg(true) << endl;
-	cout << "E_tot before: " << (system.EpAvg(false) + system.EkAvg(false)) << endl;
-	cout << "E_tot before (bound): " << (system.EpAvg(true) + system.EkAvg(true)) << endl;
+	cout << "E_k before: " << system->EkAvg(false) << endl;
+	cout << "E_k before (bound): " << system->EkAvg(true) << endl;
+	cout << "E_p before: " << system->EpAvg(false) << endl;
+	cout << "E_p before (bound): " << system->EpAvg(true) << endl;
+	cout << "E_tot before: " << (system->EpAvg(false) + system->EkAvg(false)) << endl;
+	cout << "E_tot before (bound): " << (system->EpAvg(true) + system->EkAvg(true)) << endl;
 
 	if (DEBUG)
 	{
-		cout << "Center of mass: " << system.centerOfMass() << endl;
+		cout << "Center of mass: " << system->centerOfMass() << endl;
 
-		mat radial = system.radialDistribution(R0, 100, true);
+		mat radial = system->radialDistribution(R0, 100, true);
 		radial.save("test.dat", raw_ascii);
 
 		vec testFit = radialDistFitLSq(radial, 100, 0.0, 100.0, 0.0, 100.0);
 		cout << "r0 = " << testFit(0) << endl;
 		cout << "n0 = " << testFit(1) << endl;
 
-		cout << "avg = " << system.avgDistCoM(true) << endl;
-		cout << "stdDev = " << system.stdDevDistCoM(true) << endl;
+		cout << "avg = " << system->avgDistCoM(true) << endl;
+		cout << "stdDev = " << system->stdDevDistCoM(true) << endl;
 	}
 
 	cout << endl << "Running simulation";
 
 	// this is where the magic happens :)
-	system = *(solv.Solve(STEP, PLOT_EVERY));
+	system = solv.Solve(STEP, PLOT_EVERY);
 
-	if (&system != nullptr)
+	if (system != nullptr)
 	{
-		cout << "E_k after: " << system.EkAvg(false) << endl;
-		cout << "E_k after (bound): " << system.EkAvg(true) << endl;
-		cout << "E_p after: " << system.EpAvg(false) << endl;
-		cout << "E_p after (bound): " << system.EpAvg(true) << endl;
-		cout << "E_tot after: " << (system.EpAvg(false) + system.EkAvg(false)) << endl;
-		cout << "E_tot after (bound): " << (system.EpAvg(true) + system.EkAvg(true)) << endl;
+		cout << "E_k after: " << system->EkAvg(false) << endl;
+		cout << "E_k after (bound): " << system->EkAvg(true) << endl;
+		cout << "E_p after: " << system->EpAvg(false) << endl;
+		cout << "E_p after (bound): " << system->EpAvg(true) << endl;
+		cout << "E_tot after: " << (system->EpAvg(false) + system->EkAvg(false)) << endl;
+		cout << "E_tot after (bound): " << (system->EpAvg(true) + system->EkAvg(true)) << endl;
 
 		if (DEBUG)
 		{
-			cout << "Center of mass: " << system.centerOfMass() << endl;
+			cout << "Center of mass: " << system->centerOfMass() << endl;
 
-			mat radial = system.radialDistribution(R0, 100, true);
-			// radial.save("test.dat", raw_ascii);
+			mat radial = system->radialDistribution(R0, 100, true);
+			radial.save("test.dat", raw_ascii);
+
+			system->nBoundPlot().save("test2.dat", raw_ascii);
 
 			vec testFit = radialDistFitLSq(radial, 100, 0.0, 100.0, 0.0, 100.0);
 			cout << "r0 = " << testFit(0) << endl;
 			cout << "n0 = " << testFit(1) << endl;
 
-			cout << "avg = " << system.avgDistCoM(true) << endl;
-			cout << "stdDev = " << system.stdDevDistCoM(true) << endl;
+			cout << "avg = " << system->avgDistCoM(true) << endl;
+			cout << "stdDev = " << system->stdDevDistCoM(true) << endl;
 		}
 	}
 
+	cout << endl << "Press ENTER to exit...";
 	getchar(); // pause
 
 	#pragma endregion

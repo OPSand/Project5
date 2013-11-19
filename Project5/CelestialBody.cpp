@@ -82,15 +82,15 @@ CelestialBody CelestialBody::operator = (const CelestialBody &cb)
 	return *this; // to allow operator chaining: a = b = c
 }
 
-// add current position to plot matrix (increments _currentStep afterwards)
+// add current position to plot matrix (increments _plotStep afterwards)
 // returns true if room, false if not
 bool CelestialBody::plotCurrentPosition()
 {
-	if( this->_system->currentStep() < this->plot->n_rows )
+	if( this->_system->plotStep() < this->plot->n_rows )
 	{
 		for( int j = 0; j < this->plot->n_cols; j++ )
 		{
-			this->plot->at(this->_system->currentStep(), j) = this->position->at(j);
+			this->plot->at(this->_system->plotStep(), j) = this->position->at(j);
 		}
 
 		return true;
@@ -110,5 +110,5 @@ double CelestialBody::Ek()
 
 bool CelestialBody::isBound()
 {
-	return ((this->Ek() + this->_system->Ep(this)) < 0.0);
+	return ((this->Ek() + this->Ep) < 0.0);
 }

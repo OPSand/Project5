@@ -15,7 +15,8 @@ protected:
 	int _nPlot;
 	Gravity* _grav;
 	vector<CelestialBody*>* _bodies; // list of celestial bodies in solar system (use pointers to avoid needless copying)
-	SolarSystem add(SolarSystem other, bool plus);
+	mat* _nBoundPlot;
+	int _currentStep; // used for plotting
 
 public:
 	SolarSystem(int dim, int nSteps, int plotEvery, Gravity* grav);
@@ -31,25 +32,36 @@ public:
 	// return dimension of system
 	int dim(void)
 	{
-		return _dim;
+		return this->_dim;
 	}
 
 	// return number of time steos
 	int nSteps(void)
 	{
-		return _nSteps;
+		return this->_nSteps;
+	}
+
+	// increment the step counter
+	void nextStep()
+	{
+		this->_currentStep++;
 	}
 
 	// return number of steps to plot
 	int nPlot(void)
 	{
-		return _nPlot;
+		return this->_nPlot;
 	}
 
 	// return number of celestial bodies in system
 	const int n(void)
 	{
-		return _bodies->size();
+		return this->_bodies->size();
+	}
+
+	int currentStep()
+	{
+		return this->_currentStep;
 	}
 
 	// return a celestial body at the index i
@@ -66,13 +78,19 @@ public:
 
 	// plots all element positions if the condition is met
 	// returns true if room, false if not
-	bool plotCurrentPositions(bool condition);
+	bool plotCurrentStep(bool condition);
 
 	// radial distribution of particles
 	mat radialDistribution(double maxR, int boxes, bool boundOnly);
 
+	// # of bound particles per time step
+	mat nBoundPlot();
+
 	// total mass of the system
 	double totalMass();
+
+	// average particle mass
+	double avgMass();
 
 	// distance to center of mass
 	double distCoM(CelestialBody* cb);

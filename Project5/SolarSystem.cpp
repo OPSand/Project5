@@ -6,9 +6,11 @@ SolarSystem::SolarSystem(int dim, int nSteps, int plotEvery, Gravity* grav)
 {
 	this->_dim = dim;
 	this->_nSteps = nSteps;
+	this->_currentStep = 0;
 	this->_nPlot = (nSteps / plotEvery);
 	this->_grav = grav;
 	this->_bodies = new vector<CelestialBody*>();
+	this->_nBoundPlot = new mat(this->_nPlot, 2);
 }
 
 // copy constructor
@@ -16,8 +18,10 @@ SolarSystem::SolarSystem(const SolarSystem& other)
 {
 	this->_dim = other._dim;
 	this->_nSteps = other._nSteps;
+	this->_currentStep = other._currentStep;
 	this->_nPlot = other._nPlot;
 	this->_grav = other._grav;
+	this->_nBoundPlot = other._nBoundPlot;
 
 	// deep copy
 	this->_bodies = new vector<CelestialBody*>();
@@ -40,6 +44,8 @@ SolarSystem::~SolarSystem(void)
 		delete cb; // delete it
 	}
 	delete _bodies; // delete vector
+
+	delete _nBoundPlot;
 }
 
 // operator =
@@ -49,8 +55,10 @@ SolarSystem SolarSystem::operator = (const SolarSystem& other)
 	{
 		this->_dim = other._dim;
 		this->_nSteps = other._nSteps;
+		this->_currentStep = other._currentStep;
 		this->_nPlot = other._nPlot;
 		this->_grav = other._grav;
+		this->_nBoundPlot = other._nBoundPlot;
 
 		// deep copy
 		this->_bodies = new vector<CelestialBody*>();
@@ -132,7 +140,7 @@ vec SolarSystem::totalMomentum()
 
 // plots all element positions if the condition is met
 // returns true if room, false if not
-bool SolarSystem::plotCurrentPositions(bool condition)
+bool SolarSystem::plotCurrentStep(bool condition)
 {
 	bool success = true; // there was room, or the condition wasn't met
 
@@ -142,10 +150,13 @@ bool SolarSystem::plotCurrentPositions(bool condition)
 
 		for( int i = 0; i < n; i++ )
 		{
-			if( ! this->body(i)->plotCurrentPosition() ) // plot this element
+			if( ! this->body(i)->plotCurrentPosition() ) // try to plot this element
 			{
 				success = false; // it is sufficient that one element has no room
 			}
+			
+			
+			// plot # of bound particles
 		}
 	}
 
@@ -274,6 +285,11 @@ double SolarSystem::totalMass()
 	return sum;
 }
 
+double SolarSystem::avgMass()
+{
+	return (this->totalMass() / this->n());
+}
+
 vec SolarSystem::centerOfMass()
 {
 	// Do not add this to the system
@@ -376,4 +392,9 @@ double SolarSystem::stdDevDistCoM(bool boundOnly)
 	}
 
 	return sqrt(sum / n);
+}
+
+mat SolarSystem::nBoundPlot()
+{
+	return *(this->_nBoundPlot);
 }

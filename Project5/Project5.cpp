@@ -59,6 +59,25 @@ vec radialDistFitLSq(mat radialDist, int nNR, double minR0, double maxR0, double
 	return ret;
 }
 
+// calculate mass density in solar masses per cubic light yeats
+double rho(double r, double avgM, double n)
+{
+	double V = (4.0 / 3.0)* cPI *pow(r, 3.0); // initial volume [ly^3]
+	return (n * avgM / V); // mass density [solar masses / ly^3]
+}
+
+// calculate G in units of t_crunch, ly, solar masses
+inline double G(double r0, double avgM, double n)
+{
+	return (3.0 * cPI / (32.0 * rho(r0, avgM, n))); // G in t_crunch, ly, solar masses
+}
+
+// calculate t_crunch in years
+inline double tCrunch(double r0, double avgM, double n, double Gyls)
+{
+	return sqrt(3.0 * cPI / (32.0 * Gyls * rho(r0, avgM, n))); // crunch time [years]
+}
+
 // Entry point for console application
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -84,12 +103,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double G_YLS = cG * M_SUN * pow(cYr, 2.0) / pow(LY, 3.0); // G in years, ly, solar masses
 	const double EPSILON = 0.0; // correction to Newton in ly to avoid infinite forces at close range
 
-	// calculate G in correct units
-	const double V0 = (4.0 / 3.0)* cPI *pow(R0, 3.0); // initial volume [ly^3]
-	const double RHO0 = N * AVG_M / V0; // initial mass density [solar masses / ly^3]
-	const double G = (3.0 * cPI / (32.0 * RHO0)); // G in t_crunch, ly, solar masses
-	const double T_CRUNCH = sqrt(3.0 * cPI / (32.0 * G_YLS * RHO0)); // crunch time [years]
-
 	// time steps
 	const int N_STEPS = 1000; // number of steps total
 	const int N_PLOT = 1000; // number of steps to plot (must be <= N_STEPS)
@@ -109,14 +122,14 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	if (DEBUG)
 	{
-		cout << "T_CRUNCH = " << T_CRUNCH << endl;
-		cout << "G = " << G << endl;
+		cout << "T_CRUNCH = " << tCrunch(R0, AVG_M, N, G_YLS) << endl;
+		cout << "G = " << G(R0, AVG_M, N) << endl;
 		cout << "G_YLS = " << G_YLS << endl;
 		cout << endl;
 	}
 
-	// create gravity
-	Gravity g = Gravity(G, EPSILON);
+	// create gravity (we will update G later)
+	Gravity g = Gravity(G_YLS, EPSILON);
 
 	// create system
 	SolarSystem system = SolarSystem(DIM, N_STEPS, PLOT_EVERY, &g);
@@ -124,7 +137,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	// add N randomly initialized celestial bodies
 	CelestialBodyInitializer::initialize(&system, N, AVG_M, STD_M, R0, &IDUM, &IDUM2);
 
-	// call this only when initialization is 100% complete
+	// calculate G in correct units (using the CALCULATED average mass)
+	g.setG(G(R0, system.avgMass(), system.n()));
+
+	// call this only when initialization is 100% complete!
 	Solvers solv = Solvers(&system, USE_RK4, USE_LEAPFROG, USE_EULER);
 
 	if (DEBUG)

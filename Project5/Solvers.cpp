@@ -44,19 +44,19 @@ SolarSystem* Solvers::Solve(double step, int plotEvery)
 	{
 		if (this->_useRK4)
 		{
-			this->_rk4->plotCurrentPositions(i % plotEvery == 0); // if we want to plot this step, do it
+			this->_rk4->plotCurrentStep(i % plotEvery == 0); // if we want to plot this step, do it
 			RK4(step); // perform step
 		}
 
 		if (this->_useLeapfrog)
 		{
-			this->_leapfrog->plotCurrentPositions(i % plotEvery == 0); // if we want to plot this step, do it
+			this->_leapfrog->plotCurrentStep(i % plotEvery == 0); // if we want to plot this step, do it
 			Leapfrog(step); // perform step
 		}
 
 		if (this->_useEuler)
 		{
-			this->_euler->plotCurrentPositions(i % plotEvery == 0); // if we want to plot this step, do it
+			this->_euler->plotCurrentStep(i % plotEvery == 0); // if we want to plot this step, do it
 			Euler(step); // perform step
 		}
 
@@ -226,6 +226,9 @@ void Solvers::RK4(double step)
 	}
 
 	#pragma endregion
+
+	// update step counter of SolarSystem
+	this->_rk4->nextStep();
 }
 
 
@@ -265,6 +268,9 @@ void Solvers::Leapfrog(double step)
 			*(cb->velocity) += halfStep * cb->acc();
 		}
 	}
+
+	// update step counter of SolarSystem
+	this->_leapfrog->nextStep();
 }
 
 
@@ -288,4 +294,7 @@ void Solvers::Euler(double step)
 			*(cb->position) += step * *(cb->velocity);
 		}
 	}
+
+	// update step counter of SolarSystem
+	this->_euler->nextStep();
 }

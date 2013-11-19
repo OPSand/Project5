@@ -26,7 +26,6 @@ public:
 
 protected:
 	int _dim;
-	int _currentStep; // used for plotting
 	SolarSystem* _system;
 public:
 

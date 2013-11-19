@@ -12,7 +12,6 @@ CelestialBody::CelestialBody(const string& name, double mass, SolarSystem* syste
 	this->name = name;
 	this->mass = mass;
 	this->_dim = system->dim();
-	this->_currentStep = 0;
 
 	// initialize vectors with correct dimension
 	this->position = new vec(this->_dim);
@@ -39,7 +38,6 @@ CelestialBody::CelestialBody(const CelestialBody &cb)
 	this->name = cb.name; // unlikely to change
 	this->mass = cb.mass;
 	this->_dim = cb._dim;
-	this->_currentStep = cb._currentStep;
 
 	this->fixed = cb.fixed;
 
@@ -69,7 +67,6 @@ CelestialBody CelestialBody::operator = (const CelestialBody &cb)
 		this->name = cb.name; // unlikely to change
 		this->mass = cb.mass;
 		this->_dim = cb._dim;
-		this->_currentStep = cb._currentStep;
 
 		this->fixed = cb.fixed;
 
@@ -89,14 +86,13 @@ CelestialBody CelestialBody::operator = (const CelestialBody &cb)
 // returns true if room, false if not
 bool CelestialBody::plotCurrentPosition()
 {
-	if( this->_currentStep < this->plot->n_rows )
+	if( this->_system->currentStep() < this->plot->n_rows )
 	{
 		for( int j = 0; j < this->plot->n_cols; j++ )
 		{
-			this->plot->at(this->_currentStep, j) = this->position->at(j);
+			this->plot->at(this->_system->currentStep(), j) = this->position->at(j);
 		}
 
-		this->_currentStep++;
 		return true;
 	}
 	else // no more room in matrix

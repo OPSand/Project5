@@ -50,3 +50,13 @@ double Gravity::potEnergy(CelestialBody* cb_i, CelestialBody* cb_j)
 		return -((this->_G * cb_j->mass / this->_epsilon)*(atan(cb_i->dist(cb_j) / this->_epsilon) - (cPI/2.0)));
 	}
 }
+
+void Gravity::setG(double G)
+{
+	this->_G = G;
+}
+
+void Gravity::setEpsilon(double epsilon)
+{
+	this->_epsilon = epsilon;
+}

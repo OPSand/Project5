@@ -67,10 +67,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	// dimensions
 	const int DIM = 3;
 
-	// randomization seeds (must be negative)
-	long IDUM = -1337;
-	long IDUM2 = -1;
-
 	// initialization
 	const int N = 100; // number of celestial bodies
 	const double R0 = 20.0; // initial radius in ly
@@ -101,14 +97,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	#pragma region Initialization
 
-	if (DEBUG)
-	{
-		cout << "T_CRUNCH = " << CelestialBodyInitializer::tCrunch(R0, AVG_M, N, G_YLS) << endl;
-		cout << "G = " << CelestialBodyInitializer::G(R0, AVG_M, N) << endl;
-		cout << "G_YLS = " << G_YLS << endl;
-		cout << endl;
-	}
-
 	// create gravity (we will update G later)
 	Gravity g = Gravity(0.0, EPSILON);
 
@@ -116,7 +104,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	SolarSystem* system = new SolarSystem(DIM, N_STEPS, PLOT_EVERY, &g);
 
 	// add N randomly initialized celestial bodies
-	CelestialBodyInitializer::initialize(system, N, AVG_M, STD_M, R0, &IDUM, &IDUM2);
+	CelestialBodyInitializer::initialize(system, N, AVG_M, STD_M, R0);
 
 	// call this only when initialization is 100% complete!
 	Solvers solv = Solvers(system, USE_RK4, USE_LEAPFROG, USE_EULER);
@@ -129,6 +117,11 @@ int _tmain(int argc, _TCHAR* argv[])
 			cout << "mass = " << cb->mass << endl;
 			cout << "position = " << *(cb->position) << endl << endl;
 		}
+
+		cout << "T_CRUNCH = " << CelestialBodyInitializer::tCrunch(R0, system->avgMass(), system->n(), G_YLS, DIM) << endl;
+		cout << "G = " << CelestialBodyInitializer::G(R0, system->avgMass(), system->n(), DIM) << endl;
+		cout << "G_YLS = " << G_YLS << endl;
+		cout << endl;
 	}
 
 	#pragma endregion

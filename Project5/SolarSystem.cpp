@@ -304,7 +304,6 @@ double SolarSystem::avgMass()
 
 vec SolarSystem::centerOfMass()
 {
-	// Do not add this to the system
 	vec com = vec(this->_dim);
 	com.fill(0.0);
 

@@ -12,7 +12,7 @@ using namespace arma;
 using namespace std;
 
 // fit radial distribution to curve (using least squares)
-vec radialDistFitLSq(mat radialDist, int nNR, double minR0, double maxR0, double minN0, double maxN0)
+vec radialDistFitLSq(mat radialDist, double minR0, double maxR0, double minN0, double maxN0, int nNR)
 {
 	vec ret = vec(2); // vec(0) = r0, vec(1) = n0
 
@@ -139,15 +139,15 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		cout << "Center of mass: " << system->centerOfMass() << endl;
 
-		mat radial = system->radialDistribution(R0, 100, true);
-		radial.save("test.dat", raw_ascii);
+		mat radial = system->radialDistribution(R0, 10, true);
+		radial.save("radial_before.dat", raw_ascii);
 
 		vec testFit = radialDistFitLSq(radial, 100, 0.0, 100.0, 0.0, 100.0);
 		cout << "r0 = " << testFit(0) << endl;
 		cout << "n0 = " << testFit(1) << endl;
 
-		cout << "avg = " << system->avgDistCoM(true) << endl;
-		cout << "stdDev = " << system->stdDevDistCoM(true) << endl;
+		cout << "(bound) avg = " << system->avgDistCoM(true) << endl;
+		cout << "(bound) stdDev = " << system->stdDevDistCoM(true) << endl;
 	}
 
 	cout << endl << "Running simulation";
@@ -168,17 +168,19 @@ int _tmain(int argc, _TCHAR* argv[])
 		{
 			cout << "Center of mass: " << system->centerOfMass() << endl;
 
-			mat radial = system->radialDistribution(R0, 100, true);
-			radial.save("test.dat", raw_ascii);
+			mat radial = system->radialDistribution(R0, 10, true);
+			radial.save("radial_after.dat", raw_ascii);
 
-			system->nBoundPlot().save("test2.dat", raw_ascii);
+			system->nBoundPlot().save("nbound.dat", raw_ascii);
 
-			vec testFit = radialDistFitLSq(radial, 100, 0.0, 100.0, 0.0, 100.0);
+			vec testFit = radialDistFitLSq(radial, 0.0, 100.0, 0.0, 100.0, 100);
 			cout << "r0 = " << testFit(0) << endl;
 			cout << "n0 = " << testFit(1) << endl;
 
-			cout << "avg = " << system->avgDistCoM(true) << endl;
-			cout << "stdDev = " << system->stdDevDistCoM(true) << endl;
+			cout << "(bound) avg = " << system->avgDistCoM(true) << endl;
+			cout << "(bound) stdDev = " << system->stdDevDistCoM(true) << endl;
+			cout << "(all) avg = " << system->avgDistCoM(false) << endl;
+			cout << "(all) stdDev = " << system->stdDevDistCoM(false) << endl;
 		}
 	}
 

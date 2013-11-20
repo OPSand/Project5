@@ -395,7 +395,7 @@ double SolarSystem::stdDevDistCoM(bool boundOnly)
 
 		if ((!boundOnly) || (cb_i->isBound()))
 		{
-			sum = pow((distCoM(cb_i) - avg), 2.0); // deviation squared
+			sum += pow((distCoM(cb_i) - avg), 2.0); // deviation squared
 		}
 		else
 		{

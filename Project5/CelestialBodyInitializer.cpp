@@ -19,24 +19,24 @@ void CelestialBodyInitializer::randInit(SolarSystem* system, const string& name,
 	// determine position(r0) - independent of system dimension
 	int dim = system->dim();
 
-	vec r = vec(dim); // dim-dimensional unit vector
-	r.fill(1.0); // we need the while loop to run at least once
+	// Create uniform distribution in the n-ball using the recipe at:
+	// https://en.wikipedia.org/wiki/Hypersphere#Uniformly_at_random_from_the_.28n.C2.A0.E2.88.92.C2.A01.29-sphere
 
-	// crude (but dimensionless!) solution
-	while (norm(r, dim) > 1.0)
+	vec x = vec(dim);
+	
+	// for each dimension
+	for (int i = 0; i < dim; i++)
 	{
-		// for each dimension
-		for (int i = 0; i < dim; i++)
-		{
-			double uniform = GaussPDF::ran2(idum2);
-			r(i) = (2.0 * uniform - 1.0); // between -1.0 and 1.0
-
-			// this required no while loop, but do not use - it will cause clustering around the first dimensional axis!
-			// r(i) = (2.0 * uniform - 1.0) * sqrt(1.0 - norm(r, dim));
-		}
+		x(i) = GaussPDF::gaussian_deviate(idum);
 	}
+	
+	double r = norm(x, dim);
+	x = (1.0 / r)*x; // x is now a unit vector - its possible directions are now uniformly distributed on the surface!
 
-	*(cb->position) = r0*r; // scale to correct radius
+	r = GaussPDF::ran2(idum2); // uniformly distributed between 0.0 and 1.0
+	x = pow(r, (1.0 / dim)) * x; // uniformly distributed in the unit n-ball
+
+	*(cb->position) = r0*x; // scale to correct radius
 }
 
 void CelestialBodyInitializer::initialize(SolarSystem* system, int n, double avgM, double stdM, double r0)

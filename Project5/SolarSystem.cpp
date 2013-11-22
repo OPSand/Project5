@@ -240,7 +240,7 @@ double SolarSystem::EpAvg(bool boundOnly)
 		}
 	}
 
-	return (sum / this->n());
+	return (sum / (2.0 *this->n() ));
 }
 
 // average kinetic energy

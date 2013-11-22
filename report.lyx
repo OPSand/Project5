@@ -255,13 +255,75 @@ Gravitational potential with modified gravity
 \end_layout
 
 \begin_layout Standard
-(calculation goes here)
+Starting with the magnitude of the force
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \[
-E_{p}=\frac{GMm}{\epsilon}(\arctan(\frac{r}{\epsilon})-\frac{\pi}{2})\qquad(\epsilon\ne0)
+F=\frac{GMm}{r^{2}+\epsilon^{2}}=\frac{GMm}{\epsilon^{2}}\frac{1}{(\frac{r}{\epsilon})^{2}+1}=\frac{GMm}{\epsilon^{2}}\frac{1}{u^{2}+1}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where we have used the subsitution 
+\begin_inset Formula $u=\frac{r}{\epsilon}$
+\end_inset
+
+ which gives 
+\begin_inset Formula $\frac{du}{dr}=\frac{1}{\epsilon}$
+\end_inset
+
+, hence 
+\begin_inset Formula $dr=\epsilon\cdot du$
+\end_inset
+
+, and so
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+E_{p}=m\Phi=\int Fdr=\frac{GMm}{\epsilon^{2}}\int\frac{1}{u^{2}+1}\epsilon du=\frac{GMm}{\epsilon}\arctan(u)+C
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We want 
+\begin_inset Formula $E_{p}\rightarrow0$
+\end_inset
+
+ as 
+\begin_inset Formula $r\rightarrow\infty$
+\end_inset
+
+, and since 
+\begin_inset Formula $\arctan(u)\rightarrow\frac{\pi}{2}$
+\end_inset
+
+ as 
+\begin_inset Formula $u\rightarrow\infty$
+\end_inset
+
+, we achieve this by choosing 
+\begin_inset Formula $C=-\frac{\pi}{2}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+E_{p}=\frac{GMm}{\epsilon}(\arctan(\frac{r}{\epsilon})-\frac{\pi}{2})\qquad(\epsilon>0)
 \]
 
 \end_inset

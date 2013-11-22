@@ -78,14 +78,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double MYR = cYr * 1.0e6; // s
 	const double M_SUN = 1.9891e30; // kg
 	const double G_YLS = cG * M_SUN * pow(cYr, 2.0) / pow(LY, 3.0); // G in years, ly, solar masses
-	const double EPSILON = 0.15; // correction to Newton in ly to avoid infinite forces at close range
+	const double EPSILON = sqrt(0.0225); // correction to Newton in ly to avoid infinite forces at close range
 
 	// time steps
 	const int N_STEPS = 1000; // number of steps total
 	const int N_PLOT = 1000; // number of steps to plot (must be <= N_STEPS)
-	//const double CRUNCH_TIMES = 10.0; // # of crunch times to simulate for
-	//const double STEP = CRUNCH_TIMES / ((double)N_STEPS - 1.0); // step size (in crunch times)
-	const double STEP = 1.0e-4; // step length (crunch times)
+	const double CRUNCH_TIMES = 5.0; // # of crunch times to simulate for
+	const double STEP = CRUNCH_TIMES / ((double)N_STEPS - 1.0); // step size (in crunch times)
 	const int PLOT_EVERY = N_STEPS / N_PLOT; // plot every ...th step
 
 	// flags

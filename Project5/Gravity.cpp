@@ -47,7 +47,7 @@ double Gravity::potEnergy(CelestialBody* cb_i, CelestialBody* cb_j)
 	}
 	else
 	{
-		return -((this->_G * cb_j->mass / this->_epsilon)*(atan(cb_i->dist(cb_j) / this->_epsilon) - (cPI/2.0)));
+		return ((this->_G * cb_j->mass / this->_epsilon)*(atan(cb_i->dist(cb_j) / this->_epsilon) - (cPI/2.0)));
 	}
 }
 

@@ -261,7 +261,7 @@ Gravitational potential with modified gravity
 \begin_layout Standard
 \begin_inset Formula 
 \[
-E_{p}=-\frac{GMm}{\epsilon}(\tan^{-1}(\frac{r}{\epsilon})-\frac{\pi}{2})\qquad(e\ne0)
+E_{p}=\frac{GMm}{\epsilon}(\arctan(\frac{r}{\epsilon})-\frac{\pi}{2})\qquad(\epsilon\ne0)
 \]
 
 \end_inset

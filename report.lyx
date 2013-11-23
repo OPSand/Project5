@@ -261,7 +261,7 @@ Starting with the magnitude of the force
 \begin_layout Standard
 \begin_inset Formula 
 \[
-F=\frac{GMm}{r^{2}+\epsilon^{2}}=\frac{GMm}{\epsilon^{2}}\frac{1}{(\frac{r}{\epsilon})^{2}+1}=\frac{GMm}{\epsilon^{2}}\frac{1}{u^{2}+1}
+F=\frac{GMm}{r^{2}+\epsilon^{2}}=\frac{GMm}{\epsilon^{2}}\frac{1}{(\frac{r}{\epsilon})^{2}+1}=\frac{GMm}{\epsilon^{2}}\frac{1}{u^{2}+1}
 \]
 
 \end_inset
@@ -288,7 +288,7 @@ where we have used the subsitution
 \begin_layout Standard
 \begin_inset Formula 
 \[
-E_{p}=m\Phi=\int Fdr=\frac{GMm}{\epsilon^{2}}\int\frac{1}{u^{2}+1}\epsilon du=\frac{GMm}{\epsilon}\arctan(u)+C
+E_{p}=m\Phi=\int Fdr=\frac{GMm}{\epsilon^{2}}\int\frac{1}{u^{2}+1}\epsilon du=\frac{GMm}{\epsilon}(\arctan(u)+C)
 \]
 
 \end_inset

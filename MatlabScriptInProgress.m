@@ -1,3 +1,7 @@
+% In case something is still ... Remaining from before (which would cause
+% our gif not to be correctly displayed... é_è):
+clear,clc,clf
+
 % File to open:
 nPosi = 0;
 typeSolver = 'rk4';
@@ -5,7 +9,7 @@ fileToOpen = strcat('pos',int2str(nPosi),'_',typeSolver,'.dat');
 fidPosi = fopen(fileToOpen);
 rows = 1000; % Number of time steps
 nbPlanets = 2; % Number of Planets
-printingSteps = 50; % Printing every x time steps ... Don't use it now, but ... Just in case ?
+printingSteps = 5; % Printing every x time steps ... Don't use it now, but ... Just in case ?
 bWantAGif = true; % A Gif or a JPEG ?
 Posi = fscanf(fidPosi,'%g',[nbPlanets rows]).';
 
@@ -14,9 +18,6 @@ t = [0 (rows - 1)];
 for i= 1:rows
     t(i)= i*1/rows;
 end
-
-machin = 'Truc';
-
 if bWantAGif == true  
     % Selection of the name of the file:
     filename = strcat('plot_for_' ,typeSolver,'.gif');
@@ -24,10 +25,7 @@ if bWantAGif == true
     % For every time step
         for time = 1:rows   
             for nbPlan = 1:nbPlanets
-                if time == 1
-                      imwrite(A,map,filename,'gif','LoopCount',Inf,'DelayTime',30);
-                else
-                    if rem(time,printingSteps) == 0
+                if time == 1 ||rem(time,printingSteps) == 0  
                         color = rand(1,3);
                         if nbPlanets > 1 
                             color = [nbPlan/(nbPlanets+1) nbPlan/(nbPlanets+1) nbPlan/(nbPlanets+1)];
@@ -35,21 +33,26 @@ if bWantAGif == true
                         plot(t(time),Posi(time,nbPlan),'color',color,'marker','+');
 
                         hold on % Do we need it ? Don't think so but let's try. Yes we do!
-                        drawnow
+                        %drawnow
                         frame = getframe(1); % 1 referred to "figure", called before.
                         im = frame2im(frame);
                         [A,map] = rgb2ind(im,256); % To avoid 3D pictures... For now
-                       
-                    end
+                       if time == 1 
+                           imwrite(A,map,filename,'gif','LoopCount',Inf,'DelayTime',10);
+                       else
+                           truc = 1
+                           imwrite(A,map,filename,'gif','WriteMode','append','DelayTime',10);
+                       end
+                    
                 end
             end
             % Then let's turn everything into a gif
 %             if time == 1 % After the first step, we create the gif
 %                 imwrite(A,map,filename,'gif','LoopCount',Inf,'DelayTime',30);
 %             else % Then, if we are in our printing step
-                if rem(time,printingSteps) == 0 % We append the new gif to the current one
-                     imwrite(A,map,filename,'gif','WriteMode','append')%,'DelayTime',10);
-                 end
+%                 if rem(time,printingSteps) == 0 % We append the new gif to the current one
+%                      
+%                  end
 %             end     
         end
 else   

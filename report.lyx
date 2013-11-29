@@ -65,19 +65,7 @@ Project 5, FYS 3150 / 4150, fall 2013
 \end_layout
 
 \begin_layout Author
-Odd Petter Sand and Nathalie Bonatout 
-\end_layout
-
-\begin_layout Standard
-All our source code can be found at our GitHub repository for this project:
- 
-\begin_inset CommandInset href
-LatexCommand href
-target "https://github.com/OPSand/Project5/"
-
-\end_inset
-
-
+Student #
 \end_layout
 
 \begin_layout Section
@@ -93,15 +81,171 @@ Theory
 \end_layout
 
 \begin_layout Subsection
-Derivation of 
+Derivation of the expression for 
 \begin_inset Formula $\tau_{crunch}$
 \end_inset
 
- (optional)
+
 \end_layout
 
 \begin_layout Standard
-(OPS)
+Start with Elgarøy's notes (where 
+\begin_inset Formula $t=0$
+\end_inset
+
+ at the Big Bang singularity for our sub-universe) and get
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+R(\psi)=a(\psi)R_{0}=\frac{R_{0}\Omega_{m0}}{2(\Omega_{m0}-1)}(1-\cos\psi)
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $a(\psi)$
+\end_inset
+
+ is the dimensionless scale factor and
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+t(\psi)=\frac{\Omega_{m0}}{2H_{0}(\Omega_{m0}-1)^{3/2}}(\psi-\sin\psi).
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+From these results we see that 
+\begin_inset Formula $t_{max}=t(\psi=\pi)$
+\end_inset
+
+ and 
+\begin_inset Formula $t_{crunch}=t(\psi=2\pi),$
+\end_inset
+
+ thus the elapsed time between these events is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\tau_{crunch}=t_{crunch}-t_{max}=\frac{\pi\Omega_{m0}}{2H_{0}(\Omega_{m0}-1)^{3/2}}.
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The mass parameter is defined by
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\Omega_{m0}=\frac{8\pi G\rho_{0}}{3H_{0}^{2}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and for readability we will make the substitution
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+u^{2}=8\pi G\rho_{0}-3H_{0}^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+thus
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+(\Omega_{m0}-1)^{-3/2}=(\frac{u^{2}}{3H_{0}^{2}})^{-3/2}=3\sqrt{3}H_{0}^{3}u^{-3}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{\Omega_{m0}}{(\Omega_{m0}-1)^{3/2}}=\frac{8\pi G\rho_{0}}{3H_{0}^{2}}3\sqrt{3}H_{0}^{3}u^{-3}=8\sqrt{3}\pi G\rho_{0}H_{0}u^{-3}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\tau_{crunch}=\frac{\pi}{2H_{0}}8\sqrt{3}\pi G\rho_{0}H_{0}u^{-3}=4\sqrt{3}\pi^{2}G\rho_{0}u^{-3}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now we remember that at the time when 
+\begin_inset Formula $\rho=\rho_{0},$
+\end_inset
+
+ everything is at rest, so we have 
+\begin_inset Formula $H_{0}=(\frac{\dot{a}}{a})_{\tau=0}=0$
+\end_inset
+
+.
+ Inserting this, we get 
+\begin_inset Formula $u^{2}=8\pi G\rho_{0}$
+\end_inset
+
+, and
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\tau_{crunch}=4\sqrt{3}\pi^{2}G\rho_{0}(8\pi G\rho_{0})^{-3/2}=\sqrt{\frac{4^{2}3\pi^{4}G^{2}\rho_{0}^{2}}{8^{3}\pi^{3}G^{3}\rho_{0}^{3}}}=\sqrt{\frac{3\pi}{32G\rho_{0}}}\label{eq:tcrunch}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which is what we wanted to show.
 \end_layout
 
 \begin_layout Subsection
@@ -109,48 +253,51 @@ Lack of a singularity in our model
 \end_layout
 
 \begin_layout Standard
-While our 
-\begin_inset Quotes eld
+TODO: Use Elgarøy II and Peacock as sources.
+ (We can also check our virialization radius based on this.)
+\end_layout
+
+\begin_layout Standard
+The reason we do not see a singularity in our model is that we have assumed
+ pressureless (i.e.
+ collisionless) matter in the Friedmann equations.
+ In our simulation we will see internal pressure as kinetic energy from
+ the collapse is turned into random motions by near-collisions between particles.
+ This will act as a kind of pressure in our simulation and will halt the
+ collapse, causing the gravitationally bound particles to form more or less
+ stable orbits around the center of mass.
+ Keep in mind that the kinetic energy is not evenly distributed, so occasionally
+ particles that receive more than their fair share will become unbound and
+ may escape from the system before they have time to lose their energy.
+ (SOURCE: Given) predicts that this should happen to roughly ?? % of the
+ particles.
+\end_layout
+
+\begin_layout Standard
+We say that the system is stable when the virial theorem (...) is satisfied.
+ Elgarøy II shows that his happens at time 
+\begin_inset Formula $\tau_{vir}=0.81\tau_{crunch}$
 \end_inset
 
-universe
-\begin_inset Quotes erd
-\end_inset
-
- has the same mass distribution as the closed universe discussed above,
- it is not closed.
- If it were, we would be able to go in a straight line and after travelling
- a distance 
-\begin_inset Formula $2R$
-\end_inset
-
-, we would end up right where we started due to curvature.
- This is not the case in our model; our geometry is flat in space.
- Furthermore, we use Newtonian gravity and not General Relativity (i.e.
- we take all distances at face value without factoring in the scale factor
- of the universe).
- While the mass will certainly clump together and reach equilibrium, space
- itself will not shrink under the gravitational attraction, and the only
- blueshifts (or redshifts) observed inside this model should come from the
- peculiar motions of the celestial bodies.
+ when the sphere has collapsed to half its initial size, so we see that
  
 \begin_inset Formula $\tau_{crunch}$
 \end_inset
 
- has no direct physical interpretation in our universe in itself - however,
- it is easy to calculate and scales similarly to the relaxation time 
-\begin_inset Formula $\tau_{relax}$
+ is a natural time scale for virialization to occur (some sources do in
+ fact use 
+\begin_inset Formula $\tau_{crunch}$
 \end_inset
 
-, which is the time needed for the system to reach equilibrium.
-\end_layout
-
-\begin_layout Standard
-(TODO: Can we show this? Perhaps! Maybe even use it instead? :p)
+ to mark the point when the system is virialized).
+ 
 \end_layout
 
 \begin_layout Subsection
-G in units of ly, 
+\begin_inset Formula $G$
+\end_inset
+
+ in units of ly, 
 \begin_inset Formula $M_{\sun}$
 \end_inset
 
@@ -162,26 +309,18 @@ G in units of ly,
 \end_layout
 
 \begin_layout Standard
-We can rewrite 
+With 
 \begin_inset Formula $\tau_{crunch}$
 \end_inset
 
- given in years
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\[
-\tau_{crunch}=\sqrt{\frac{3\pi}{32G_{yr}\rho_{0}}}
-\]
+ given in years, we can rewrite equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:tcrunch"
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
-as
+ as
 \end_layout
 
 \begin_layout Standard
@@ -196,13 +335,6 @@ G_{yr}=\frac{3\pi}{32\tau_{crunch}^{2}\rho_{0}}.
 \end_layout
 
 \begin_layout Standard
-But this is completely independent of the time unit...
- unless of course c = 1 somewhere, relating the time and distance units.
- In that case we have ly --> y (probably a safe bet =p).
- 
-\end_layout
-
-\begin_layout Standard
 Switching time units to 
 \begin_inset Formula $\tau_{crunch}$
 \end_inset
@@ -211,7 +343,7 @@ Switching time units to
 \begin_inset Formula $\tau_{crunch}=1$
 \end_inset
 
- in these units, so
+ in these units, hence
 \end_layout
 
 \begin_layout Standard
@@ -248,6 +380,19 @@ This means our gravitational constant and our time unit both depend on
 \end_inset
 
 .
+ We can verify that the units for 
+\begin_inset Formula $G$
+\end_inset
+
+ are now correct with 
+\begin_inset Formula $R_{0}$
+\end_inset
+
+ given in light years and 
+\begin_inset Formula $\mu$
+\end_inset
+
+given in solar masses.
 \end_layout
 
 \begin_layout Subsection
@@ -336,11 +481,19 @@ Results and analysis
 \end_layout
 
 \begin_layout Subsection
-?
+Benchmarks
 \end_layout
 
 \begin_layout Standard
-?
+Reproduce project 3 2-body problem.
+\end_layout
+
+\begin_layout Standard
+Center of mass conserved.
+\end_layout
+
+\begin_layout Standard
+Energy mostly conserved, especially with gravitational correction.
 \end_layout
 
 \begin_layout Section

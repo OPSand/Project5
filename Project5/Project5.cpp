@@ -12,9 +12,23 @@ using namespace arma;
 using namespace std;
 
 // fit radial distribution to curve (using least squares)
-vec radialDistFitLSq(mat radialDist, double minR0, double maxR0, double minN0, double maxN0, int nNR)
+vec radialDistFitLSq(mat radialDist, int N, int nNR)
 {
-	vec ret = vec(2); // vec(0) = r0, vec(1) = n0
+	const double nFact = 2.0;
+	const double rFact = 1.0;
+
+	double nScale = pow((double)N, 2.0);
+	double rScale = pow((double)N, -(1.0 / 3.0));
+
+	double maxN0 = nFact * nScale;
+	double maxR0 = rFact * rScale;
+
+	double minN0 = 0.0;
+	double minR0 = 0.0;
+
+	// vec(0) = r0, vec(1) = n0
+	// vec(2) = r0/N^(-1/3), vec(3) = n0/N^2
+	vec ret = vec(4);
 
 	int boxes = radialDist.n_rows;
 	double sum;
@@ -34,8 +48,8 @@ vec radialDistFitLSq(mat radialDist, double minR0, double maxR0, double minN0, d
 			sum = 0.0;
 			for (int i = 0; i < boxes; i++)
 			{
-				double formula = n0 / (1.0 + pow(radialDist(i, 0) / r0, 4.0));
-				sum += pow(formula - radialDist(i, 1), 2.0);
+				double formula = n0 / (1.0 + pow((radialDist(i, 0) / r0), 4.0));
+				sum += pow(formula - radialDist(i, 2), 2.0);
 			}
 
 			if ((n == 0) && (r == 0))
@@ -55,6 +69,9 @@ vec radialDistFitLSq(mat radialDist, double minR0, double maxR0, double minN0, d
 			}
 		}
 	}
+
+	ret(2) = ret(0) / rScale;
+	ret(3) = ret(1) / nScale;
 
 	return ret;
 }
@@ -126,8 +143,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	const int PLOT_EVERY = N_STEPS / N_PLOT; // plot every ...th step
 	
 	// flags
-	const bool USE_LEAPFROG = false; // use Leapfrog method
-	const bool USE_RK4 = true; // use Runge-Kutta method
+	const bool USE_LEAPFROG = true; // use Leapfrog method
+	const bool USE_RK4 = false; // use Runge-Kutta method
 	const bool USE_EULER = false; // use Euler-Cromer method
 	const bool DEBUG = true; // for debugging only
 	const bool BENCHMARK = false; // To test against the project 3 code
@@ -178,14 +195,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		cout << "Center of mass: " << system->centerOfMass() << endl;
 
-		mat radial = system->radialDistribution(5*R0, 25, true);
+		double maxR = R0;
+		mat radial = system->radialDistribution(maxR, 25, true);
 		radial.save("radial_before.dat", raw_ascii);
 
 		cout << radial << endl << endl;
 
-		vec testFit = radialDistFitLSq(radial, 0.0, 100.0, 0.0, 1.0, 100);
-		cout << "r0 = " << testFit(0) << endl;
-		cout << "n0 = " << testFit(1) << endl;
+		cout << "rho(r0) = " << system->rho(R0) << endl;
 
 		cout << "(bound) avg = " << system->avgDistCoM(true) << endl;
 		cout << "(bound) stdDev = " << system->stdDevDistCoM(true) << endl;
@@ -209,16 +225,19 @@ int _tmain(int argc, _TCHAR* argv[])
 		{
 			cout << "Center of mass: " << system->centerOfMass() << endl;
 
-			mat radial = system->radialDistribution(5 * R0, 25, true);
+			double maxR = R0;
+			mat radial = system->radialDistribution(maxR, 25, true);
 			radial.save("radial_after.dat", raw_ascii);
 
 			cout << radial << endl << endl;
 
 			system->nBoundPlot().save("nbound.dat", raw_ascii);
 
-			vec testFit = radialDistFitLSq(radial, 0.0, 100.0, 0.0, 1.0, 100);
+			vec testFit = radialDistFitLSq(radial, system->n(), 1000);
 			cout << "r0 = " << testFit(0) << endl;
 			cout << "n0 = " << testFit(1) << endl;
+			cout << "r0 / N^(-1/3) = " << testFit(2) << endl;
+			cout << "n0 / N^2 = " << testFit(3) << endl << endl;
 
 			cout << "(bound) avg = " << system->avgDistCoM(true) << endl;
 			cout << "(bound) stdDev = " << system->stdDevDistCoM(true) << endl;

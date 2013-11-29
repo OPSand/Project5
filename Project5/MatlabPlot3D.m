@@ -42,6 +42,10 @@ if bWantAGif == true
 
                 hold on % Do we need it ? Don't think so but let's try. Yes we do!
                 %drawnow
+                title(['Plot for ', typeSolver]);
+                xlabel('X');
+                ylabel('Y');
+                zlabel('Z');
                 frame = getframe(1); % 1 referred to "figure", called before.
                 im = frame2im(frame);
                 [A,map] = rgb2ind(im,256); % To avoid 3D pictures... For now
@@ -69,8 +73,7 @@ else
     xlabel('X');
     ylabel('Y');
     zlabel('Z');
-    titlePlot = strcat('Method',typeSolver, 'for', int2str(rows), 'points');
-    title(titlePlot);
+    title(['Plot for ', typeSolver]);
     %drawnow % is just a function that allows the drawing of the functions during the process.
     frame = getframe(1);
     im = frame2im(frame);

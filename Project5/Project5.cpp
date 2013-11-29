@@ -127,10 +127,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	#pragma region Flags and settings
 
 	// dimensions
-	const int DIM = 2;
+	const int DIM = 3;
 
 	// initialization
-	const int N = 2; // number of celestial bodies
+	const int N = 100; // number of celestial bodies
 	const double R0 = 20.0; // initial radius in ly
 	const double AVG_M = 10.0; // solar masses
 	const double STD_M = 1.0; // solar masses
@@ -145,7 +145,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	// time steps
 	const int N_STEPS = 1000; // number of steps total
 	const int N_PLOT = 1000; // number of steps to plot (must be <= N_STEPS)
-	const double CRUNCH_TIMES = 5; // # of crunch times to simulate for
+	const double CRUNCH_TIMES = 5.0; // # of crunch times to simulate for
 	const double STEP = CRUNCH_TIMES / ((double)N_STEPS - 1.0); // step size (in crunch times)
 	const int PLOT_EVERY = N_STEPS / N_PLOT; // plot every ...th step
 	
@@ -154,8 +154,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	const bool USE_RK4 = true; // use Runge-Kutta method
 	const bool USE_EULER = false; // use Euler-Cromer method
 	const bool DEBUG = true; // for debugging only
-	const bool BENCHMARK = true; // To test against the project 3 code
+	const bool BENCHMARK = false; // To test against the project 3 code
 	#pragma endregion
+
 
 	#pragma region Initialization
 
@@ -256,16 +257,16 @@ int _tmain(int argc, _TCHAR* argv[])
 	if (BENCHMARK)
 	{
 		// Time steps
-		const int N_STEPS = 300 * 365; // number of steps total
-		const int N_PLOT = 300 * 365; // number of steps to plot (must be <= N_STEPS)
-		const double STEP = 24 * 60 * 60;
-		const int PLOT_EVERY = N_STEPS / N_PLOT; // plot every ...th step
+		const int N_STEPS_BM = 300 * 365; // number of steps total
+		const int N_PLOT_BM = 300 * 365; // number of steps to plot (must be <= N_STEPS)
+		const double STEP_BM = 24 * 60 * 60;
+		const int PLOT_EVERY_BM = N_STEPS_BM / N_PLOT_BM; // plot every ...th step
 
 		// create gravity (we will update G later)
-		Gravity g_Bench = Gravity(cG, EPSILON);
+		Gravity g_Bench = Gravity(cG, 0);
 		printf("Entering the Benchmark part \n");
 		// create system
-		SolarSystem* system_BM = new SolarSystem(DIM, N_STEPS, PLOT_EVERY, &g_Bench);
+		SolarSystem* system_BM = new SolarSystem(2, N_STEPS_BM, PLOT_EVERY_BM, &g_Bench);
 		const double M_SUN_2 = 2e30;
 		const double M_EARTH = 6e24;
 		const double D_SUN = 0.0 * cAU;

@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "armadillo"
-
+#include <random>
 #include "SolarSystem.h"
 #include "Solvers.h"
 #include "CelestialBodyInitializer.h"
@@ -83,16 +83,54 @@ vec radialDistFitLSq(mat radialDist, double minR0, double maxR0, double minN0, d
 	return ret;
 }
 
+
+vec toCartesian2D(double r, double theta)
+{
+	vec p = vec(2);
+	p[0] = r*cos(theta); // x
+	p[1] = r*sin(theta); // y
+	return p;
+}
+// returns an angle in radians that is orthogonal to theta
+double orthogonal2D(double theta, bool clockwise = false)
+{
+	if (clockwise)
+	{
+		return (theta - 0.5 * cPI);
+	}
+	else // counterclockwise
+	{
+		return (theta + 0.5 * cPI);
+	}
+}
+// return a random floating point number in the interval [minIncl, maxExcl).
+double randDbl(double minIncl, double maxExcl, minstd_rand* eng)
+{
+	uniform_real<double> rd(0.0, (2 * cPI));
+	return rd(*eng);
+}
+void initial2D(CelestialBody* cb, double d, double v, minstd_rand* eng, double theta = -1.0)
+{
+	if (theta == -1.0) // no angle given
+	{
+		// create random angle
+		theta = randDbl(0.0, (2 * cPI), eng);
+	}
+	*(cb->position) = toCartesian2D(d, theta);
+	*(cb->velocity) = toCartesian2D(v, orthogonal2D(theta)); // counterclockwise
+}
+
+
 // Entry point for console application
 int _tmain(int argc, _TCHAR* argv[])
 {
 	#pragma region Flags and settings
 
 	// dimensions
-	const int DIM = 3;
+	const int DIM = 2;
 
 	// initialization
-	const int N = 100; // number of celestial bodies
+	const int N = 2; // number of celestial bodies
 	const double R0 = 20.0; // initial radius in ly
 	const double AVG_M = 10.0; // solar masses
 	const double STD_M = 1.0; // solar masses
@@ -102,21 +140,21 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double MYR = cYr * 1.0e6; // s
 	const double M_SUN = 1.9891e30; // kg
 	const double G_YLS = cG * M_SUN * pow(cYr, 2.0) / pow(LY, 3.0); // G in years, ly, solar masses
-	const double EPSILON = sqrt(0.0225); // correction to Newton in ly to avoid infinite forces at close range
+	const double EPSILON = 0;//sqrt(0.0225); // correction to Newton in ly to avoid infinite forces at close range
 
 	// time steps
 	const int N_STEPS = 1000; // number of steps total
 	const int N_PLOT = 1000; // number of steps to plot (must be <= N_STEPS)
-	const double CRUNCH_TIMES = 5.0; // # of crunch times to simulate for
+	const double CRUNCH_TIMES = 5; // # of crunch times to simulate for
 	const double STEP = CRUNCH_TIMES / ((double)N_STEPS - 1.0); // step size (in crunch times)
 	const int PLOT_EVERY = N_STEPS / N_PLOT; // plot every ...th step
-
+	
 	// flags
-	const bool USE_LEAPFROG = true; // use Leapfrog method
-	const bool USE_RK4 = false; // use Runge-Kutta method
+	const bool USE_LEAPFROG = false; // use Leapfrog method
+	const bool USE_RK4 = true; // use Runge-Kutta method
 	const bool USE_EULER = false; // use Euler-Cromer method
 	const bool DEBUG = true; // for debugging only
-
+	const bool BENCHMARK = true; // To test against the project 3 code
 	#pragma endregion
 
 	#pragma region Initialization
@@ -212,6 +250,47 @@ int _tmain(int argc, _TCHAR* argv[])
 	getchar(); // pause
 
 	#pragma endregion
+	
+	#pragma region Benchmark
 
+	if (BENCHMARK)
+	{
+		// Time steps
+		const int N_STEPS = 300 * 365; // number of steps total
+		const int N_PLOT = 300 * 365; // number of steps to plot (must be <= N_STEPS)
+		const double STEP = 24 * 60 * 60;
+		const int PLOT_EVERY = N_STEPS / N_PLOT; // plot every ...th step
+
+		// create gravity (we will update G later)
+		Gravity g_Bench = Gravity(cG, EPSILON);
+		printf("Entering the Benchmark part \n");
+		// create system
+		SolarSystem* system_BM = new SolarSystem(DIM, N_STEPS, PLOT_EVERY, &g_Bench);
+		const double M_SUN_2 = 2e30;
+		const double M_EARTH = 6e24;
+		const double D_SUN = 0.0 * cAU;
+		const double D_EARTH = 1.0 * cAU;
+		const double V_SUN = 0.0;
+		const double V_EARTH = 29.8e3;
+		//system->grav()->setG(cG);
+		CelestialBody* sun = new CelestialBody("Sun", M_SUN_2, system_BM, true);
+		CelestialBody* earth = new CelestialBody("Earth", M_EARTH, system_BM, false);
+		// intitialze random number engine
+		minstd_rand eng;
+		int randomSeed = (int)clock();
+		eng.seed(randomSeed);
+		initial2D(earth, D_EARTH, V_EARTH, &eng);
+
+
+		// call this only when initialization is 100% complete!
+		Solvers solv = Solvers(system_BM, USE_RK4, USE_LEAPFROG, USE_EULER);
+		printf("Aaand ... We're done \n");
+
+		// this is where the magic happens :)
+		system_BM = solv.Solve(STEP);
+		getchar();
+	}
+
+	#pragma endregion 
 	return 0;
 }

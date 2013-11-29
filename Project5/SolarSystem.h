@@ -28,6 +28,8 @@ public:
 	double EpAvg(bool boundOnly);
 	double EkAvg(bool boundOnly);
 	int nBound(); // number of bound particles in the system
+	double volume(double r);
+	double rho(double r);
 
 	// return dimension of system
 	int dim(void)

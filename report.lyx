@@ -476,6 +476,255 @@ E_{p}=\frac{GMm}{\epsilon}(\arctan(\frac{r}{\epsilon})-\frac{\pi}{2})\qquad(\eps
 
 \end_layout
 
+\begin_layout Subsection
+Volume of the n-ball
+\end_layout
+
+\begin_layout Standard
+To calculate the gravitational constant with 
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+ as the time unit in any dimension, we need the volume of the sphere in
+ 
+\begin_inset Formula $n$
+\end_inset
+
+ dimensions to calculate the initial mean density 
+\begin_inset Formula $\rho_{0}.$
+\end_inset
+
+ This is accomplished by the following formula:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+V_{n}=\frac{\pi^{\frac{n}{2}}}{\Gamma(\frac{n}{2}+1)}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+(Source.)
+\end_layout
+
+\begin_layout Subsection
+Uniform distribution in the n-ball
+\end_layout
+
+\begin_layout Standard
+Our dimension-independent algorithm for generating uniformly distributed
+ points inside the n-ball is:
+\end_layout
+
+\begin_layout Enumerate
+Generate random points on the surface of the unit n-ball (i.e.
+ randomize the directions of the unit vectors):
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Generate normally distributed n-dimensional vector 
+\begin_inset Formula $\mathbf{x}_{n}=\left[x_{1},x_{2},\dots,x_{n}\right]$
+\end_inset
+
+ where the normal distribution has 
+\begin_inset Formula $\mu=0$
+\end_inset
+
+ and 
+\begin_inset Formula $\sigma=1$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Calculate the n-dimensional norm of the vector 
+\begin_inset Formula $|\mathbf{x}_{n}|$
+\end_inset
+
+.
+ We chose to let Armadillo handle this, but another easy way to do it is
+ using the n-dimensional dot product and taking the square root of this:
+ 
+\begin_inset Formula $|\mathbf{x}_{n}|=\sqrt{\mathbf{x}_{n}\cdot\mathbf{x}_{n}}=\sqrt{\sum_{i}x_{i}^{2}}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Turn it into a unit vector: 
+\begin_inset Formula $\mathbf{u}_{n}=\frac{\mathbf{x}_{n}}{|\mathbf{x}_{n}|}$
+\end_inset
+
+.
+ We refer to (source) for the proof that this is uniformly distriuted in
+ terms of direction.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Generate a radius that results in a uniform distribution within maximum
+ radius 
+\begin_inset Formula $R_{0}$
+\end_inset
+
+:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Generate a uniformly distributed value 
+\begin_inset Formula $r\in[0,1]$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+The desired radius that takes into account that the outer spherical shells
+ have a larger surface area is 
+\begin_inset Formula $R=\sqrt[n]{r}\cdot R_{0}$
+\end_inset
+
+, where 
+\begin_inset Formula $n$
+\end_inset
+
+ is the number of dimensions.
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+(Source.)
+\end_layout
+
+\begin_layout Section
+Implementation
+\end_layout
+
+\begin_layout Subsection
+Overview
+\end_layout
+
+\begin_layout Standard
+The code is designed to be highly modular and independent of dimension to
+ maximise reusability.
+\end_layout
+
+\begin_layout Standard
+(Class diagram.)
+\end_layout
+
+\begin_layout Subsection
+SolarSystem class
+\end_layout
+
+\begin_layout Standard
+Container class for the entire N-body system.
+ This class is dimension independent (number of dimensions is given as a
+ parameter), to make it as general and reusable as possible.
+ Does not specify a method to solve the equations of motion, so any numerical
+ method can be used on this class to update the positions every time step
+ (by iterating over the celestial bodies contained in this class).
+ A SolarSystem can make deep copies of itself (and all its CelestialBody
+ and Gravity objects), which we make use of to be able to run different
+ algorithms on identical copies of a system (for comparison of results and
+ stability analysis).
+\end_layout
+
+\begin_layout Subsection
+CelestialBody class
+\end_layout
+
+\begin_layout Standard
+Particle class of our N-body simulation, with position and mass.
+ Handles all calculations on the individual particle level (e.g.
+ kinetic energy) and can be set to fixed if desired.
+ Also stores properties calculated by the encompassing SolarSystem (like
+ potential energy) so these will not have to be calculated on the fly every
+ time they are needed.
+ This class inherits dimensionality from the SolarSystem it belongs to,
+ so we avoid creating a sub-dimensional celestial body by accident.
+\end_layout
+
+\begin_layout Subsection
+Gravity class
+\end_layout
+
+\begin_layout Standard
+This class allows each SolarSystem to use a different gravity.
+ One can change both the value of the gravitational constant to fit the
+ time unit of choice and set an 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ value to dampen collisions.
+ For future use it is possible to extend this class to include any form
+ of modified gravity (which is of interest in cosmology, SOURCE).
+ The only thing the SolarSystem class requires of this object is that it
+ is able to return a force and potential energy when two CelestialBody objects
+ are given as input.
+ This way, a SolarSystem does not need to handle the specifics of gravitational
+ forces itself, making the code more modular.
+\end_layout
+
+\begin_layout Subsection
+CelestialBodyInitializer class
+\end_layout
+
+\begin_layout Standard
+Sets up a uniform position distribution given an initial max radius (generalized
+ for any number of dimensions).
+ Also generates normal distributed random masses.
+ Doing this in a separate class allows the SolarSystem class to be as general
+ as possible (we might not want a random distribution every time, but when
+ we do, this class will do the job).
+ Keeping this class dimension independent makes it more general and easier
+ to use in other projects.
+\end_layout
+
+\begin_layout Subsection
+Solvers class
+\end_layout
+
+\begin_layout Standard
+Contains code to iterate over a SolarSystem object over a number of time
+ steps, using the Leapfrog, Runge-Kutta (4th order) and Euler-Cromer algorithms
+ to solve the equations of motion.
+ Creates copies of the system given as a parameter to do this, so we can
+ keep the original system unchanged and also solve using several numerical
+ methods simultaneously and compare the results.
+ Currently returns the resulting system of the Leapfrog algorithm, since
+ that is the one we use the most (but this behaviour is easily changed if
+ desired).
+ Keeping this in a separate class allows adaptation of this code to use
+ other objects than the SolarSystems we employ here.
+\end_layout
+
+\begin_layout Subsection
+GaussPDF class
+\end_layout
+
+\begin_layout Standard
+This is simply a static class wrapper for the code given at 
+\begin_inset CommandInset href
+LatexCommand href
+name "https://www.uio.no/studier/emner/matnat/fys/FYS3150/h13/gaussiandeviate.cpp"
+target "https://www.uio.no/studier/emner/matnat/fys/FYS3150/h13/gaussiandeviate.cpp"
+
+\end_inset
+
+.
+ It provides random numbers in the uniform and normal probability distributions.
+\end_layout
+
 \begin_layout Section
 Results and analysis
 \end_layout

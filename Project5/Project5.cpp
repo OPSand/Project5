@@ -201,7 +201,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		cout << "Center of mass: " << system->centerOfMass() << endl;
 
-		mat radial = system->radialDistribution(R0, 10, true);
+		mat radial = system->radialDistribution(5*R0, 25, true);
 		radial.save("radial_before.dat", raw_ascii);
 
 		vec testFit = radialDistFitLSq(radial, 0.0, 100.0, 0.0, 1.0, 100);
@@ -230,7 +230,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		{
 			cout << "Center of mass: " << system->centerOfMass() << endl;
 
-			mat radial = system->radialDistribution(R0, 10, true);
+			mat radial = system->radialDistribution(5 * R0, 25, true);
 			radial.save("radial_after.dat", raw_ascii);
 
 			system->nBoundPlot().save("nbound.dat", raw_ascii);

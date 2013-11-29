@@ -254,7 +254,6 @@ Lack of a singularity in our model
 
 \begin_layout Standard
 TODO: Use Elgarøy II and Peacock as sources.
- (We can also check our virialization radius based on this.)
 \end_layout
 
 \begin_layout Standard
@@ -271,11 +270,34 @@ The reason we do not see a singularity in our model is that we have assumed
  may escape from the system before they have time to lose their energy.
  (SOURCE: Given) predicts that this should happen to roughly ?? % of the
  particles.
+ (TODO: rewrite?)
 \end_layout
 
 \begin_layout Standard
-We say that the system is stable when the virial theorem (...) is satisfied.
- Elgarøy II shows that his happens at time 
+We say that the system is stable when the virial theorem
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+2\left\langle K\right\rangle =-\left\langle P\right\rangle 
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $\left\langle P\right\rangle $
+\end_inset
+
+ and 
+\begin_inset Formula $\left\langle K\right\rangle $
+\end_inset
+
+ are the averages of the potential and kinetic energies (actually, these
+ are supposed to be time averages for the total energies of the entire system,
+ but it turns out that the averages of a point in time of the energies per
+ particle is a good approximation to this (SOURCE).
+ (SOURCE: Elgarøy II) shows that his happens at time 
 \begin_inset Formula $\tau_{vir}=0.81\tau_{crunch}$
 \end_inset
 
@@ -364,15 +386,27 @@ where for the latter equality we have used the definitions of average mass
 \end_inset
 
  and initial mass density for a sphere 
-\begin_inset Formula $\rho_{0}=\frac{M}{V_{0}}=\frac{\mu N}{\frac{4}{3}\pi R_{0}^{3}}=\frac{3\mu N}{4\pi R_{0}^{3}}$
+\begin_inset Formula $\rho_{0}=\frac{M}{V_{0}}=\frac{\mu N}{V_{n}(R_{0})}$
 \end_inset
 
-.
+, where 
+\begin_inset Formula $V_{n}(R_{o})$
+\end_inset
+
+ is the volume of the n-dimensional ball with radius 
+\begin_inset Formula $R_{0}.$
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 This means our gravitational constant and our time unit both depend on 
-\begin_inset Formula $N,R_{o}$
+\begin_inset Formula $N$
+\end_inset
+
+, 
+\begin_inset Formula $R_{o}$
 \end_inset
 
  and 
@@ -392,7 +426,7 @@ This means our gravitational constant and our time unit both depend on
 \begin_inset Formula $\mu$
 \end_inset
 
-given in solar masses.
+ given in solar masses.
 \end_layout
 
 \begin_layout Subsection
@@ -713,7 +747,10 @@ GaussPDF class
 \end_layout
 
 \begin_layout Standard
-This is simply a static class wrapper for the code given at 
+This is simply a static class wrapper for the code given at:
+\end_layout
+
+\begin_layout Standard
 \begin_inset CommandInset href
 LatexCommand href
 name "https://www.uio.no/studier/emner/matnat/fys/FYS3150/h13/gaussiandeviate.cpp"
@@ -721,8 +758,11 @@ target "https://www.uio.no/studier/emner/matnat/fys/FYS3150/h13/gaussiandeviate.
 
 \end_inset
 
-.
- It provides random numbers in the uniform and normal probability distributions.
+
+\end_layout
+
+\begin_layout Standard
+It provides random numbers in the uniform and normal probability distributions.
 \end_layout
 
 \begin_layout Section

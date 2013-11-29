@@ -324,10 +324,26 @@ double SolarSystem::distCoM(CelestialBody* cb)
 	return norm(*(cb->position) - this->centerOfMass(), this->_dim);
 }
 
+// calculate the volume of an n-sphere
+// https://en.wikipedia.org/wiki/N-sphere#Closed_forms
+double SolarSystem::volume(double r)
+{
+	double k = ((double)this->dim() / 2.0); // dim = 2k
+	double unitSphereVolume = (pow(cPI, k) / tgamma(k + 1.0)); // tgamma is the gamma function
+	return pow(r, this->dim())*unitSphereVolume;
+}
+
+// calculate mass density within radius r
+double SolarSystem::rho(double r)
+{
+	double V = this->volume(r); // volume [ly^3]
+	return (this->totalMass() / V); // mass density [solar masses / ly^3]
+}
+
 mat SolarSystem::radialDistribution(double maxR, int boxes, bool boundOnly)
 {
 	double histogramWidth = (maxR / (double)boxes);
-	mat plot = mat(boxes, 2);
+	mat plot = mat(boxes, 3);
 	plot.fill(0.0);
 
 	for (int i = 0; i < boxes; i++)
@@ -354,6 +370,24 @@ mat SolarSystem::radialDistribution(double maxR, int boxes, bool boundOnly)
 				plot((int) box, 1) += 1.0; // drop decimal part
 			}
 		}
+	}
+
+	// second column is N(r)
+	// third column: n(r) = N(r)/V(r)
+	double rPrev = 0.0;
+	for (int i = 0; i < boxes; i++)
+	{
+		double r = plot(i, 0);
+		double delta_r = (r - rPrev);
+		double Vmin = volume(r - delta_r);
+		double Vmax = volume(r + delta_r);
+		double V = (Vmax - Vmin);
+
+		assert(V > 0.0);
+
+		plot(i, 2) = plot(i, 1) / V;
+
+		rPrev = r + delta_r;
 	}
 
 	return plot;

@@ -56,38 +56,22 @@ void CelestialBodyInitializer::initialize(SolarSystem* system, int n, double avg
 	}
 
 	// finally, update Gravity using average mass (calculated, not avgM)
-	// TODO: Make dimensionless? https://en.wikipedia.org/wiki/N-sphere#Closed_forms
-	system->grav()->setG(G(r0, system->avgMass(), system->n(), system->dim()));
+	// Dimensionless: https://en.wikipedia.org/wiki/N-sphere#Closed_forms
+	system->grav()->setG(G(r0, system));
 
 	// garbage collection
 	delete idum;
 	delete idum2;
 }
 
-// calculate the volume of an n-sphere
-// https://en.wikipedia.org/wiki/N-sphere#Closed_forms
-double CelestialBodyInitializer::volume(double r, int dim)
-{
-	double k = (double)dim / 2.0; // dim = 2k
-	double unitSphereVolume = (pow(cPI, k) / tgamma(k + 1.0)); // tgamma is the gamma function
-	return pow(r, dim)*unitSphereVolume;
-}
-
-// calculate mass density in solar masses per cubic light yeats
-double CelestialBodyInitializer::rho(double r, double avgM, double n, int dim)
-{
-	double V = volume(r, dim); // initial volume [ly^3]
-	return (n * avgM / V); // mass density [solar masses / ly^3]
-}
-
 // calculate G in units of t_crunch, ly, solar masses
-double CelestialBodyInitializer::G(double r0, double avgM, double n, int dim)
+double CelestialBodyInitializer::G(double r0, SolarSystem* system)
 {
-	return (3.0 * cPI / (32.0 * rho(r0, avgM, n, dim))); // G in t_crunch, ly, solar masses
+	return (3.0 * cPI / (32.0 * system->rho(r0))); // G in t_crunch, ly, solar masses
 }
 
 // calculate t_crunch in years
-double CelestialBodyInitializer::tCrunch(double r0, double avgM, double n, double Gyls, int dim)
+double CelestialBodyInitializer::tCrunch(double r0, SolarSystem* system, double Gyls)
 {
-	return sqrt(3.0 * cPI / (32.0 * Gyls * rho(r0, avgM, n, dim))); // crunch time [years]
+	return sqrt(3.0 * cPI / (32.0 * Gyls * system->rho(r0))); // crunch time [years]
 }

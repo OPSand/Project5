@@ -23,30 +23,6 @@ vec radialDistFitLSq(mat radialDist, double minR0, double maxR0, double minN0, d
 	double deltaN = (maxN0 - minN0) / (nNR - 1.0);
 	double deltaR = (maxR0 - minR0) / (nNR - 1.0);
 
-	// debug
-	cout << radialDist << endl << endl;
-
-	// radialDist gives N(r)
-	// we want n(r) = N(r)/V(r)
-	double rPrev = 0.0;
-	for (int i = 0; i < boxes; i++)
-	{
-		double r = radialDist(i, 0);
-		double delta_r = (r - rPrev);
-		double Vmin = CelestialBodyInitializer::volume(r - delta_r, 3);
-		double Vmax = CelestialBodyInitializer::volume(r + delta_r, 3);
-		double V = (Vmax - Vmin);
-
-		assert(V > 0.0);
-		
-		radialDist(i, 1) = radialDist(i, 1) / V;
-
-		rPrev = r + delta_r;
-	}
-
-	// debug
-	cout << radialDist << endl << endl;
-
 	for (int n = 0; n < nNR; n++)
 	{
 		double n0 = minN0 + n * deltaN;
@@ -181,8 +157,8 @@ int _tmain(int argc, _TCHAR* argv[])
 			cout << "position = " << *(cb->position) << endl << endl;
 		}
 
-		cout << "T_CRUNCH = " << CelestialBodyInitializer::tCrunch(R0, system->avgMass(), system->n(), G_YLS, DIM) << endl;
-		cout << "G = " << CelestialBodyInitializer::G(R0, system->avgMass(), system->n(), DIM) << endl;
+		cout << "T_CRUNCH = " << CelestialBodyInitializer::tCrunch(R0, system, G_YLS) << endl;
+		cout << "G = " << CelestialBodyInitializer::G(R0, system) << endl;
 		cout << "G_YLS = " << G_YLS << endl;
 		cout << endl;
 	}
@@ -204,6 +180,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		mat radial = system->radialDistribution(5*R0, 25, true);
 		radial.save("radial_before.dat", raw_ascii);
+
+		cout << radial << endl << endl;
 
 		vec testFit = radialDistFitLSq(radial, 0.0, 100.0, 0.0, 1.0, 100);
 		cout << "r0 = " << testFit(0) << endl;
@@ -233,6 +211,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			mat radial = system->radialDistribution(5 * R0, 25, true);
 			radial.save("radial_after.dat", raw_ascii);
+
+			cout << radial << endl << endl;
 
 			system->nBoundPlot().save("nbound.dat", raw_ascii);
 

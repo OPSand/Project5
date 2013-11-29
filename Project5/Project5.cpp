@@ -133,7 +133,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double MYR = cYr * 1.0e6; // s
 	const double M_SUN = 1.9891e30; // kg
 	const double G_YLS = cG * M_SUN * pow(cYr, 2.0) / pow(LY, 3.0); // G in years, ly, solar masses
-	const double EPSILON = 0;//sqrt(0.0225); // correction to Newton in ly to avoid infinite forces at close range
+	const double EPSILON = sqrt(0.0225); // correction to Newton in ly to avoid infinite forces at close range
 
 	// time steps
 	const int N_STEPS = 1000; // number of steps total
@@ -225,8 +225,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		{
 			cout << "Center of mass: " << system->centerOfMass() << endl;
 
-			double maxR = R0;
-			mat radial = system->radialDistribution(maxR, 25, true);
+			double maxR = system->avgDistCoM(true) + 2.0*system->stdDevDistCoM(true);
+			mat radial = system->radialDistribution(maxR, 20, true);
 			radial.save("radial_after.dat", raw_ascii);
 
 			cout << radial << endl << endl;

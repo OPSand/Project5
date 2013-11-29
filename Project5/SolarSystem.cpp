@@ -379,8 +379,8 @@ mat SolarSystem::radialDistribution(double maxR, int boxes, bool boundOnly)
 	{
 		double r = plot(i, 0);
 		double delta_r = (r - rPrev);
-		double Vmin = volume(r - delta_r);
-		double Vmax = volume(r + delta_r);
+		double Vmin = this->volume(r - delta_r);
+		double Vmax = this->volume(r + delta_r);
 		double V = (Vmax - Vmin);
 
 		assert(V > 0.0);

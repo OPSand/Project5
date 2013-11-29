@@ -7,11 +7,12 @@ nPosi = 0;
 typeSolver = 'rk4';
 fileToOpen = strcat('pos',int2str(nPosi),'_',typeSolver,'.dat');
 fidPosi = fopen(fileToOpen);
-rows = 1000; % Number of time steps
+rows = 100; % Number of time steps
 nbPlanets = 2; % Number of Planets
 printingSteps = 5; % Printing every x time steps ... Don't use it now, but ... Just in case ?
 bWantAGif = true; % A Gif or a JPEG ?
 Posi = fscanf(fidPosi,'%g',[nbPlanets rows]).';
+fclose(fidPosi);
 
 % Init of our time vector
 t = [0 (rows - 1)];
@@ -21,7 +22,7 @@ end
 if bWantAGif == true  
     % Selection of the name of the file:
     filename = strcat('plot_for_' ,typeSolver,'.gif');
-    figure
+    figure(1)
     % For every time step
         for time = 1:rows   
             for nbPlan = 1:nbPlanets
@@ -40,10 +41,8 @@ if bWantAGif == true
                        if time == 1 
                            imwrite(A,map,filename,'gif','LoopCount',Inf,'DelayTime',10);
                        else
-                           truc = 1
                            imwrite(A,map,filename,'gif','WriteMode','append','DelayTime',10);
                        end
-                    
                 end
             end
             % Then let's turn everything into a gif
@@ -74,7 +73,6 @@ else
     
 end
 
-fclose(fidPosi);
 
 
 %     for nbPlan = 1:nbPlanets

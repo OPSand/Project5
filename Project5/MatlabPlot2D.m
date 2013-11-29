@@ -6,7 +6,7 @@ clear,clf
 % Input Parameters
 nPosi = 1;
 typeSolver = 'rk4';
-rows = 1000; % Number of time steps
+rows = 10000; % Number of time steps
 nbPlanets = 2; % Number of Planets
 printingSteps = 5; % Printing every x time steps ... Don't use it now, but ... Just in case ?
 bWantAGif = true; % A Gif or a JPEG ?
@@ -15,13 +15,16 @@ fileToOpen_X = strcat('pos',int2str(nPosi-1),'_',typeSolver,'.dat');
 fileToOpen_Y = strcat('pos',int2str(nPosi),'_',typeSolver,'.dat');
 fidPosi_X = fopen(fileToOpen_X );
 fidPosi_Y = fopen(fileToOpen_Y );
-Posi_X = fscanf(fidPosi_X,'%g',[nbPlanets rows]).';
-Posi_Y = fscanf(fidPosi_Y,'%g',[nbPlanets rows]).';
+Posi_X = fscanf(fidPosi_X,'%g',[nbPlanets rows]).'
+Posi_Y = fscanf(fidPosi_Y,'%g',[nbPlanets rows]).'
+% And we release the handles on the open documents
+fclose(fidPosi_X);
+fclose(fidPosi_Y);
 
 if bWantAGif == true 
      % Selection of the name of the file:
     filename = strcat('plot2D_for_' ,typeSolver,'.gif');
-    figure
+    figure(1)
     % Pour tous les X_i
     for i = 1:rows
         for nbPlan = 1:nbPlanets
@@ -46,6 +49,7 @@ if bWantAGif == true
             end
         end
     end
+    close all
 else   
     % Do we need a position picture for every planet ? Not really ~
         filename = strcat('plot2D_for_',typeSolver,'.jpeg');
@@ -57,14 +61,11 @@ else
             plot(Posi_X(:,nbPlan),Posi_Y(:,nbPlan),'color',rand(1,3))
             hold on
         end
-        %drawnow % is just a function that allows the drawing of the functions during the process.
+        %drawnow % is just a function that allows the drawing of the functions during the process.    
+        title(strcat('Plot for', typeSolver));
         frame = getframe(1);
         im = frame2im(frame);
         [A,map] = rgb2ind(im,256); % To avoid 3D pictures
         imwrite(A,map,filename,'jpeg'); 
-    
+        
 end
-
-
-fclose(fidPosi_X);
-fclose(fidPosi_Y);

@@ -5,10 +5,10 @@ clear,clf
 % File to open:
 % Input Parameters
 nPosi = 2; % From 0 to nPosi
-typeSolver = 'leapfrog';
+typeSolver = 'rk4';
 rows = 1000; % Number of time steps
 nbPlanets = 2; % Number of Planets
-printingSteps = 5; % Printing every x time steps ... Don't use it now, but ... Just in case ?
+%printingSteps = 5; % Printing every x time steps ... Don't use it now, but ... Just in case ?
 bWantAGif = true; % A Gif or a JPEG ?
 % Then processing with the opening
 fileToOpen_X = strcat('pos',int2str(nPosi-2),'_',typeSolver,'.dat');
@@ -20,6 +20,11 @@ fidPosi_Z = fopen(fileToOpen_Z );
 Posi_X = fscanf(fidPosi_X,'%g',[nbPlanets rows]).';
 Posi_Y = fscanf(fidPosi_Y,'%g',[nbPlanets rows]).';
 Posi_Z = fscanf(fidPosi_Z,'%g',[nbPlanets rows]).';
+
+% And finally closing the handle on the open documents
+fclose(fidPosi_X);
+fclose(fidPosi_Y);
+fclose(fidPosi_Z);
 
 if bWantAGif == true
       % Selection of the name of the file:
@@ -61,14 +66,14 @@ else
         plot3(Posi_X(:,nbPlan),Posi_Y(:,nbPlan),Posi_Z(:,nbPlan),'color',rand(1,3))
         hold on
     end
+    xlabel('X');
+    ylabel('Y');
+    zlabel('Z');
+    titlePlot = strcat('Method',typeSolver, 'for', int2str(rows), 'points');
+    title(titlePlot);
     %drawnow % is just a function that allows the drawing of the functions during the process.
     frame = getframe(1);
     im = frame2im(frame);
     [A,map] = rgb2ind(im,256); % To avoid 3D pictures
     imwrite(A,map,filename,'jpeg'); 
 end
-
-% And finally closing the handle on the open documents
-fclose(fidPosi_X);
-fclose(fidPosi_Y);
-fclose(fidPosi_Z);

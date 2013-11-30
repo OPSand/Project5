@@ -400,11 +400,11 @@ mat SolarSystem::radialDistribution(double maxR, int boxes, bool boundOnly)
 
 	// second column is N(r)
 	// third column: n(r) = N(r)/V(r)
-	double rPrev = 0.0;
+
 	for (int i = 0; i < boxes; i++)
 	{
 		double r = plot(i, 0);
-		double delta_r = (r - rPrev);
+		double delta_r = 0.5*histogramWidth;
 		double Vmin = this->volume(r - delta_r);
 		double Vmax = this->volume(r + delta_r);
 		double V = (Vmax - Vmin);
@@ -412,8 +412,6 @@ mat SolarSystem::radialDistribution(double maxR, int boxes, bool boundOnly)
 		assert(V > 0.0);
 
 		plot(i, 2) = plot(i, 1) / V;
-
-		rPrev = r + delta_r;
 	}
 
 	return plot;

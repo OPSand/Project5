@@ -123,7 +123,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const int DIM = 3;
 
 	// initialization
-	const int N = 1000; // number of celestial bodies
+	const int N = 100; // number of celestial bodies
 	const double R0 = 20.0; // initial radius in ly
 	const double AVG_M = 10.0; // solar masses
 	const double STD_M = 1.0; // solar masses
@@ -136,8 +136,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double EPSILON = sqrt(0.0225); // correction to Newton in ly to avoid infinite forces at close range
 
 	// time steps
-	const int N_STEPS = 10000; // number of steps total
-	const int N_PLOT = 1000; // number of steps to plot (must be <= N_STEPS)
+	const int N_STEPS = 1000; // number of steps total
+	const int N_PLOT = 100; // number of steps to plot (must be <= N_STEPS)
 	const double CRUNCH_TIMES = 5.0; // # of crunch times to simulate for
 	const double STEP = CRUNCH_TIMES / ((double)N_STEPS - 1.0); // step size (in crunch times)
 	const int PLOT_EVERY = N_STEPS / N_PLOT; // plot every ...th step
@@ -240,6 +240,8 @@ int _tmain(int argc, _TCHAR* argv[])
 			cout << "n0 = " << testFit(1) << endl;
 			cout << "r0 / N^(-1/3) = " << testFit(2) << endl;
 			cout << "n0 / N^2 = " << testFit(3) << endl << endl;
+
+			testFit.save("curveFit.dat", raw_ascii);
 
 			cout << "(bound) avg = " << system->avgDistCoM(true) << endl;
 			cout << "(bound) stdDev = " << system->stdDevDistCoM(true) << endl;

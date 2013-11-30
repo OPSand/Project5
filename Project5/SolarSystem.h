@@ -32,6 +32,7 @@ public:
 	int nBound(); // number of bound particles in the system
 	double volume(double r);
 	double rho(double r);
+	double numDens(double r);
 
 	// return dimension of system
 	int dim(void)

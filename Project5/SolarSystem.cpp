@@ -359,11 +359,18 @@ double SolarSystem::volume(double r)
 	return pow(r, this->dim())*unitSphereVolume;
 }
 
-// calculate mass density within radius r
+// mass density within radius r
 double SolarSystem::rho(double r)
 {
 	double V = this->volume(r); // volume [ly^3]
 	return (this->totalMass(false) / V); // mass density [solar masses / ly^3]
+}
+
+// mass density within radius r
+double SolarSystem::numDens(double r)
+{
+	double V = this->volume(r); // volume [ly^3]
+	return (this->n() / V); // mass density [solar masses / ly^3]
 }
 
 mat SolarSystem::radialDistribution(double maxR, int boxes, bool boundOnly)

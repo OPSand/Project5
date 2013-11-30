@@ -146,8 +146,8 @@ bool SolarSystem::plotCurrentStep(bool condition)
 
 	if( condition )
 	{
-		// calculate potential energy
-		this->calculateEp();
+		// calculate potential energy ++
+		this->calculate();
 
 		int n = this->n();
 
@@ -196,27 +196,55 @@ void SolarSystem::plotDim(int i, const string& path)
 	plot.save(path, raw_ascii); // save to file
 }
 
-// calculates potential energy of all particles in the system
-void SolarSystem::calculateEp()
+// calculates potential energy & total/unbound centers of mass
+void SolarSystem::calculate()
 {
 	int n = this->n();
+
+	// reset potential energies
+	for (int i = 0; i < n; i++)
+	{
+		CelestialBody* cb_i = this->body(i);
+		cb_i->Ep = 0.0;
+	}
+
+	// this loop MUST complete before bound / unbound is evaluated!
+	for (int i = 0; i < n; i++)
+	{
+		CelestialBody* cb_i = this->body(i);
+
+		// for all other celestial bodies not yet iterated over
+		for (int j = (i+1); j < n; j++)
+		{
+			CelestialBody* cb_j = this->body(j);
+			cb_i->Ep += this->_grav->potEnergy(cb_i, cb_j);
+			cb_j->Ep += this->_grav->potEnergy(cb_i, cb_j); // add to both
+		}
+	}
+
+	// now that potential energy is calculated for all particles
+	// we can finally start evaluating bound / unbound
+
+	// initialize center of mass vectors
+	this->_com = vec(this->dim()); this->_com.fill(0.0);
+	this->_bcom = vec(this->dim()); this->_bcom.fill(0.0);
+
+	// total masses (all + bound)
+	double totalMass = this->totalMass(false);
+	double boundMass = this->totalMass(true);
 
 	for (int i = 0; i < n; i++)
 	{
 		CelestialBody* cb_i = this->body(i);
-		double potEnergy = 0;
 
-		// for all other celestial bodies
-		for (int j = 0; j < n; j++)
+		// contribution to center of mass
+		this->_com += (cb_i->mass / totalMass) * *(cb_i->position);
+
+		// contribution to bound center of mass
+		if (cb_i->isBound())
 		{
-			if (i != j) // don't add potential energy from self
-			{
-				CelestialBody* cb_j = this->body(j);
-				potEnergy += this->_grav->potEnergy(cb_i, cb_j);
-			}
+			this->_bcom += (cb_i->mass / boundMass) * *(cb_i->position);
 		}
-
-		cb_i->Ep = potEnergy;
 	}
 }
 
@@ -283,7 +311,7 @@ int SolarSystem::nBound()
 	return n;
 }
 
-double SolarSystem::totalMass()
+double SolarSystem::totalMass(bool boundOnly)
 {
 	double sum = 0.0;
 
@@ -291,7 +319,10 @@ double SolarSystem::totalMass()
 	{
 		CelestialBody* cb_i = this->body(i);
 
-		sum += cb_i->mass;
+		if ((!boundOnly) || (cb_i->isBound()))
+		{
+			sum += cb_i->mass;
+		}
 	}
 
 	return sum;
@@ -299,29 +330,24 @@ double SolarSystem::totalMass()
 
 double SolarSystem::avgMass()
 {
-	return (this->totalMass() / this->n());
+	return (this->totalMass(false) / this->n());
 }
 
-vec SolarSystem::centerOfMass()
+vec SolarSystem::centerOfMass(bool boundOnly)
 {
-	vec com = vec(this->_dim);
-	com.fill(0.0);
-
-	double totalMass = this->totalMass();
-
-	for (int i = 0; i < this->n(); i++)
+	if (boundOnly)
 	{
-		CelestialBody* cb_i = this->body(i);
-
-		com += (cb_i->mass / totalMass) * *(cb_i->position);
+		return this->_bcom;
 	}
-
-	return com;
+	else
+	{
+		return this->_com;
+	}
 }
 
-double SolarSystem::distCoM(CelestialBody* cb)
+double SolarSystem::distCoM(CelestialBody* cb, bool boundOnly)
 {
-	return norm(*(cb->position) - this->centerOfMass(), this->_dim);
+	return norm(*(cb->position) - this->centerOfMass(boundOnly), this->_dim);
 }
 
 // calculate the volume of an n-sphere
@@ -337,7 +363,7 @@ double SolarSystem::volume(double r)
 double SolarSystem::rho(double r)
 {
 	double V = this->volume(r); // volume [ly^3]
-	return (this->totalMass() / V); // mass density [solar masses / ly^3]
+	return (this->totalMass(false) / V); // mass density [solar masses / ly^3]
 }
 
 mat SolarSystem::radialDistribution(double maxR, int boxes, bool boundOnly)
@@ -359,7 +385,7 @@ mat SolarSystem::radialDistribution(double maxR, int boxes, bool boundOnly)
 		if ((!boundOnly) || (cb_i->isBound()))
 		{
 			// distance to center of mass
-			double comDist = this->distCoM(cb_i);
+			double comDist = this->distCoM(cb_i, boundOnly);
 
 			// box to put it in
 			double box = (comDist / histogramWidth);
@@ -404,7 +430,7 @@ double SolarSystem::avgDistCoM(bool boundOnly)
 
 		if ((!boundOnly) || (cb_i->isBound()))
 		{
-			sum += distCoM(cb_i);
+			sum += distCoM(cb_i, boundOnly);
 		}
 		else
 		{
@@ -428,7 +454,7 @@ double SolarSystem::stdDevDistCoM(bool boundOnly)
 
 		if ((!boundOnly) || (cb_i->isBound()))
 		{
-			sum += pow((distCoM(cb_i) - avg), 2.0); // deviation squared
+			sum += pow((distCoM(cb_i, boundOnly) - avg), 2.0); // deviation squared
 		}
 		else
 		{

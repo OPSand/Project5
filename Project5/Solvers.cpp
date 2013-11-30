@@ -12,8 +12,8 @@ Solvers::Solvers(SolarSystem* system, bool useRK4, bool useLeapfrog, bool useEul
 	this->_useLeapfrog = useLeapfrog;
 	this->_useEuler = useEuler;
 
-	// calculate potential energy before copying
-	this->_system->calculateEp();
+	// calculate potential energy ++ before copying
+	this->_system->calculate();
 
 	// create system copies as necessary
 	if (this->_useRK4)
@@ -102,8 +102,8 @@ SolarSystem* Solvers::Solve(double step)
 	// we will use leapfrog to return results
 	if (this->_useLeapfrog)
 	{
-		// make sure potential energy is up to date
-		this->_leapfrog->calculateEp();
+		// make sure potential energy ++ is up to date
+		this->_leapfrog->calculate();
 
 		return this->_leapfrog;
 	}

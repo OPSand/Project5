@@ -17,6 +17,8 @@ protected:
 	vector<CelestialBody*>* _bodies; // list of celestial bodies in solar system (use pointers to avoid needless copying)
 	mat* _nBoundPlot;
 	int _plotStep; // used for plotting
+	vec _com; // total center of mass
+	vec _bcom; // center of mass for bound particles
 
 public:
 	SolarSystem(int dim, int nSteps, int plotEvery, Gravity* grav);
@@ -24,7 +26,7 @@ public:
 	~SolarSystem(void);
 	SolarSystem operator =(const SolarSystem& other); 
 	void setForces();
-	void calculateEp();
+	void calculate();
 	double EpAvg(bool boundOnly);
 	double EkAvg(bool boundOnly);
 	int nBound(); // number of bound particles in the system
@@ -101,13 +103,13 @@ public:
 	mat nBoundPlot();
 
 	// total mass of the system
-	double totalMass();
+	double totalMass(bool boundOnly);
 
 	// average particle mass
 	double avgMass();
 
 	// distance to center of mass
-	double distCoM(CelestialBody* cb);
+	double distCoM(CelestialBody* cb, bool boundOnly);
 
 	// average distance to center of mass
 	double avgDistCoM(bool boundOnly);
@@ -116,5 +118,5 @@ public:
 	double stdDevDistCoM(bool boundOnly);
 
 	// coordinates of center of mass
-	vec centerOfMass();
+	vec centerOfMass(bool boundOnly);
 };

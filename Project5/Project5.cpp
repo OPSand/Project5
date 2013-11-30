@@ -193,7 +193,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	if (DEBUG)
 	{
-		cout << "Center of mass: " << system->centerOfMass() << endl;
+		cout << "Center of mass (all): " << system->centerOfMass(false) << endl;
+		cout << "Center of mass (bound): " << system->centerOfMass(true) << endl;
 
 		double maxR = R0;
 		mat radial = system->radialDistribution(maxR, 25, true);
@@ -223,7 +224,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		if (DEBUG)
 		{
-			cout << "Center of mass: " << system->centerOfMass() << endl;
+			cout << "Center of mass (all): " << system->centerOfMass(false) << endl;
+			cout << "Center of mass (bound): " << system->centerOfMass(true) << endl;
 
 			double maxR = system->avgDistCoM(true) + 2.0*system->stdDevDistCoM(true);
 			mat radial = system->radialDistribution(maxR, 20, true);

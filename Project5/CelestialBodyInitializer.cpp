@@ -43,7 +43,7 @@ void CelestialBodyInitializer::initialize(SolarSystem* system, int n, double avg
 {
 	// generate random (negative) seeds based on clock
 	long* idum = new long(-time(NULL));
-	long* idum2 = new long(-time(NULL));
+	long* idum2 = new long(-time(NULL)); // long time, no see?
 
 	for (int i = 0; i < n; i++)
 	{

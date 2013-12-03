@@ -12,47 +12,57 @@ using namespace arma;
 using namespace std;
 
 // fit radial distribution to curve (using least squares)
+// returns a vector: [ r0, n0, r0/N^(-1/3), n0/N^2 ]
 vec radialDistFitLSq(mat radialDist, int N, int nNR)
 {
+	// these factors are educated guesses as to where we will find the best match
 	const double nFact = 2.0;
 	const double rFact = 1.0;
 
+	// dependence of n0 and r0 on N taken from http://arxiv.org/abs/1011.0614
 	double nScale = pow((double)N, 2.0);
 	double rScale = pow((double)N, -(1.0 / 3.0));
 
+	// range to search
+	double minN0 = 0.0;
+	double minR0 = 0.0;
 	double maxN0 = nFact * nScale;
 	double maxR0 = rFact * rScale;
 
-	double minN0 = 0.0;
-	double minR0 = 0.0;
-
-	// vec(0) = r0, vec(1) = n0
-	// vec(2) = r0/N^(-1/3), vec(3) = n0/N^2
-	vec ret = vec(4);
-
-	int boxes = radialDist.n_rows;
-	double sum;
-	double minsum;
-
+	// step size for n0 and r0 trials, respectively
 	double deltaN = (maxN0 - minN0) / (nNR - 1.0);
 	double deltaR = (maxR0 - minR0) / (nNR - 1.0);
 
+	// return this:
+	vec ret = vec(4);
+
+	// determine number of bins in histogram
+	int boxes = radialDist.n_rows;
+
+	double sum; // sum of deviations squared
+	double minsum; // minimal sum (found so far)
+
+	// loop over n0 values
 	for (int n = 0; n < nNR; n++)
 	{
 		double n0 = minN0 + n * deltaN;
 
+		// loop over r0 values
 		for (int r = 0; r < nNR; r++)
 		{
 			double r0 = minR0 + r * deltaR;
 
-			sum = 0.0;
+			sum = 0.0; // reset
+
+			// for every bin, compare value to formula
+			// add square of deviation to sum
 			for (int i = 0; i < boxes; i++)
 			{
 				double formula = n0 / (1.0 + pow((radialDist(i, 0) / r0), 4.0));
 				sum += pow(formula - radialDist(i, 2), 2.0);
 			}
 
-			if ((n == 0) && (r == 0))
+			if ((n == 0) && (r == 0)) // first attempt: nothing to compare to
 			{
 				minsum = sum;
 				ret(0) = r0;
@@ -60,7 +70,7 @@ vec radialDistFitLSq(mat radialDist, int N, int nNR)
 			}
 			else
 			{
-				if (sum < minsum)
+				if (sum < minsum) // better match than any previous
 				{
 					minsum = sum;
 					ret(0) = r0;
@@ -76,7 +86,7 @@ vec radialDistFitLSq(mat radialDist, int N, int nNR)
 	return ret;
 }
 
-
+// (for benchmarking): convert 2D polar coordinates to cartesian
 vec toCartesian2D(double r, double theta)
 {
 	vec p = vec(2);
@@ -84,7 +94,8 @@ vec toCartesian2D(double r, double theta)
 	p[1] = r*sin(theta); // y
 	return p;
 }
-// returns an angle in radians that is orthogonal to theta
+
+// (for benchmarking): returns an angle in radians that is orthogonal to theta
 double orthogonal2D(double theta, bool clockwise = false)
 {
 	if (clockwise)
@@ -96,21 +107,20 @@ double orthogonal2D(double theta, bool clockwise = false)
 		return (theta + 0.5 * cPI);
 	}
 }
-// return a random floating point number in the interval [minIncl, maxExcl).
-double randDbl(double minIncl, double maxExcl, minstd_rand* eng)
-{
-	uniform_real<double> rd(0.0, (2 * cPI));
-	return rd(*eng);
-}
-void initial2D(CelestialBody* cb, double d, double v, minstd_rand* eng, double theta = -1.0)
+
+// (for benchmarking): initialize 2-body problem (in 2D)
+void initial2D(CelestialBody* cb, double d, double v, double theta = -1.0)
 {
 	if (theta == -1.0) // no angle given
 	{
 		// create random angle
-		theta = randDbl(0.0, (2 * cPI), eng);
+		long* seed = new long(-time(NULL));
+		theta = (2 * cPI), GaussPDF::ran2(seed);
+		delete seed; // we're programmers, not farmers
 	}
+
 	*(cb->position) = toCartesian2D(d, theta);
-	*(cb->velocity) = toCartesian2D(v, orthogonal2D(theta)); // counterclockwise
+	*(cb->velocity) = toCartesian2D(v, orthogonal2D(theta)); // orthogonal (counterclockwise) vs. position
 }
 
 
@@ -184,15 +194,17 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	#pragma region Solve and plot
 
+	// Plot energies before simulation (all should be bound)
 	cout << "E_k before: " << system->EkAvg(false) << endl;
-	cout << "E_k before (bound): " << system->EkAvg(true) << endl;
 	cout << "E_p before: " << system->EpAvg(false) << endl;
-	cout << "E_p before (bound): " << system->EpAvg(true) << endl;
 	cout << "E_tot before: " << (system->EpAvg(false) + system->EkAvg(false)) << endl;
-	cout << "E_tot before (bound): " << (system->EpAvg(true) + system->EkAvg(true)) << endl;
 
 	if (DEBUG)
 	{
+		cout << "E_k before (bound): " << system->EkAvg(true) << endl;
+		cout << "E_p before (bound): " << system->EpAvg(true) << endl;
+		cout << "E_tot before (bound): " << (system->EpAvg(true) + system->EkAvg(true)) << endl;
+
 		cout << "Center of mass (all): " << system->centerOfMass(false) << endl;
 		cout << "Center of mass (bound): " << system->centerOfMass(true) << endl;
 
@@ -202,7 +214,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		cout << radial << endl << endl;
 
-		cout << "n(r0) = " << system->numDens(R0) << endl;
+		cout << "n(r0) = " << system->numDens(R0) << endl; // nice to compare this to n(r) in the bins
 
 		cout << "(bound) avg = " << system->avgDistCoM(true) << endl;
 		cout << "(bound) stdDev = " << system->stdDevDistCoM(true) << endl;
@@ -213,35 +225,46 @@ int _tmain(int argc, _TCHAR* argv[])
 	// this is where the magic happens :)
 	system = solv.Solve(STEP);
 
-	if (system != nullptr)
+	if (system != nullptr) // only the case if we don't run Leapfrog
 	{
-		cout << "E_k after: " << system->EkAvg(false) << endl;
 		cout << "E_k after (bound): " << system->EkAvg(true) << endl;
-		cout << "E_p after: " << system->EpAvg(false) << endl;
 		cout << "E_p after (bound): " << system->EpAvg(true) << endl;
 		cout << "E_tot after: " << (system->EpAvg(false) + system->EkAvg(false)) << endl;
 		cout << "E_tot after (bound): " << (system->EpAvg(true) + system->EkAvg(true)) << endl;
 
 		if (DEBUG)
 		{
+			cout << "E_k after: " << system->EkAvg(false) << endl;
+			cout << "E_p after: " << system->EpAvg(false) << endl;
+
 			cout << "Center of mass (all): " << system->centerOfMass(false) << endl;
 			cout << "Center of mass (bound): " << system->centerOfMass(true) << endl;
+		}
 
-			double maxR = system->avgDistCoM(true) + 2.0*system->stdDevDistCoM(true);
-			mat radial = system->radialDistribution(maxR, 20, true);
-			radial.save("radial_after.dat", raw_ascii);
+		// get radial distribution & save to file
+		// 2 standard deviations from the average R seems like a good range
+		double maxR = system->avgDistCoM(true) + 2.0*system->stdDevDistCoM(true);
+		mat radial = system->radialDistribution(maxR, 20, true);
+		radial.save("radial_after.dat", raw_ascii);
 
+		if (DEBUG)
+		{
 			cout << radial << endl << endl;
+		}
 
-			system->nBoundPlot().save("nbound.dat", raw_ascii);
+		// save the number of bound particles per time step for plotting
+		system->nBoundPlot().save("nbound.dat", raw_ascii);
 
-			vec testFit = radialDistFitLSq(radial, system->n(), 1000);
+		// curve fitting, save results to file
+		vec testFit = radialDistFitLSq(radial, system->n(), 1000);
+		testFit.save("curveFit.dat", raw_ascii);
+
+		if (DEBUG)
+		{
 			cout << "r0 = " << testFit(0) << endl;
 			cout << "n0 = " << testFit(1) << endl;
 			cout << "r0 / N^(-1/3) = " << testFit(2) << endl;
 			cout << "n0 / N^2 = " << testFit(3) << endl << endl;
-
-			testFit.save("curveFit.dat", raw_ascii);
 
 			cout << "(bound) avg = " << system->avgDistCoM(true) << endl;
 			cout << "(bound) stdDev = " << system->stdDevDistCoM(true) << endl;
@@ -250,22 +273,21 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 	}
 
-	cout << endl << "Press ENTER to exit...";
-	getchar(); // pause
-
 	#pragma endregion
 	
 	#pragma region Benchmark
 
-	if (BENCHMARK)
+	if (BENCHMARK) // re-create Project 3 for comparison - can we reproduce the results?
 	{
+		getchar(); // pause
+
 		// Time steps
 		const int N_STEPS_BM = 300 * 365; // number of steps total
 		const int N_PLOT_BM = 300 * 365; // number of steps to plot (must be <= N_STEPS)
 		const double STEP_BM = 24 * 60 * 60;
 		const int PLOT_EVERY_BM = N_STEPS_BM / N_PLOT_BM; // plot every ...th step
 
-		// create gravity (we will update G later)
+		// create gravity
 		Gravity g_Bench = Gravity(cG, 0);
 		printf("Entering the Benchmark part \n");
 		// create system
@@ -279,12 +301,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		//system->grav()->setG(cG);
 		CelestialBody* sun = new CelestialBody("Sun", M_SUN_2, system_BM, true);
 		CelestialBody* earth = new CelestialBody("Earth", M_EARTH, system_BM, false);
-		// intitialze random number engine
-		minstd_rand eng;
-		int randomSeed = (int)clock();
-		eng.seed(randomSeed);
-		initial2D(earth, D_EARTH, V_EARTH, &eng);
-
+		initial2D(earth, D_EARTH, V_EARTH);
 
 		// call this only when initialization is 100% complete!
 		Solvers solv = Solvers(system_BM, USE_RK4, USE_LEAPFROG, USE_EULER);
@@ -292,8 +309,10 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		// this is where the magic happens :)
 		system_BM = solv.Solve(STEP);
-		getchar();
 	}
+
+	cout << endl << "Press ENTER to exit...";
+	getchar(); // pause
 
 	#pragma endregion 
 	return 0;

@@ -7,32 +7,46 @@
 class CelestialBody; // forward declaration to avoid circular reference
 class Gravity; // forward declaration to avoid circular reference
 
+// class for running an N-body simulation in any dimension
+// (numerical solving of the equations of motion must be handled by another class, such as Solvers)
 class SolarSystem
 {
 protected:
-	int _dim;
-	int _nSteps;
-	int _nPlot;
-	Gravity* _grav;
+	int _dim; // dimensions
+	int _nSteps; // number of steps to simulate
+	int _nPlot; // number of steps to plot
+	Gravity* _grav; // gravity object (provides forces & potential energies)
 	vector<CelestialBody*>* _bodies; // list of celestial bodies in solar system (use pointers to avoid needless copying)
-	mat* _nBoundPlot;
-	int _plotStep; // used for plotting
+	mat* _nBoundPlot; // used for plotting number of bound particles
+	int _plotStep; // used for determining which steps to plot
 	vec _com; // total center of mass
 	vec _bcom; // center of mass for bound particles
 
 public:
+
+	// constructors, destructors, copying
 	SolarSystem(int dim, int nSteps, int plotEvery, Gravity* grav);
 	SolarSystem(const SolarSystem& other);
 	~SolarSystem(void);
 	SolarSystem operator =(const SolarSystem& other); 
+
+	// call this every step to update force vectors on all elements based on current positions
 	void setForces();
+
+	// call this every step to calculate potential energy & total/unbound centers of mass
+	// (determining which elements are bound and their radial distribution)
 	void calculate();
+
+	// average kinetic and potential energies (for the virial theorem)
 	double EpAvg(bool boundOnly);
 	double EkAvg(bool boundOnly);
+
 	int nBound(); // number of bound particles in the system
+
+	// calculate system parameters within a radius r
 	double volume(double r);
-	double rho(double r);
-	double numDens(double r);
+	double rho(double r); // mass density
+	double numDens(double r); // number density
 
 	// return dimension of system
 	int dim(void)
@@ -70,12 +84,13 @@ public:
 		return (this->_nSteps / this->_nPlot);
 	}
 
-	// which
+	// which step are we currenty at?
 	int plotStep()
 	{
 		return this->_plotStep;
 	}
 
+	// return reference to gravity object
 	Gravity* grav()
 	{
 		return this->_grav;

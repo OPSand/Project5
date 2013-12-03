@@ -74,7 +74,7 @@ SolarSystem SolarSystem::operator = (const SolarSystem& other)
 	return *this; // to allow chaining of operators
 }
 
-// set force vectors on all elements
+// call this every step to update force vectors on all elements based on current positions
 void SolarSystem::setForces()
 {
 	int n = this->n();
@@ -146,31 +146,32 @@ bool SolarSystem::plotCurrentStep(bool condition)
 
 	if( condition )
 	{
-		// calculate potential energy ++
+		// calculate potential energy ++ before plotting
 		this->calculate();
 
 		int n = this->n();
 
+		// for every element
 		for( int i = 0; i < n; i++ )
 		{
 			if( ! this->body(i)->plotCurrentPosition() ) // try to plot this element
 			{
-				success = false; // it is sufficient that one element has no room
-			}
-			
-			// plot # of bound particles (if room)
-			if (this->_plotStep < this->_nBoundPlot->n_rows)
-			{
-				this->_nBoundPlot->at(this->_plotStep, 0) = this->_plotStep;
-				this->_nBoundPlot->at(this->_plotStep, 1) = this->nBound();
-			}
-			else
-			{
-				success = false;
+				success = false; // it is sufficient that one element has no room to declare failure
 			}
 		}
 
-		// increment step counter
+		// plot # of bound particles (if room)
+		if (this->_plotStep < this->_nBoundPlot->n_rows)
+		{
+			this->_nBoundPlot->at(this->_plotStep, 0) = this->_plotStep;
+			this->_nBoundPlot->at(this->_plotStep, 1) = this->nBound();
+		}
+		else
+		{
+			success = false;
+		}
+
+		// increment plot step counter
 		this->_plotStep++;
 
 		// display progress
@@ -183,11 +184,14 @@ bool SolarSystem::plotCurrentStep(bool condition)
 // save dimension # i for all elements to "<path>.dat" (rows: time - cols: elements)
 void SolarSystem::plotDim(int i, const string& path)
 {
+	// check that this is a dimension we're actually simulating
 	assert(i < this->dim() );
 
 	int n = this->n();
 	mat plot(this->nPlot(), n);
-	for( int j = 0; j < n; j++ ) // loop through elements
+
+	// loop through elements
+	for( int j = 0; j < n; j++ )
 	{
 		CelestialBody* cb = this->body(j);
 		plot.col(j) = cb->plot->col(i);
@@ -196,7 +200,8 @@ void SolarSystem::plotDim(int i, const string& path)
 	plot.save(path, raw_ascii); // save to file
 }
 
-// calculates potential energy & total/unbound centers of mass
+// call this every step to calculate potential energy & total/unbound centers of mass
+// (determining which elements are bound and their radial distribution)
 void SolarSystem::calculate()
 {
 	int n = this->n();
@@ -233,16 +238,17 @@ void SolarSystem::calculate()
 	double totalMass = this->totalMass(false);
 	double boundMass = this->totalMass(true);
 
+	// for all elements
 	for (int i = 0; i < n; i++)
 	{
 		CelestialBody* cb_i = this->body(i);
 
-		// contribution to center of mass
+		// add contribution to center of mass
 		this->_com += (cb_i->mass / totalMass) * *(cb_i->position);
 
-		// contribution to bound center of mass
-		if (cb_i->isBound())
+		if (cb_i->isBound()) // bound particle
 		{
+			// add contribution to bound center of mass
 			this->_bcom += (cb_i->mass / boundMass) * *(cb_i->position);
 		}
 	}
@@ -254,21 +260,27 @@ double SolarSystem::EpAvg(bool boundOnly)
 	double sum = 0.0;
 	int n = this->n();
 
+	// for all particles
 	for (int i = 0; i < this->n(); i++)
 	{
 		CelestialBody* cb_i = this->body(i);
 
+		// check bound conditions (if they apply)
 		if ((!boundOnly) || (cb_i->isBound()))
 		{
+			// count contribution from this particle
 			sum += cb_i->Ep;
 		}
-		else
+		else // unbound (in the case that we want bound only)
 		{
+			// don't count this particle
 			n -= 1;
 		}
 	}
 
-	return (sum / (2.0 *this->n() ));
+	// NOTE: divide by 2 so we do not count each vertex twice!
+	// (each Ep is determined by PAIRS of bodies)
+	return (sum / (2.0 * this->n() ));
 }
 
 // average kinetic energy
@@ -277,16 +289,20 @@ double SolarSystem::EkAvg(bool boundOnly)
 	double sum = 0.0;
 	int n = this->n();
 
+	// for all particles
 	for (int i = 0; i < this->n(); i++)
 	{
 		CelestialBody* cb_i = this->body(i);
 
+		// check bound conditions (if they apply)
 		if ((!boundOnly) || (cb_i->isBound()))
 		{
+			// count contribution from this particle
 			sum += cb_i->Ek();
 		}
-		else
+		else // unbound (in the case that we want bound only)
 		{
+			// don't count this particle
 			n -= 1;
 		}
 	}
@@ -294,14 +310,17 @@ double SolarSystem::EkAvg(bool boundOnly)
 	return (sum / this->n());
 }
 
+// return number of bound particles at the current step
 int SolarSystem::nBound()
 {
-	int n = 0;
+	int n = 0; // bound counter
 
+	// for all particles
 	for (int i = 0; i < this->n(); i++)
 	{
 		CelestialBody* cb_i = this->body(i);
 
+		// count if bound
 		if (cb_i->isBound())
 		{
 			n += 1;
@@ -311,16 +330,20 @@ int SolarSystem::nBound()
 	return n;
 }
 
+// returns total mass of the system (or its bound particles)
 double SolarSystem::totalMass(bool boundOnly)
 {
 	double sum = 0.0;
 
+	// for all particles
 	for (int i = 0; i < this->n(); i++)
 	{
 		CelestialBody* cb_i = this->body(i);
 
+		// check bound conditions (if they apply)
 		if ((!boundOnly) || (cb_i->isBound()))
 		{
+			// count contribution from this particle
 			sum += cb_i->mass;
 		}
 	}
@@ -328,11 +351,13 @@ double SolarSystem::totalMass(bool boundOnly)
 	return sum;
 }
 
+// return average mass of the particles in the system
 double SolarSystem::avgMass()
 {
 	return (this->totalMass(false) / this->n());
 }
 
+// return total/bound-particle center of mass
 vec SolarSystem::centerOfMass(bool boundOnly)
 {
 	if (boundOnly)
@@ -345,6 +370,7 @@ vec SolarSystem::centerOfMass(bool boundOnly)
 	}
 }
 
+// return a particle's distance from total/bound-particle center of mass
 double SolarSystem::distCoM(CelestialBody* cb, bool boundOnly)
 {
 	return norm(*(cb->position) - this->centerOfMass(boundOnly), this->_dim);
@@ -373,22 +399,27 @@ double SolarSystem::numDens(double r)
 	return (this->n() / V); // mass density [solar masses / ly^3]
 }
 
+// calculate radial distribution of all/bound particles
+// (boxes = number of bin in the histogram)
 mat SolarSystem::radialDistribution(double maxR, int boxes, bool boundOnly)
 {
 	double histogramWidth = (maxR / (double)boxes);
 	mat plot = mat(boxes, 3);
 	plot.fill(0.0);
 
+	// set r values
 	for (int i = 0; i < boxes; i++)
 	{
 		// use the midpoint of the interval
 		plot(i, 0) = (i + 0.5)*histogramWidth;
 	}
 
+	// loop through particles and sort into appropriate bins
 	for (int i = 0; i < this->n(); i++)
 	{
 		CelestialBody* cb_i = this->body(i);
 
+		// check bound conditions (if they apply)
 		if ((!boundOnly) || (cb_i->isBound()))
 		{
 			// distance to center of mass
@@ -405,13 +436,14 @@ mat SolarSystem::radialDistribution(double maxR, int boxes, bool boundOnly)
 		}
 	}
 
-	// second column is N(r)
-	// third column: n(r) = N(r)/V(r)
+	// second column is N(r), the total number of particles
+	// third column is n(r) = N(r)/V(r), the number density
 
+	// for every bin, divide N(r) by the volume V(r)
 	for (int i = 0; i < boxes; i++)
 	{
 		double r = plot(i, 0);
-		double delta_r = 0.5*histogramWidth;
+		double delta_r = 0.5 * histogramWidth;
 		double Vmin = this->volume(r - delta_r);
 		double Vmax = this->volume(r + delta_r);
 		double V = (Vmax - Vmin);
@@ -424,21 +456,26 @@ mat SolarSystem::radialDistribution(double maxR, int boxes, bool boundOnly)
 	return plot;
 }
 
+// average distance to total/bound center of mass
 double SolarSystem::avgDistCoM(bool boundOnly)
 {
 	int n = this->n();
 	double sum = 0.0;
 
+	// for every particle
 	for (int i = 0; i < this->n(); i++)
 	{
 		CelestialBody* cb_i = this->body(i);
 
+		// check bound conditions (if they apply)
 		if ((!boundOnly) || (cb_i->isBound()))
 		{
+			// count contribution from this particle
 			sum += distCoM(cb_i, boundOnly);
 		}
-		else
+		else // unbound (in the case that we want bound only)
 		{
+			// don't count this particle
 			n -= 1;
 		}
 	}
@@ -446,30 +483,39 @@ double SolarSystem::avgDistCoM(bool boundOnly)
 	return (sum / n);
 }
 
+// standard deviation of distance to total/bound center of mass
 double SolarSystem::stdDevDistCoM(bool boundOnly)
 {
 	int n = this->n();
 	double sum = 0.0;
 
+	// we need the average to calculate the variance
 	double avg = this->avgDistCoM(boundOnly);
 
+	// for every particle
 	for (int i = 0; i < this->n(); i++)
 	{
 		CelestialBody* cb_i = this->body(i);
 
+		// check bound conditions (if they apply)
 		if ((!boundOnly) || (cb_i->isBound()))
 		{
+			// count contribution from this particle
 			sum += pow((distCoM(cb_i, boundOnly) - avg), 2.0); // deviation squared
 		}
-		else
+		else // unbound (in the case that we want bound only)
 		{
+			// don't count this particle
 			n -= 1;
 		}
 	}
 
+	// sum is now the variance, return std.dev. instead
 	return sqrt(sum / n);
 }
 
+// returns a matrix that can be used for plotting number of bound particles
+// for every step
 mat SolarSystem::nBoundPlot()
 {
 	return *(this->_nBoundPlot);

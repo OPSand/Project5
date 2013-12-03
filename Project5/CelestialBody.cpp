@@ -108,6 +108,7 @@ double CelestialBody::Ek()
 	return (0.5 * this->mass * v2);
 }
 
+// true if gravitationally bound (total energy < 0), false otherwise
 bool CelestialBody::isBound()
 {
 	return ((this->Ek() + this->Ep) < 0.0);

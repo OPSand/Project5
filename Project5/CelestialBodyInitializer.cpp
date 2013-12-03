@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CelestialBodyInitializer.h"
 
+// initialize a single particle (CelestialBody)
 void CelestialBodyInitializer::randInit(SolarSystem* system, const string& name, double avgM, double stdM, double r0, long* idum, long* idum2)
 {
 	// determine mass(avgM, stdM)
@@ -39,6 +40,7 @@ void CelestialBodyInitializer::randInit(SolarSystem* system, const string& name,
 	*(cb->position) = r0*x; // scale to correct radius
 }
 
+// call this to initialize system with n objects of average mass avgM (std. dev stdM) within radius r0
 void CelestialBodyInitializer::initialize(SolarSystem* system, int n, double avgM, double stdM, double r0)
 {
 	// generate random (negative) seeds based on clock
@@ -64,13 +66,15 @@ void CelestialBodyInitializer::initialize(SolarSystem* system, int n, double avg
 	delete idum2;
 }
 
-// calculate G in units of t_crunch, ly, solar masses
+// calculate G in units of t_crunch (after initialization)
+// and units depending on the mass units of the system and r0
+// (here we will use solar masses and ly, respectively)
 double CelestialBodyInitializer::G(double r0, SolarSystem* system)
 {
 	return (3.0 * cPI / (32.0 * system->rho(r0))); // G in t_crunch, ly, solar masses
 }
 
-// calculate t_crunch in years
+// calculate the crunch time of the system in years (after initialization)
 double CelestialBodyInitializer::tCrunch(double r0, SolarSystem* system, double Gyls)
 {
 	return sqrt(3.0 * cPI / (32.0 * Gyls * system->rho(r0))); // crunch time [years]

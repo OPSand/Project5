@@ -8,27 +8,34 @@ using namespace std;
 
 class SolarSystem; // forward declaration to avoid circular reference
 
+// class that simulates a particle in an N-body simulation
+// must belong to a SolarSystem object
 class CelestialBody
 {
+protected: 
+	int _dim; // number of dimensions (set by _system)
+	SolarSystem* _system; // reference to parent object
+
 public:
+	// construction, copying, destruction
 	CelestialBody(const string& name, double mass, SolarSystem* system, bool fixed = false);
 	CelestialBody(const CelestialBody &cb);
 	~CelestialBody(void);
 	CelestialBody operator = (const CelestialBody &cb);
+
+	// public parameters
 	string name;
 	double mass;
-	vec* position;
+	vec* position; // _dim-dimensional vector
 	vec* velocity;
 	vec* force;
-	bool fixed;
-	mat* plot;
-	double Ek(void);
-	double Ep;
+	bool fixed; // flag: never update position if true
+	mat* plot; // _dim columns, _system->nPlot() rows
+	double Ep; // potential energy, calculated by _system
 
-protected:
-	int _dim;
-	SolarSystem* _system;
 public:
+	// kinetic energy
+	double Ek(void);
 
 	// returns the acceleration when the force is set
 	vec acc(void)

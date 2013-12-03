@@ -8,7 +8,7 @@ public:
 	// ran2 for uniform deviates, initialize with negative seed.
 	static double ran2(long *);
 
-	// function for gaussian random numbers
+	// random numbers with gaussian distribution in units of standard deviations (avg = 0)
 	static double gaussian_deviate(long *);
 };
 

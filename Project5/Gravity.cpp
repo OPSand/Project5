@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Gravity.h"
 
+// constructor
 Gravity::Gravity(double G, double epsilon)
 {
 	this->_G = G;
@@ -19,6 +20,7 @@ Gravity::~Gravity()
 	// empty
 }
 
+// = operator
 Gravity Gravity::operator= (const Gravity& other)
 {
 	if (this != &other) // protect against invalid self-assignment
@@ -30,6 +32,7 @@ Gravity Gravity::operator= (const Gravity& other)
 	return *this; // to allow chaining of operators
 }
 
+// return gravitational force
 vec Gravity::force(CelestialBody* cb_i, CelestialBody* cb_j)
 {
 	double dist = cb_i->dist(cb_j); // distance (absolute value)
@@ -52,11 +55,13 @@ double Gravity::potEnergy(CelestialBody* cb_i, CelestialBody* cb_j)
 	}
 }
 
+// update the value of G
 void Gravity::setG(double G)
 {
 	this->_G = G;
 }
 
+// update the value of epsilon
 void Gravity::setEpsilon(double epsilon)
 {
 	this->_epsilon = epsilon;

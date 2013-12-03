@@ -85,7 +85,7 @@ double GaussPDF::ran2(long *idum)
 
 
 
-// random numbers with gaussian distribution
+// random numbers with gaussian distribution in units of standard deviations (avg = 0)
 double GaussPDF::gaussian_deviate(long * idum)
 {
 	static int iset = 0;

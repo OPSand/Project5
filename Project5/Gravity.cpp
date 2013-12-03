@@ -37,7 +37,9 @@ vec Gravity::force(CelestialBody* cb_i, CelestialBody* cb_j)
 {
 	double dist = cb_i->dist(cb_j); // distance (absolute value)
 	vec r = cb_i->position_diff(cb_j); // gives the force the proper direction
-	vec F = ( this->_G * cb_i->mass * cb_j->mass / ( pow(dist, 3.0) + pow(this->_epsilon, 2.0) ) ) * r; // Newton's law of gravity
+
+	// Newton's law of gravity (with smoothing factor epsilon)
+	vec F = ( this->_G * cb_i->mass * cb_j->mass / ( pow(dist, 3.0) + pow(this->_epsilon, 2.0) ) ) * r;
 	return F;
 }
 

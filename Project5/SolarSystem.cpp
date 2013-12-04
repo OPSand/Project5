@@ -126,6 +126,7 @@ vec SolarSystem::totalMomentum()
 	vec mom(this->_dim);
 	mom.fill(0.0);
 
+	// for every body
 	for(int i = 0; i < this->n(); i++)
 	{
 		CelestialBody* cb_i = this->body(i);
@@ -399,8 +400,8 @@ double SolarSystem::numDens(double r)
 	return (this->n() / V); // mass density [solar masses / ly^3]
 }
 
-// calculate radial distribution of all/bound particles
-// (boxes = number of bin in the histogram)
+// calculate radial distribution of all/bound particles within radius maxR
+// (boxes = number of bins in the histogram)
 mat SolarSystem::radialDistribution(double maxR, int boxes, bool boundOnly)
 {
 	double histogramWidth = (maxR / (double)boxes);

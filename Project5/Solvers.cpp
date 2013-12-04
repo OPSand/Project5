@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Solvers.h"
 
-
+// constructor
 Solvers::Solvers(SolarSystem* system, bool useRK4, bool useLeapfrog, bool useEuler)
 {
 	// save pointer to original system
@@ -32,7 +32,7 @@ Solvers::Solvers(SolarSystem* system, bool useRK4, bool useLeapfrog, bool useEul
 	}
 }
 
-
+// destructor
 Solvers::~Solvers()
 {
 	delete this->_rk4;
@@ -40,7 +40,9 @@ Solvers::~Solvers()
 	delete this->_euler;
 }
 
-
+// call this to solve the equations and save results to files
+// the system will determine the number of steps; all we need is to provide a step length
+// returns the system in the state the Leapfrog algoritm leaves it in (or nullptr if that algorithm is not used)
 SolarSystem* Solvers::Solve(double step)
 {
 	for (int i = 0; i < this->_system->nSteps(); i++) // for each time step
@@ -99,21 +101,23 @@ SolarSystem* Solvers::Solve(double step)
 
 	cout << "DONE!" << endl << endl;
 
-	// we will use leapfrog to return results
-	if (this->_useLeapfrog)
+	// we will use leapfrog to return results by default
+	SolarSystem* returnSystem = this->_leapfrog;
+
+	if (returnSystem != nullptr)
 	{
 		// make sure potential energy ++ is up to date
-		this->_leapfrog->calculate();
+		returnSystem->calculate();
 
-		return this->_leapfrog;
+		return returnSystem;
 	}
-	else // not leapfrog
+	else // return nothing
 	{
 		return nullptr;
 	}
 }
 
-
+// a single Runge-Kutta step (parameter = step length)
 void Solvers::RK4(double step)
 {
 	int n = this->_rk4->n();
@@ -229,7 +233,7 @@ void Solvers::RK4(double step)
 	#pragma endregion
 }
 
-
+// a single Leapfrog step (parameter = step length)
 void Solvers::Leapfrog(double step)
 {
 	int n = this->_leapfrog->n(); // number of celestial bodies
@@ -268,7 +272,7 @@ void Solvers::Leapfrog(double step)
 	}
 }
 
-
+// a single Euler-Cromer step (parameter = step length)
 void Solvers::Euler(double step)
 {
 	int n = this->_euler->n(); // number of celestial bodies

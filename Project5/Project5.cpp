@@ -223,7 +223,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			// determine number of particles
 			int nParticles = N + isim * deltaN;
 
-			cout << "--- SIMULATION " << (isim + 1) << " OF " << N_SIMS << " (N = " << nParticles << ") ---" << endl << endl;
+			cout << endl << "--- SIMULATION " << (isim + 1) << " OF " << N_SIMS << " (N = " << nParticles << ") ---" << endl << endl;
 
 			// create gravity (we will update it later)
 			Gravity g = Gravity(0.0, 0.0);
@@ -239,7 +239,9 @@ int _tmain(int argc, _TCHAR* argv[])
 			CelestialBodyInitializer::initialize(system, nParticles, avgMass, stdMass, R0);
 
 			// set epsilon (see report for explanation)
-			g.setEpsilon((N / nParticles) * EPSILON);
+			double eps = (N / nParticles) * EPSILON;
+			cout << "epsilon = " << eps << endl << endl;
+			g.setEpsilon(eps);
 
 			// id of simulation (for file names)
 			ostringstream id = ostringstream();

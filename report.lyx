@@ -73,7 +73,21 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-?
+Open galactic clusters are 
+\end_layout
+
+\begin_layout Standard
+Numerous algorithms could have been used to simulate a cluster, we chose
+ to focus on the Leapfrog and on the forth-order Runge Kutta ones.
+ Indeed, each one of the numeric methods has its pros and cons, and we want
+ here to find the one which gives priority to the stability instead of the
+ sorth-term accuracy.
+\end_layout
+
+\begin_layout Standard
+Thus, our goal in this report was to simulate and to study the behavior
+ of a cluster, after having paid attention to the algorithm used to derive
+ the results.
 \end_layout
 
 \begin_layout Section
@@ -653,7 +667,37 @@ The code is designed to be highly modular and independent of dimension to
 \end_layout
 
 \begin_layout Standard
-(Class diagram.)
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Screen/ClassDiagram.jpg
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Class Diagram
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -783,6 +827,378 @@ Center of mass conserved.
 
 \begin_layout Standard
 Energy mostly conserved, especially with gravitational correction.
+\end_layout
+
+\begin_layout Subsection
+Application to a multi-bodies system
+\end_layout
+
+\begin_layout Subsubsection
+Evaluation of G
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Screen/Eval_G_Resized_.jpg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Computation of G
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+With a system of 
+\begin_inset Formula $N=100$
+\end_inset
+
+ particles, an initial radius of 
+\begin_inset Formula $R_{0}=20$
+\end_inset
+
+ light years, we found a 
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+ of nearly 8 millions of years.
+ In the figure above, the variable called G_YLS is the gravitational constant,
+ uses meters, seconds, and kg.
+ G is computed in ly, 
+\begin_inset Formula $M_{\sun}$
+\end_inset
+
+ and 
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Energy conservation
+\end_layout
+
+\begin_layout Paragraph
+Particles ejection
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "c"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Graphics
+	filename Screen/Conservation_Energy_Leapfrog_Resized.jpg
+	scale 45
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Behavior of the energy for N = 100 bodies,ε = 0
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align right
+\begin_inset Graphics
+	filename Screen/Conservation_Energy_150_Resized.jpg
+	scale 45
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Behavior of the energy for N = 150 bodies,ε = 0
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Screen/Conservation_Energy_300_Resized.jpg
+	scale 45
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Behavior of the energy for N = 300 bodies,ε = 0
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Without using the modified gravitational potential, we notice that the energy
+ is not conserved: some particles are ejected of the system.
+ For these particles, the kinetic energy blows up, which is how we can identify
+ them.
+ 
+\end_layout
+
+\begin_layout Paragraph
+Virial Theorem
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "c"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Graphics
+	filename Screen/Conservation_Energy_Leapfrog_Resized.jpg
+	scale 45
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Evolution of Energy with the Leapfrog algorithm, ε = 0
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align right
+\begin_inset Graphics
+	filename Screen/Conservation_Energy_Epsilon_Leapfrog_Resized.jpg
+	scale 45
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Evolution of Energy with the Leapfrog algorithm, ε = √0,0225
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+After running the system for a few 
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+, we evaluate the kinetic and the potential energies for every particles
+ of our bound system.
+ What is displayed here is the value of the average kinetic energy, 
+\begin_inset Formula $\left\langle K\right\rangle $
+\end_inset
+
+ , and the average of the potential energy,
+\begin_inset Formula $\left\langle P\right\rangle $
+\end_inset
+
+, for our bound system.
+ We can see that the virial theorem is met in the case where the smoothing
+ function is used, with an 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ of 
+\begin_inset Formula $\sqrt{0,0225}$
+\end_inset
+
+, and is not met in our initial case (i.e.
+ without using the smoothing function).
+ The smoothing function helps us to take care of the numerical instability
+ generated when two particles are too close.
+ Indeed, with the standard gravitational potentiel, we lose too many particles.
+ Thus, the introduction of ε solves this problem.
+ 
+\end_layout
+
+\begin_layout Standard
+By testing some values for ε, we noticed that 
+\begin_inset Formula $\sqrt{0,0225}$
+\end_inset
+
+ was a satisfying value for the respect of the total energy conservation.
 \end_layout
 
 \begin_layout Section

@@ -277,7 +277,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 				double maxR = R0;
 				mat radial = system->radialDistribution(maxR, AVG_BIN, true);
-				fname.clear();
+				fname = ostringstream();
 				fname << "radial_before_" << isim << ".dat";
 				radial.save(fname.str(), raw_ascii);
 
@@ -314,7 +314,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				// 2 standard deviations from the average R seems like a good range
 				double maxR = system->avgDistCoM(true) + CURVEFIT_STDDEV*system->stdDevDistCoM(true);
 				mat radial = system->radialDistribution(maxR, AVG_BIN, true);
-				fname.clear();
+				fname = ostringstream();
 				fname << "radial_after_" << isim << ".dat";
 				radial.save(fname.str(), raw_ascii);
 
@@ -324,13 +324,13 @@ int _tmain(int argc, _TCHAR* argv[])
 				}
 
 				// save the number of bound particles per time step for plotting
-				fname.clear();
+				fname = ostringstream();
 				fname << "nbound_" << isim << ".dat";
 				system->nBoundPlot().save(fname.str(), raw_ascii);
 
 				// curve fitting, save results to file
 				vec testFit = radialDistFitLSq(radial, system->n(), 1000);
-				fname.clear();
+				fname = ostringstream();
 				fname << "curveFit_" << isim << ".dat";
 				testFit.save(fname.str(), raw_ascii);
 

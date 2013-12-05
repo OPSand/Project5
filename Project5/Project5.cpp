@@ -187,7 +187,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	// initialization & time steps (run many with different n, same total mass)
 	const int N_SIMS = 4; // number of simulations to run (set to 1 to run just once)
 	const int N_END = 1000; // max N for last sim (ignored if N_SIMS == 1)
-	const int DELTA_N = (N_END - N) / (N_SIMS - 1);
 	const double TOTAL_M = AVG_M * N; // total mass (to be kept constant)
 	const double STD_FACTOR = STD_M / AVG_M; // scale std. dev. to average
 
@@ -207,7 +206,13 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	if (!BENCHMARK)
 	{
-		#pragma region Initialization
+#pragma region Initialization
+
+		int deltaN = 0;
+		if (N_SIMS > 1) // avoid division by 0
+		{
+			deltaN = (N_END - N) / (N_SIMS - 1);
+		}
 
 		// run one or more simulations
 		for (int isim = 0; isim < N_SIMS; isim++)
@@ -215,7 +220,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			ostringstream fname; // for dynamic file names
 
 			// determine number of particles
-			int nParticles = N + isim * DELTA_N;
+			int nParticles = N + isim * deltaN;
 
 			cout << "--- SIMULATION " << (isim + 1) << " OF " << N_SIMS << " (N = " << nParticles << ") ---" << endl << endl;
 

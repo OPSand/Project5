@@ -38,9 +38,20 @@ Solvers::Solvers(SolarSystem* system, const string& id, bool useRK4, bool useLea
 // destructor
 Solvers::~Solvers()
 {
-	delete this->_rk4;
-	delete this->_leapfrog;
-	delete this->_euler;
+	if (this->_rk4 != nullptr)
+	{
+		delete this->_rk4;
+	}
+
+	if (this->_leapfrog != nullptr)
+	{
+		delete this->_leapfrog;
+	}
+
+	if (this->_euler != nullptr)
+	{
+		delete this->_euler;
+	}
 }
 
 // call this to solve the equations and save results to files

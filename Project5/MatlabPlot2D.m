@@ -5,8 +5,8 @@ clear,clf
 % File to open:
 % Input Parameters
 nPosi = 1;
-typeSolver = 'leapfrog';
-rows = 1000; % Number of time steps
+typeSolver = 'rk4';
+rows = 10 * 365; % Number of time steps
 nbPlanets = 2; % Number of Planets
 printingSteps = 1; % Printing every x time steps ... Don't use it now, but ... Just in case ?
 bWantAGif = false; % A Gif or a JPEG ?

@@ -73,21 +73,43 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-// NB: Introduction about open clusters
+Open clusters are groups of up to a few thousands stars, held together by
+ mutual gravitational attraction.
+ Open clusters generally last for a few hundred milions years.
+ In it also important to underline that the parameters of the cluster's
+ stars are kind of constant, since they are made from the same material.
+ We want to build a model for such a cluster, and study its 
+\begin_inset Quotes eld
+\end_inset
+
+cold collapse
+\begin_inset Quotes erd
+\end_inset
+
+.
+ To do so, we will begin with the approximation that stars are particles,
+ ponctual points, then we will use a simple smoothing algorithm to increase
+ the numerical stability of our system.
 \end_layout
 
 \begin_layout Standard
-Numerous algorithms could have been used to simulate a cluster, we chose
- to focus on the Leapfrog and on the forth-order Runge Kutta ones.
- Indeed, each one of the numeric methods has its pros and cons, and we want
- here to find the one which gives priority to the stability instead of the
- sorth-term accuracy.
+Numerous algorithms could have been used to simulate the behavior of the
+ cluster.
+ We chose to focus on the Leap-frog and on the forth-order Runge Kutta ones.:if
+ each one of the numeric methods has its pros and cons, we want here to
+ find the one which gives priority to the stability instead of the short-term
+ accuracy.
+ Indeed, due to the number of particles in our cluster, we will be interested
+ in the statistical properties of our system instead of in the specific
+ characteristics of each particles.
 \end_layout
 
 \begin_layout Standard
-Thus, our goal in this report was to simulate and to study the behavior
- of a cluster, after having paid attention to the algorithm used to derive
- the results.
+Our goal in this report is to simulate and to study the behavior of a cluster,
+ after having paid attention to the algorithm used to derive the results.
+ Thus, the first part of the report will be a discussion on the algorithms,
+ and on the methods we implemented to help us, then, we will talk about
+ the cluster's behavior itself.
 \end_layout
 
 \begin_layout Section
@@ -675,9 +697,10 @@ status open
 
 \begin_layout Plain Layout
 \noindent
-\align center
+\align left
 \begin_inset Graphics
 	filename Screen/ClassDiagram.jpg
+	scale 80
 
 \end_inset
 
@@ -685,7 +708,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Class Diagram // NB: change the link between GaussPDF and Gravity !!!
+Class Diagram
 \end_layout
 
 \end_inset
@@ -827,6 +850,316 @@ Center of mass conserved.
 Energy mostly conserved, especially with gravitational correction.
 \end_layout
 
+\begin_layout Standard
+\begin_inset Float table
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Execution time (s)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+To process the two-body system
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Leap-frog
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+19,18
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Forth-order Runge Kutta 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+30,85
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Elapsed Time to process the two body system 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "c"
+use_parbox 0
+use_makebox 0
+width "60col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Screen/BenchMark/plot3D_for_leapfrog.jpeg
+	scale 45
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Conservation of the Energy -- Leap-frog -- A changer !!!
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "20col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Screen/BenchMark/BM-Energy-LeapFrog.jpg
+	scale 45
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Conservation of the Energy -- Leap-frog
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "c"
+use_parbox 0
+use_makebox 0
+width "60col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Screen/BenchMark/plot3D_for_rk4.jpeg
+	scale 45
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Conservation of the energy -- forth-order Runge Kutta
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "20col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align right
+\begin_inset Graphics
+	filename Screen/Conservation_Energy_Epsilon_Leapfrog_Resized.jpg
+	scale 45
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Conservation of the energy -- forth-order Runge Kutta -- A changer !!!
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 Application to a multi-bodies system
 \end_layout
@@ -910,7 +1243,7 @@ Particles ejection
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -1009,7 +1342,7 @@ width "45col%"
 special "none"
 height "1in"
 height_special "totalheight"
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -1214,7 +1547,7 @@ Virial Theorem
 placement H
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -1339,7 +1672,7 @@ After running the system for a few
 \end_layout
 
 \begin_layout Standard
-By testing some values for ε, we noticed that 
+We took ε = 
 \begin_inset Formula $\sqrt{0,0225}$
 \end_inset
 

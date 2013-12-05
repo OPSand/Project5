@@ -45,6 +45,11 @@ Solvers::~Solvers()
 // returns the system in the state the Leapfrog algoritm leaves it in (or nullptr if that algorithm is not used)
 SolarSystem* Solvers::Solve(double step)
 {
+	clock_t start, finish;
+	start = clock();
+	double elapsedTime = 0.0;
+	int nSize = this->_system->nSteps();
+	vec  tabElapsedTime = vec(nSize);
 	for (int i = 0; i < this->_system->nSteps(); i++) // for each time step
 	{
 		if (this->_useRK4)
@@ -55,7 +60,7 @@ SolarSystem* Solvers::Solve(double step)
 
 		if (this->_useLeapfrog)
 		{
-			this->_leapfrog->plotCurrentStep(i % this->_leapfrog->plotEvery() == 0); // if we want to plot this step, do it
+			this->_leapfrog->plotCurrentStep(i % this->_leapfrog->plotEvery() == 0); // if we want to plot this step, do its
 			Leapfrog(step); // perform step
 		}
 
@@ -65,6 +70,11 @@ SolarSystem* Solvers::Solve(double step)
 			Euler(step); // perform step
 		}
 	}
+
+
+	// Timing part: End ...
+	finish = clock();
+	elapsedTime = (double)(finish - start) / CLOCKS_PER_SEC; // To convert this into seconds !
 
 	if (this->_useRK4)
 	{
@@ -101,6 +111,11 @@ SolarSystem* Solvers::Solve(double step)
 
 	cout << "DONE!" << endl << endl;
 
+	// And siplay of the timing part 
+	printf("Elapsed Time : %lf \n", elapsedTime);
+
+	// Return calculation of the average time spent for a step of leapfrog/RG4
+	//avTime(tabElapsedTime);
 	// we will use leapfrog to return results by default
 	SolarSystem* returnSystem = this->_leapfrog;
 
@@ -293,4 +308,15 @@ void Solvers::Euler(double step)
 			*(cb->position) += step * *(cb->velocity);
 		}
 	}
+}
+
+void Solvers::avTime(vec elapsedTime)
+{
+	double av = 0.0;
+	for (int i = 0; i < elapsedTime.n_cols; i++)
+	{
+		av += elapsedTime(i);
+	}
+	av = av / elapsedTime.n_cols;
+	printf("Average time spent for a step here : %lf \n", av);
 }

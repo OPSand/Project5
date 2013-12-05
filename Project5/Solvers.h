@@ -34,5 +34,6 @@ public:
 	// the system will determine the number of steps; all we need is to provide a step length
 	// returns the system in the state the Leapfrog algoritm leaves it in (or nullptr if that algorithm is not used)
 	SolarSystem* Solve(double step);
+	void Solvers::avTime(vec elapsedTime);
 };
 

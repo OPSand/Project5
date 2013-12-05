@@ -239,7 +239,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			CelestialBodyInitializer::initialize(system, nParticles, avgMass, stdMass, R0);
 
 			// set epsilon (see report for explanation)
-			double eps = (N / nParticles) * EPSILON;
+			double eps = ((double)N / (double)nParticles) * EPSILON;
 			cout << "epsilon = " << eps << endl << endl;
 			g.setEpsilon(eps);
 

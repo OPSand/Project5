@@ -217,7 +217,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			// determine number of particles
 			int nParticles = N + isim * DELTA_N;
 
-			cout << "--- SIMULATION " << isim << " OF " << N_SIMS << " (N = " << nParticles << ") ---" << endl << endl;
+			cout << "--- SIMULATION " << (isim + 1) << " OF " << N_SIMS << " (N = " << nParticles << ") ---" << endl << endl;
 
 			// create gravity (we will update it later)
 			Gravity g = Gravity(0.0, 0.0);

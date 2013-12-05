@@ -5,10 +5,10 @@ clear,clf
 % File to open:
 % Input Parameters
 nPosi = 1;
-typeSolver = 'rk4';
+typeSolver = 'leapfrog';
 rows = 1000; % Number of time steps
 nbPlanets = 2; % Number of Planets
-printingSteps = 5; % Printing every x time steps ... Don't use it now, but ... Just in case ?
+printingSteps = 1; % Printing every x time steps ... Don't use it now, but ... Just in case ?
 bWantAGif = false; % A Gif or a JPEG ?
 % Then processing with the opening
 fileToOpen_X = strcat('pos',int2str(nPosi-1),'_',typeSolver,'.dat');

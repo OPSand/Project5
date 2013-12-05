@@ -171,8 +171,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	const int DIM = 3;
 
 	// initialization & time steps (common)
-	const int N = 100; // number of celestial bodies
-	const double EPSILON = 0.0; // correction to Newton in ly to avoid infinite forces at close range
+	const int N = 500; // number of celestial bodies
+	const double EPSILON = 0.04; // correction to Newton in ly to avoid infinite forces at close range
 	const double R0 = 20.0; // initial radius in ly
 	const double AVG_M = 10.0; // solar masses
 	const double STD_M = 1.0; // solar masses
@@ -185,7 +185,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_BIN = 15.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n, same total mass)
-	const int N_SIMS = 10; // number of simulations to run (set to 1 to run just once)
+	const int N_SIMS = 8; // number of simulations to run (set to 1 to run just once)
 	const int N_END = 1000; // max N for last sim (ignored if N_SIMS == 1)
 	const bool EPSILON_LOOP = true; // vary epsilon instead of n
 	const double EPSILON_END = 0.2; // max epsilon for last sim (ignored if N_SIMS == 1)
@@ -408,17 +408,20 @@ int _tmain(int argc, _TCHAR* argv[])
 				testFit.save(fname.str(), raw_ascii);
 
 				// save misc. data about system to file
-				vec sysdata = vec(7);
+				vec sysdata = vec(9);
+				// parameters
+				sysdata(0) = nParticles;
+				sysdata(1) = eps;
 				// energy conservation
-				sysdata(0) = EtotBefore;
-				sysdata(1) = Etot;
-				sysdata(2) = EtotBound;
+				sysdata(2) = EtotBefore;
+				sysdata(3) = Etot;
+				sysdata(4) = EtotBound;
 				// virial theorem data
-				sysdata(3) = EkBound;
-				sysdata(4) = EpBound;
+				sysdata(5) = EkBound;
+				sysdata(6) = EpBound;
 				// distance to bound center of mass
-				sysdata(5) = avgComBound;
-				sysdata(6) = stdComBound;
+				sysdata(7) = avgComBound;
+				sysdata(8) = stdComBound;
 				fname = ostringstream();
 				fname << "sysdata_" << isim << "_" << alg << ".dat";
 				sysdata.save(fname.str(), raw_ascii);

@@ -359,21 +359,11 @@ int _tmain(int argc, _TCHAR* argv[])
 			}
 
 			// free up resources
-			int nSystems = systems->size();
-			while (nSystems > 0)
+			while (systems->size() > 0)
 			{
 				system = systems->at(systems->size() - 1); // get last system
 				systems->pop_back(); // pop it off the stack
-				delete system; // and delete it
-
-				if (nSystems > 1)
-				{
-					nSystems = systems->size();
-				}
-				else
-				{
-					nSystems = 0; // avoid vector bug with calling size when n == 0
-				}
+				// NOTE: Do not delete system! That is handled when solv expires!
 			}
 			delete systems; // finally, delete the vector
 		}

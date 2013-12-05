@@ -73,7 +73,7 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-Open galactic clusters are 
+// NB: Introduction about open clusters
 \end_layout
 
 \begin_layout Standard
@@ -674,6 +674,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Screen/ClassDiagram.jpg
 
@@ -683,15 +685,11 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Class Diagram
+Class Diagram // NB: change the link between GaussPDF and Gravity !!!
 \end_layout
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Plain Layout
 
 \end_layout
 
@@ -867,10 +865,6 @@ Computation of G
 
 \end_layout
 
-\begin_layout Plain Layout
-
-\end_layout
-
 \end_inset
 
 
@@ -916,7 +910,7 @@ Particles ejection
 placement H
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -1015,7 +1009,7 @@ width "45col%"
 special "none"
 height "1in"
 height_special "totalheight"
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -1058,6 +1052,157 @@ Without using the modified gravitational potential, we notice that the energy
  For these particles, the kinetic energy blows up, which is how we can identify
  them.
  
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "c"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Graphics
+	filename Screen/Conservation_Energy_Epsilon_Leapfrog_Resized.jpg
+	scale 45
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Behavior of the energy for N = 100 bodies,ε = √0,0225
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align right
+\begin_inset Graphics
+	filename Screen/Conservation_Energy_Leapfrog_Epsilon_150_Resized.jpg
+	scale 45
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Behavior of the energy for N = 150 bodies,ε = √0,0225
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Screen/Conservation_Energy_Leapfrog_Epsilon_300_Resized.jpg
+	scale 45
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Behavior of the energy for N = 300 bodies, ε = √0,0225
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+After adding the smoothing part in our gravitational potential, we can see
+ that the quantity kinetic energy does not blow up anymore, and the quantity
+ of energy lost is a lot smaller than before: this was expected, since we
+ reduced the numerical instability by adding this ε factor in the calculation
+ of our Newtonian force.
+ Thus, the behavior of particles when they come closer to each other is
+ more stable: we lose less particles than before.
 \end_layout
 
 \begin_layout Paragraph

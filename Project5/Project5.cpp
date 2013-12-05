@@ -123,6 +123,44 @@ void initial2D(CelestialBody* cb, double d, double v, double theta = -1.0)
 	*(cb->velocity) = toCartesian2D(v, orthogonal2D(theta)); // orthogonal (counterclockwise) vs. position
 }
 
+// (for benchmarking): returns an angle in radians that is orthogonal to theta
+double orthogonal3D(double theta, bool clockwise = false)
+{
+	return (theta + 0.5 * cPI);
+}
+
+vec toCartesian3D(double r, double theta, double psi)
+{
+	vec p = vec(3);
+	p[0] = r*sin(theta)*cos(psi); // x
+	p[1] = r*sin(theta)*sin(psi); // y
+	p[2] = r*cos(theta);
+
+	return p;
+}
+
+void initial3D(CelestialBody* cb, double d, double v)
+{
+	// determine position(r0) - independent of system dimension
+	int dim = 3;
+	long* seedTheta = new long(-time(NULL));
+	long* seedPsi = new long(-time(NULL)); // long time, no see?
+
+	double theta;
+	double psi;
+
+	vec x = vec(dim);
+	theta = (2 * cPI), GaussPDF::ran2(seedTheta);
+	psi = (2 * cPI), GaussPDF::ran2(seedPsi);
+
+	delete seedTheta;
+	delete seedPsi;
+
+	*(cb->position) = toCartesian3D(d, theta, psi); // scale to correct radius
+	*(cb->velocity) = toCartesian3D(v, orthogonal3D(theta), psi); // orthogonal (counterclockwise) vs. position
+}
+
+
 
 // Entry point for console application
 int _tmain(int argc, _TCHAR* argv[])
@@ -133,7 +171,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const int DIM = 3;
 
 	// initialization
-	const int N = 100; // number of celestial bodies
+	const int N = 150; // number of celestial bodies
 	const double R0 = 20.0; // initial radius in ly
 	const double AVG_M = 10.0; // solar masses
 	const double STD_M = 1.0; // solar masses
@@ -148,7 +186,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	// time steps
 	const int N_STEPS = 1000; // number of steps total
 	const int N_PLOT = 100; // number of steps to plot (must be <= N_STEPS)
-	const double CRUNCH_TIMES = 5.0; // # of crunch times to simulate for
+	const double CRUNCH_TIMES = 20.0; // # of crunch times to simulate for
 	const double STEP = CRUNCH_TIMES / ((double)N_STEPS - 1.0); // step size (in crunch times)
 	const int PLOT_EVERY = N_STEPS / N_PLOT; // plot every ...th step
 	
@@ -160,6 +198,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	const bool BENCHMARK = false; // To test against the project 3 code
 	#pragma endregion
 
+	if (!BENCHMARK)
+	{
 
 	#pragma region Initialization
 
@@ -274,24 +314,22 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 
 	#pragma endregion
-	
+	}
 	#pragma region Benchmark
 
 	if (BENCHMARK) // re-create Project 3 for comparison - can we reproduce the results?
 	{
-		getchar(); // pause
+		//getchar(); // pause
 
 		// Time steps
+		const int STEP_BM = 24 * 60 * 60; // step length (s)
 		const int N_STEPS_BM = 300 * 365; // number of steps total
-		const int N_PLOT_BM = 300 * 365; // number of steps to plot (must be <= N_STEPS)
-		const double STEP_BM = 24 * 60 * 60;
-		const int PLOT_EVERY_BM = N_STEPS_BM / N_PLOT_BM; // plot every ...th step
-
+		const int PLOT_EVERY_BM = 1; // plot every ...th step
 		// create gravity
 		Gravity g_Bench = Gravity(cG, 0);
 		printf("Entering the Benchmark part \n");
 		// create system
-		SolarSystem* system_BM = new SolarSystem(2, N_STEPS_BM, PLOT_EVERY_BM, &g_Bench);
+		SolarSystem* system_BM = new SolarSystem(3, N_STEPS_BM, PLOT_EVERY_BM, &g_Bench);
 		const double M_SUN_2 = 2e30;
 		const double M_EARTH = 6e24;
 		const double D_SUN = 0.0 * cAU;
@@ -301,14 +339,15 @@ int _tmain(int argc, _TCHAR* argv[])
 		//system->grav()->setG(cG);
 		CelestialBody* sun = new CelestialBody("Sun", M_SUN_2, system_BM, true);
 		CelestialBody* earth = new CelestialBody("Earth", M_EARTH, system_BM, false);
-		initial2D(earth, D_EARTH, V_EARTH);
+		initial3D(earth, D_EARTH, V_EARTH);
 
 		// call this only when initialization is 100% complete!
 		Solvers solv = Solvers(system_BM, USE_RK4, USE_LEAPFROG, USE_EULER);
-		printf("Aaand ... We're done \n");
+		
 
 		// this is where the magic happens :)
-		system_BM = solv.Solve(STEP);
+		system_BM = solv.Solve(STEP_BM);
+		printf("Aaand ... We're done \n");
 	}
 
 	cout << endl << "Press ENTER to exit...";

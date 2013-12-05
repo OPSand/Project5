@@ -172,7 +172,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	// initialization & time steps (common)
 	const int N = 100; // number of celestial bodies
-	const double EPSILON = 0.01; // correction to Newton in ly to avoid infinite forces at close range
+	const double EPSILON = 0.0; // correction to Newton in ly to avoid infinite forces at close range
 	const double R0 = 20.0; // initial radius in ly
 	const double AVG_M = 10.0; // solar masses
 	const double STD_M = 1.0; // solar masses

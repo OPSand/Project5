@@ -323,8 +323,8 @@ int _tmain(int argc, _TCHAR* argv[])
 				}
 
 				// get radial distribution & save to file
-				// 2 standard deviations from the average R seems like a good range
-				double maxR = system->avgDistCoM(true) + CURVEFIT_STDDEV*system->stdDevDistCoM(true);
+				// set max radius to average + x standard deviations (where we choose x)
+				double maxR = system->avgDistCoM(true) + CURVEFIT_STDDEV * system->stdDevDistCoM(true);
 				mat radial = system->radialDistribution(maxR, AVG_BIN, true);
 				fname = ostringstream();
 				fname << "radial_after_" << isim << ".dat";

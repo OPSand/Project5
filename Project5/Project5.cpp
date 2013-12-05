@@ -80,8 +80,8 @@ vec radialDistFitLSq(mat radialDist, int N, int nNR)
 		}
 	}
 
-	ret(2) = ret(0) / rScale;
-	ret(3) = ret(1) / nScale;
+	ret(2) = ret(0) / rScale; // r0/N^(-1/3)
+	ret(3) = ret(1) / nScale; // n0/N^2
 
 	return ret;
 }
@@ -116,7 +116,7 @@ void initial2D(CelestialBody* cb, double d, double v, double theta = -1.0)
 		// create random angle
 		long* seed = new long(-time(NULL));
 		theta = (2 * cPI), GaussPDF::ran2(seed);
-		delete seed; // we're programmers, not farmers
+		delete seed; // farming in a star cluster is risky business, anyway
 	}
 
 	*(cb->position) = toCartesian2D(d, theta);
@@ -144,7 +144,7 @@ void initial3D(CelestialBody* cb, double d, double v)
 	// determine position(r0) - independent of system dimension
 	int dim = 3;
 	long* seedTheta = new long(-time(NULL));
-	long* seedPsi = new long(-time(NULL)); // long time, no see?
+	long* seedPsi = new long(-time(NULL)); // long time, no C?
 
 	double theta;
 	double psi;
@@ -172,7 +172,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	// initialization & time steps (common)
 	const int N = 100; // number of celestial bodies
-	const double EPSILON = sqrt(0.0225); // correction to Newton in ly to avoid infinite forces at close range
+	const double EPSILON = 0.01; // correction to Newton in ly to avoid infinite forces at close range
 	const double R0 = 20.0; // initial radius in ly
 	const double AVG_M = 10.0; // solar masses
 	const double STD_M = 1.0; // solar masses
@@ -185,8 +185,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_BIN = 10.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n, same total mass)
-	const int N_SIMS = 4; // number of simulations to run (set to 1 to run just once)
+	const int N_SIMS = 10; // number of simulations to run (set to 1 to run just once)
 	const int N_END = 1000; // max N for last sim (ignored if N_SIMS == 1)
+	const bool EPSILON_LOOP = true; // vary epsilon instead of n
+	const double EPSILON_END = 0.5; // max epsilon for last sim (ignored if N_SIMS == 1)
 	const double TOTAL_M = AVG_M * N; // total mass (to be kept constant)
 	const double STD_FACTOR = STD_M / AVG_M; // scale std. dev. to average
 
@@ -209,10 +211,23 @@ int _tmain(int argc, _TCHAR* argv[])
 #pragma region Initialization
 
 		int deltaN = 0;
+		double deltaEpsilon = 0.0;
+
 		int nSims = N_SIMS; // avoid const error
-		if (nSims > 1) // avoid division by 0
+
+		if (!EPSILON_LOOP) // loop over n
 		{
-			deltaN = (N_END - N) / (nSims - 1);
+			if (nSims > 1) // avoid division by 0
+			{
+				deltaN = (N_END - N) / (nSims - 1);
+			}
+		}
+		else // loop over epsilon
+		{
+			if (nSims > 1) // avoid division by 0
+			{
+				deltaEpsilon = pow(EPSILON_END, 2.0) - pow(EPSILON, 2.0) / (nSims - 1);
+			}
 		}
 
 		// run one or more simulations
@@ -220,13 +235,35 @@ int _tmain(int argc, _TCHAR* argv[])
 		{
 			ostringstream fname; // for dynamic file names
 
-			// determine number of particles
-			int nParticles = N + isim * deltaN;
-
-			cout << endl << "--- SIMULATION " << (isim + 1) << " OF " << N_SIMS << " (N = " << nParticles << ") ---" << endl << endl;
+			int nParticles;
+			double eps;
 
 			// create gravity (we will update it later)
 			Gravity g = Gravity(0.0, 0.0);
+
+			if (!EPSILON_LOOP) // loop over n
+			{
+				// determine number of particles
+				nParticles = N + isim * deltaN;
+
+				// set epsilon (see report for explanation)
+				eps = ((double)N / (double)nParticles) * EPSILON;
+				cout << "epsilon = " << eps << endl << endl;
+				g.setEpsilon(eps);
+			}
+			else // loop over epsilon
+			{
+				// set number of particles
+				nParticles = N;
+
+				// set epsilon (since we use epsilon squared, we make the intervals linear for that)
+				eps = sqrt(pow(EPSILON, 2.0) + isim * deltaEpsilon);
+				g.setEpsilon(eps);
+			}
+
+			cout << endl << "--- SIMULATION " << (isim + 1) << " OF " << N_SIMS << " ---" << endl;
+			cout << "N = " << nParticles << endl;
+			cout << "epsilon = " << eps << endl << endl;
 
 			// create system
 			SolarSystem* system = new SolarSystem(DIM, N_STEPS, PLOT_EVERY, &g);
@@ -237,11 +274,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			// add N randomly initialized celestial bodies (also sets G)
 			CelestialBodyInitializer::initialize(system, nParticles, avgMass, stdMass, R0);
-
-			// set epsilon (see report for explanation)
-			double eps = ((double)N / (double)nParticles) * EPSILON;
-			cout << "epsilon = " << eps << endl << endl;
-			g.setEpsilon(eps);
 
 			// id of simulation (for file names)
 			ostringstream id = ostringstream();
@@ -269,10 +301,13 @@ int _tmain(int argc, _TCHAR* argv[])
 
 #pragma region Solve and plot
 
+			// average total energy before simulation starts
+			double EtotBefore = system->EpAvg(false) + system->EkAvg(false);
+
 			// Plot energies before simulation (all should be bound)
 			cout << "E_k before: " << system->EkAvg(false) << endl;
 			cout << "E_p before: " << system->EpAvg(false) << endl;
-			cout << "E_tot before: " << (system->EpAvg(false) + system->EkAvg(false)) << endl;
+			cout << "E_tot before: " << EtotBefore << endl;
 
 			if (DEBUG)
 			{
@@ -305,13 +340,39 @@ int _tmain(int argc, _TCHAR* argv[])
 			// for each algorithm used
 			for (int i = 0; i < systems->size(); i++)
 			{
+				string alg = "";
+				switch (i) // name of algorithm - must match what's going on in Solvers
+				{
+				case 0:
+					alg = "leapfrog";
+					break;
+				case 1:
+					alg = "rk4";
+					break;
+				case 2:
+					alg = "euler";
+					break;
+				}
+
 				// get system reference
 				system = systems->at(i);
 
-				cout << "E_k after (bound): " << system->EkAvg(true) << endl;
-				cout << "E_p after (bound): " << system->EpAvg(true) << endl;
-				cout << "E_tot after: " << (system->EpAvg(false) + system->EkAvg(false)) << endl;
-				cout << "E_tot after (bound): " << (system->EpAvg(true) + system->EkAvg(true)) << endl;
+				// average total/bound energy after simulation
+				double Etot = system->EpAvg(false) + system->EkAvg(false);
+				double EtotBound = system->EpAvg(true) + system->EkAvg(true);
+
+				// average kinetic/potential energy for bound particles
+				double EkBound = system->EkAvg(true);
+				double EpBound = system->EpAvg(true);
+
+				// distance to bound center of mass
+				double avgComBound = system->avgDistCoM(true);
+				double stdComBound = system->stdDevDistCoM(true);
+
+				cout << "E_k after (bound): " << EkBound << endl;
+				cout << "E_p after (bound): " << EpBound << endl;
+				cout << "E_tot after: " << Etot << endl;
+				cout << "E_tot after (bound): " << EtotBound << endl;
 
 				if (DEBUG)
 				{
@@ -327,7 +388,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				double maxR = system->avgDistCoM(true) + CURVEFIT_STDDEV * system->stdDevDistCoM(true);
 				mat radial = system->radialDistribution(maxR, AVG_BIN, true);
 				fname = ostringstream();
-				fname << "radial_after_" << isim << ".dat";
+				fname << "radial_after_" << isim << "_" << alg << ".dat";
 				radial.save(fname.str(), raw_ascii);
 
 				if (DEBUG)
@@ -337,14 +398,30 @@ int _tmain(int argc, _TCHAR* argv[])
 
 				// save the number of bound particles per time step for plotting
 				fname = ostringstream();
-				fname << "nbound_" << isim << ".dat";
+				fname << "nbound_" << isim << "_" << alg << ".dat";
 				system->nBoundPlot().save(fname.str(), raw_ascii);
 
 				// curve fitting, save results to file
 				vec testFit = radialDistFitLSq(radial, system->n(), 1000);
 				fname = ostringstream();
-				fname << "curveFit_" << isim << ".dat";
+				fname << "curveFit_" << isim << "_" << alg << ".dat";
 				testFit.save(fname.str(), raw_ascii);
+
+				// save misc. data about system to file
+				vec sysdata = vec(7);
+				// energy conservation
+				sysdata(0) = EtotBefore;
+				sysdata(1) = Etot;
+				sysdata(2) = EtotBound;
+				// virial theorem data
+				sysdata(3) = EkBound;
+				sysdata(4) = EpBound;
+				// distance to bound center of mass
+				sysdata(5) = avgComBound;
+				sysdata(6) = stdComBound;
+				fname = ostringstream();
+				fname << "sysdata_" << isim << "_" << alg << ".dat";
+				sysdata.save(fname.str(), raw_ascii);
 
 				if (DEBUG)
 				{

@@ -35,8 +35,10 @@ public:
 
 	// call this to solve the equations and save results to files
 	// the system will determine the number of steps; all we need is to provide a step length
-	// returns the system in the state the Leapfrog algoritm leaves it in (or nullptr if that algorithm is not used)
-	SolarSystem* Solve(double step);
+	// returns a vector containing pointers to all the system copies in their final state
+	vector<SolarSystem*>* Solve(double step);
+
+	// times the execution
 	void Solvers::avTime(vec elapsedTime);
 };
 

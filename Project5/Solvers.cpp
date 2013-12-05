@@ -57,7 +57,7 @@ Solvers::~Solvers()
 // call this to solve the equations and save results to files
 // the system will determine the number of steps; all we need is to provide a step length
 // returns the system in the state the Leapfrog algoritm leaves it in (or nullptr if that algorithm is not used)
-SolarSystem* Solvers::Solve(double step)
+vector<SolarSystem*>* Solvers::Solve(double step)
 {
 	clock_t start, finish;
 	start = clock();
@@ -90,16 +90,8 @@ SolarSystem* Solvers::Solve(double step)
 	finish = clock();
 	elapsedTime = (double)(finish - start) / CLOCKS_PER_SEC; // To convert this into seconds !
 
-	if (this->_useRK4)
-	{
-		// plot to file (independent of dimension)
-		for (int i = 0; i < this->_rk4->dim(); i++)
-		{
-			ostringstream fname = ostringstream();
-			fname << "sim_" << this->_id << "_pos" << i << "_rk4.dat";
-			this->_rk4->plotDim(i, fname.str());
-		}
-	}
+	// put systems we want to return in here
+	vector<SolarSystem*>* returnSystems = new vector<SolarSystem*>();
 
 	if (this->_useLeapfrog)
 	{
@@ -110,6 +102,29 @@ SolarSystem* Solvers::Solve(double step)
 			fname << "sim_" << this->_id << "_pos" << i << "_leapfrog.dat";
 			this->_leapfrog->plotDim(i, fname.str());
 		}
+
+		// make sure the system is up to date
+		this->_leapfrog->calculate();
+
+		// add to list of systems to return
+		returnSystems->push_back(this->_leapfrog);
+	}
+
+	if (this->_useRK4)
+	{
+		// plot to file (independent of dimension)
+		for (int i = 0; i < this->_rk4->dim(); i++)
+		{
+			ostringstream fname = ostringstream();
+			fname << "sim_" << this->_id << "_pos" << i << "_rk4.dat";
+			this->_rk4->plotDim(i, fname.str());
+		}
+
+		// make sure the system is up to date
+		this->_rk4->calculate();
+
+		// add to list of systems to return
+		returnSystems->push_back(this->_rk4);
 	}
 
 	if (this->_useEuler)
@@ -121,6 +136,12 @@ SolarSystem* Solvers::Solve(double step)
 			fname << "sim_" << this->_id << "_pos" << i << "_euler.dat";
 			this->_euler->plotDim(i, fname.str());
 		}
+
+		// make sure the system is up to date
+		this->_euler->calculate();
+
+		// add to list of systems to return
+		returnSystems->push_back(this->_euler);
 	}
 
 	cout << "DONE!" << endl << endl;
@@ -130,20 +151,8 @@ SolarSystem* Solvers::Solve(double step)
 
 	// Return calculation of the average time spent for a step of leapfrog/RG4
 	//avTime(tabElapsedTime);
-	// we will use leapfrog to return results by default
-	SolarSystem* returnSystem = this->_leapfrog;
 
-	if (returnSystem != nullptr)
-	{
-		// make sure potential energy ++ is up to date
-		returnSystem->calculate();
-
-		return returnSystem;
-	}
-	else // return nothing
-	{
-		return nullptr;
-	}
+	return returnSystems;
 }
 
 // a single Runge-Kutta step (parameter = step length)

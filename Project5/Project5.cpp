@@ -297,10 +297,14 @@ int _tmain(int argc, _TCHAR* argv[])
 			cout << endl << "Running simulation";
 
 			// this is where the magic happens :)
-			system = solv.Solve(STEP);
+			vector<SolarSystem*>* systems = solv.Solve(STEP);
 
-			if (system != nullptr) // only the case if we don't run Leapfrog
+			// for each algorithm used
+			for (int i = 0; i < systems->size(); i++)
 			{
+				// get system reference
+				system = systems->at(i);
+
 				cout << "E_k after (bound): " << system->EkAvg(true) << endl;
 				cout << "E_p after (bound): " << system->EpAvg(true) << endl;
 				cout << "E_tot after: " << (system->EpAvg(false) + system->EkAvg(false)) << endl;
@@ -354,7 +358,13 @@ int _tmain(int argc, _TCHAR* argv[])
 			}
 
 			// free up resources
-			delete system;
+			while (systems->size() > 0)
+			{
+				system = systems->at(systems->size() - 1); // get last system
+				systems->pop_back(); // pop it off the stack
+				delete system; // and delete it
+			}
+			delete systems; // finally, delete the vector
 		}
 	#pragma endregion
 	}
@@ -389,7 +399,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		
 
 		// this is where the magic happens :)
-		system_BM = solv.Solve(STEP_BM);
+		vector<SolarSystem*>* systemsBM = solv.Solve(STEP_BM);
 		printf("Aaand ... We're done \n");
 	}
 

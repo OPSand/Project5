@@ -112,8 +112,13 @@ public:
 	// returns true if room, false if not
 	bool plotCurrentStep(bool condition);
 
-	// radial distribution of particles
-	mat radialDistribution(double maxR, int boxes, bool boundOnly);
+	// number of (bound) particles within radius r
+	// from the (bound) center of mass
+	int nWithin(double r, bool boundOnly);
+
+	// radial distribution of particles within radius maxR
+	// avgBin: average number of particles per bin
+	mat radialDistribution(double maxR, double avgBin, bool boundOnly);
 
 	// # of bound particles per time step
 	mat nBoundPlot();
@@ -135,4 +140,8 @@ public:
 
 	// coordinates of center of mass
 	vec centerOfMass(bool boundOnly);
+
+	// average MINIMUM distance between a pair of particles
+	// O(n^2), so do not call this every step!
+	double avgMinDist();
 };

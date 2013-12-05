@@ -400,16 +400,47 @@ double SolarSystem::numDens(double r)
 	return (this->n() / V); // mass density [solar masses / ly^3]
 }
 
-// calculate radial distribution of all/bound particles within radius maxR
-// (boxes = number of bins in the histogram)
-mat SolarSystem::radialDistribution(double maxR, int boxes, bool boundOnly)
+// number of (bound) particles within radius r
+// from the (bound) center of mass
+int SolarSystem::nWithin(double r, bool boundOnly)
 {
-	double histogramWidth = (maxR / (double)boxes);
-	mat plot = mat(boxes, 3);
+	int sum = 0; // count particles within r
+
+	// for every particle
+	for (int i = 0; i < this->n(); i++)
+	{
+		CelestialBody* cb_i = this->body(i);
+
+		// check bound conditions (if they apply)
+		if ((!boundOnly) || (cb_i->isBound()))
+		{
+			// check distance to the appropriate center of mass
+			if (distCoM(cb_i, boundOnly) < r)
+			{
+				sum++;
+			}
+		}
+	}
+
+	return sum;
+}
+
+// radial distribution of particles within radius maxR
+// avgBin: average number of particles per bin
+mat SolarSystem::radialDistribution(double maxR, double avgBin, bool boundOnly)
+{
+	// determine number of bins from average and counted number of particles
+	// within maxR
+	int bins = ((double)this->nWithin(maxR, boundOnly) / avgBin);
+	bins++; // we just threw away the decimal part, so add 1 to round up
+
+	// use number of bins to determine width of each bin
+	double histogramWidth = (maxR / (double)bins);
+	mat plot = mat(bins, 3);
 	plot.fill(0.0);
 
 	// set r values
-	for (int i = 0; i < boxes; i++)
+	for (int i = 0; i < bins; i++)
 	{
 		// use the midpoint of the interval
 		plot(i, 0) = (i + 0.5)*histogramWidth;
@@ -427,12 +458,12 @@ mat SolarSystem::radialDistribution(double maxR, int boxes, bool boundOnly)
 			double comDist = this->distCoM(cb_i, boundOnly);
 
 			// box to put it in
-			double box = (comDist / histogramWidth);
+			double bin = (comDist / histogramWidth);
 
 			// don't plot if outside max radius
-			if (box < boxes)
+			if (bin < bins)
 			{
-				plot((int) box, 1) += 1.0; // drop decimal part
+				plot((int) bin, 1) += 1.0;
 			}
 		}
 	}
@@ -441,7 +472,7 @@ mat SolarSystem::radialDistribution(double maxR, int boxes, bool boundOnly)
 	// third column is n(r) = N(r)/V(r), the number density
 
 	// for every bin, divide N(r) by the volume V(r)
-	for (int i = 0; i < boxes; i++)
+	for (int i = 0; i < bins; i++)
 	{
 		double r = plot(i, 0);
 		double delta_r = 0.5 * histogramWidth;
@@ -520,4 +551,38 @@ double SolarSystem::stdDevDistCoM(bool boundOnly)
 mat SolarSystem::nBoundPlot()
 {
 	return *(this->_nBoundPlot);
+}
+
+// average MINIMUM distance between a pair of particles
+// O(n^2), so do not call this every step!
+double SolarSystem::avgMinDist()
+{
+	double sum = 0.0;
+	int n = this->n();
+
+	// for each pair of particles
+	for (int i = 0; i < n; i++)
+	{
+		CelestialBody* cb_i = this->body(i);
+		double min = INFINITY;
+
+		for (int j = (i + 1); j < n; j++)
+		{
+			CelestialBody* cb_j = this->body(j);
+
+			// calculate distance
+			double dist = cb_i->dist(cb_j);
+
+			// is this the minimal distance encountered so far
+			if (dist < min)
+			{
+				min = dist;
+			}
+		}
+
+		sum += min;
+	}
+
+	// return average
+	return (sum / n);
 }

@@ -171,7 +171,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const int DIM = 3;
 
 	// initialization & time steps (common)
-	const int N = 400; // number of celestial bodies
+	const int N = 500; // number of celestial bodies
 	const double EPSILON = 0.04; // correction to Newton in ly to avoid infinite forces at close range
 	const double R0 = 20.0; // initial radius in ly
 	const double AVG_M = 10.0; // solar masses
@@ -182,10 +182,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double STEP = CRUNCH_TIMES / ((double)N_STEPS - 1.0); // step size (in crunch times)
 	const int PLOT_EVERY = N_STEPS / N_PLOT; // plot every ...th step
 	const double CURVEFIT_STDDEV = 1.0; // max r limit for curve fitting in standard deviations
-	const double AVG_BIN = 15.0; // avg. number of particles in each bin (curve fitting)
+	const double AVG_BIN = 20.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n/epsilon, same total mass)
-	const int N_SIMS = 5; // number of simulations to run (set to 1 to run just once)
+	const int N_SIMS = 8; // number of simulations to run (set to 1 to run just once)
 	const int N_END = 2000; // max N for last sim (ignored if N_SIMS == 1)
 	const double EPSILON_END = 0.2; // max epsilon for last sim (ignored if N_SIMS == 1)
 	const double TOTAL_M = AVG_M * N; // total mass (to be kept constant)
@@ -198,7 +198,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double G_YLS = cG * M_SUN * pow(cYr, 2.0) / pow(LY, 3.0); // G in years, ly, solar masses
 
 	// flags
-	const bool EPSILON_LOOP = false; // vary epsilon instead of n
+	const bool EPSILON_LOOP = true; // vary epsilon instead of n
 	const bool USE_LEAPFROG = true; // use Leapfrog method
 	const bool USE_RK4 = false; // use Runge-Kutta method
 	const bool USE_EULER = false; // use Euler-Cromer method
@@ -424,7 +424,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				// (i.e. ignoring epsilon in the potential)
 				g.setEpsilon(0.0);
 				system->calculate(); // re-compute potential energies
-				double EpBoundClassic = system->EkAvg(true);
+				double EpBoundClassic = system->EpAvg(true);
 
 				// save misc. data about system to file
 				vec sysdata = vec(10);

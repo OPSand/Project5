@@ -1,11 +1,14 @@
 #include "stdafx.h"
 #include "Solvers.h"
 
-// constructor
-Solvers::Solvers(SolarSystem* system, bool useRK4, bool useLeapfrog, bool useEuler)
+// constructor (isim = number of sim in a series)
+Solvers::Solvers(SolarSystem* system, const string& id, bool useRK4, bool useLeapfrog, bool useEuler)
 {
 	// save pointer to original system
 	this->_system = system;
+
+	// set ID
+	this->_id = id;
 
 	// set flags
 	this->_useRK4 = useRK4;
@@ -82,7 +85,7 @@ SolarSystem* Solvers::Solve(double step)
 		for (int i = 0; i < this->_rk4->dim(); i++)
 		{
 			ostringstream fname = ostringstream();
-			fname << "pos" << i << "_rk4.dat";
+			fname << "sim_" << this->_id << "_pos" << i << "_rk4.dat";
 			this->_rk4->plotDim(i, fname.str());
 		}
 	}
@@ -93,7 +96,7 @@ SolarSystem* Solvers::Solve(double step)
 		for (int i = 0; i < this->_leapfrog->dim(); i++)
 		{
 			ostringstream fname = ostringstream();
-			fname << "pos" << i << "_leapfrog.dat";
+			fname << "sim_" << this->_id << "_pos" << i << "_leapfrog.dat";
 			this->_leapfrog->plotDim(i, fname.str());
 		}
 	}
@@ -104,7 +107,7 @@ SolarSystem* Solvers::Solve(double step)
 		for (int i = 0; i < this->_euler->dim(); i++)
 		{
 			ostringstream fname = ostringstream();
-			fname << "pos" << i << "_euler.dat";
+			fname << "sim_" << this->_id << "_pos" << i << "_euler.dat";
 			this->_euler->plotDim(i, fname.str());
 		}
 	}

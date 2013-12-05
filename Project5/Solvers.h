@@ -8,6 +8,9 @@
 class Solvers
 {
 protected:
+	// ID for unique simulation
+	string _id;
+
 	// flags
 	bool _useRK4;
 	bool _useLeapfrog;
@@ -27,7 +30,7 @@ protected:
 public:
 
 	// constructors/destructors
-	Solvers(SolarSystem* system, bool useRK4, bool useLeapfrog, bool useEuler);
+	Solvers(SolarSystem* system, const string& id, bool useRK4, bool useLeapfrog, bool useEuler);
 	~Solvers();
 
 	// call this to solve the equations and save results to files

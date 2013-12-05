@@ -235,8 +235,12 @@ int _tmain(int argc, _TCHAR* argv[])
 			// set epsilon (see report for explanation)
 			g.setEpsilon((N / nParticles) * EPSILON);
 
+			// id of simulation (for file names)
+			ostringstream id = ostringstream();
+			id << isim;
+
 			// call this only when initialization is 100% complete!
-			Solvers solv = Solvers(system, USE_RK4, USE_LEAPFROG, USE_EULER);
+			Solvers solv = Solvers(system, id.str(),  USE_RK4, USE_LEAPFROG, USE_EULER);
 
 			if (DEBUG)
 			{
@@ -376,7 +380,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		initial3D(earth, D_EARTH, V_EARTH);
 
 		// call this only when initialization is 100% complete!
-		Solvers solv = Solvers(system_BM, USE_RK4, USE_LEAPFROG, USE_EULER);
+		Solvers solv = Solvers(system_BM, "BM", USE_RK4, USE_LEAPFROG, USE_EULER);
 		
 
 		// this is where the magic happens :)

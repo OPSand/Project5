@@ -37,11 +37,20 @@ SolarSystem::SolarSystem(const SolarSystem& other)
 // destructor
 SolarSystem::~SolarSystem(void)
 {
-	while( this->n() > 0 ) // counter will be updated automatically
+	int n = this->n();
+	while( n > 0 ) // counter will be updated automatically
 	{
 		CelestialBody* cb = this->body(this->n() - 1); // return last element
 		this->_bodies->pop_back(); // remove it from vector
 		delete cb; // delete it
+		if (n > 1)
+		{
+			n = this->n();
+		}
+		else
+		{
+			n = 0; // avoid vector bug with calling size when n == 0
+		}
 	}
 	delete _bodies; // delete vector
 

@@ -209,9 +209,10 @@ int _tmain(int argc, _TCHAR* argv[])
 #pragma region Initialization
 
 		int deltaN = 0;
-		if (N_SIMS > 1) // avoid division by 0
+		int nSims = N_SIMS; // avoid const error
+		if (nSims > 1) // avoid division by 0
 		{
-			deltaN = (N_END - N) / (N_SIMS - 1);
+			deltaN = (N_END - N) / (nSims - 1);
 		}
 
 		// run one or more simulations
@@ -358,11 +359,21 @@ int _tmain(int argc, _TCHAR* argv[])
 			}
 
 			// free up resources
-			while (systems->size() > 0)
+			int nSystems = systems->size();
+			while (nSystems > 0)
 			{
 				system = systems->at(systems->size() - 1); // get last system
 				systems->pop_back(); // pop it off the stack
 				delete system; // and delete it
+
+				if (nSystems > 1)
+				{
+					nSystems = systems->size();
+				}
+				else
+				{
+					nSystems = 0; // avoid vector bug with calling size when n == 0
+				}
 			}
 			delete systems; // finally, delete the vector
 		}
@@ -396,7 +407,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		// call this only when initialization is 100% complete!
 		Solvers solv = Solvers(system_BM, "BM", USE_RK4, USE_LEAPFROG, USE_EULER);
-		
 
 		// this is where the magic happens :)
 		vector<SolarSystem*>* systemsBM = solv.Solve(STEP_BM);

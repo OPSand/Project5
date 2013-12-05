@@ -182,13 +182,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double STEP = CRUNCH_TIMES / ((double)N_STEPS - 1.0); // step size (in crunch times)
 	const int PLOT_EVERY = N_STEPS / N_PLOT; // plot every ...th step
 	const double CURVEFIT_STDDEV = 1.0; // max r limit for curve fitting in standard deviations
-	const double AVG_BIN = 10.0; // avg. number of particles in each bin (curve fitting)
+	const double AVG_BIN = 15.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n, same total mass)
 	const int N_SIMS = 10; // number of simulations to run (set to 1 to run just once)
 	const int N_END = 1000; // max N for last sim (ignored if N_SIMS == 1)
 	const bool EPSILON_LOOP = true; // vary epsilon instead of n
-	const double EPSILON_END = 0.5; // max epsilon for last sim (ignored if N_SIMS == 1)
+	const double EPSILON_END = 0.2; // max epsilon for last sim (ignored if N_SIMS == 1)
 	const double TOTAL_M = AVG_M * N; // total mass (to be kept constant)
 	const double STD_FACTOR = STD_M / AVG_M; // scale std. dev. to average
 
@@ -226,7 +226,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		{
 			if (nSims > 1) // avoid division by 0
 			{
-				deltaEpsilon = pow(EPSILON_END, 2.0) - pow(EPSILON, 2.0) / (nSims - 1);
+				deltaEpsilon = (EPSILON_END - EPSILON) / (nSims - 1);
 			}
 		}
 
@@ -257,7 +257,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				nParticles = N;
 
 				// set epsilon (since we use epsilon squared, we make the intervals linear for that)
-				eps = sqrt(pow(EPSILON, 2.0) + isim * deltaEpsilon);
+				eps = EPSILON + isim * deltaEpsilon;
 				g.setEpsilon(eps);
 			}
 

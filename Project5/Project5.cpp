@@ -187,7 +187,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	// initialization & time steps (run many with different n, same total mass)
 	const int N_SIMS = 8; // number of simulations to run (set to 1 to run just once)
 	const int N_END = 1000; // max N for last sim (ignored if N_SIMS == 1)
-	const bool EPSILON_LOOP = true; // vary epsilon instead of n
 	const double EPSILON_END = 0.2; // max epsilon for last sim (ignored if N_SIMS == 1)
 	const double TOTAL_M = AVG_M * N; // total mass (to be kept constant)
 	const double STD_FACTOR = STD_M / AVG_M; // scale std. dev. to average
@@ -199,6 +198,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double G_YLS = cG * M_SUN * pow(cYr, 2.0) / pow(LY, 3.0); // G in years, ly, solar masses
 
 	// flags
+	const bool EPSILON_LOOP = true; // vary epsilon instead of n
 	const bool USE_LEAPFROG = true; // use Leapfrog method
 	const bool USE_RK4 = false; // use Runge-Kutta method
 	const bool USE_EULER = false; // use Euler-Cromer method
@@ -407,25 +407,6 @@ int _tmain(int argc, _TCHAR* argv[])
 				fname << "curveFit_" << isim << "_" << alg << ".dat";
 				testFit.save(fname.str(), raw_ascii);
 
-				// save misc. data about system to file
-				vec sysdata = vec(9);
-				// parameters
-				sysdata(0) = nParticles;
-				sysdata(1) = eps;
-				// energy conservation
-				sysdata(2) = EtotBefore;
-				sysdata(3) = Etot;
-				sysdata(4) = EtotBound;
-				// virial theorem data
-				sysdata(5) = EkBound;
-				sysdata(6) = EpBound;
-				// distance to bound center of mass
-				sysdata(7) = avgComBound;
-				sysdata(8) = stdComBound;
-				fname = ostringstream();
-				fname << "sysdata_" << isim << "_" << alg << ".dat";
-				sysdata.save(fname.str(), raw_ascii);
-
 				if (DEBUG)
 				{
 					cout << "r0 = " << testFit(0) << endl;
@@ -438,6 +419,32 @@ int _tmain(int argc, _TCHAR* argv[])
 					cout << "(all) avg = " << system->avgDistCoM(false) << endl;
 					cout << "(all) stdDev = " << system->stdDevDistCoM(false) << endl;
 				}
+
+				// calculate "classic" potential energy instead for bound particles
+				// (i.e. ignoring epsilon in the potential)
+				g.setEpsilon(0.0);
+				system->calculate(); // re-compute potential energies
+				double EpBoundClassic = system->EkAvg(true);
+
+				// save misc. data about system to file
+				vec sysdata = vec(10);
+				// parameters
+				sysdata(0) = nParticles;
+				sysdata(1) = eps;
+				// energy conservation
+				sysdata(2) = EtotBefore;
+				sysdata(3) = Etot;
+				sysdata(4) = EtotBound;
+				// virial theorem data
+				sysdata(5) = EkBound;
+				sysdata(6) = EpBound;
+				sysdata(7) = EpBoundClassic;
+				// distance to bound center of mass
+				sysdata(8) = avgComBound;
+				sysdata(9) = stdComBound;
+				fname = ostringstream();
+				fname << "sysdata_" << isim << "_" << alg << ".dat";
+				sysdata.save(fname.str(), raw_ascii);
 			}
 
 			// free up resources

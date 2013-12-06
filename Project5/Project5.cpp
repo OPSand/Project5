@@ -185,9 +185,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_BIN = 20.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n/epsilon, same total mass)
-	const int N_SIMS = 3; // number of simulations to run (set to 1 to run just once)
+	const int N_SIMS = 2; // number of simulations to run (set to 1 to run just once)
 	const int N_END = 2000; // max N for last sim (ignored if N_SIMS == 1)
-	const double EPSILON_END = 0.2; // max epsilon for last sim (ignored if N_SIMS == 1)
+	const double EPSILON_END = 0.25; // max epsilon for last sim (ignored if N_SIMS == 1)
 	const double TOTAL_M = AVG_M * N; // total mass (to be kept constant)
 	const double STD_FACTOR = STD_M / AVG_M; // scale std. dev. to average
 

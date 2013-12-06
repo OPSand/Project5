@@ -172,7 +172,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	// initialization & time steps (common)
 	const int N = 500; // number of celestial bodies
-	const double EPSILON = 0.02; // correction to Newton in ly to avoid infinite forces at close range
+	const double EPSILON = (0.1 / sqrt(5.0)); // correction to Newton in ly to avoid infinite forces at close range
 	const double R0 = 20.0; // initial radius in ly
 	const double AVG_M = 2.0; // solar masses
 	const double STD_M = 1.0; // solar masses
@@ -247,7 +247,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				nParticles = N + isim * deltaN;
 
 				// set epsilon (see report for explanation)
-				eps = ((double)N / (double)nParticles) * EPSILON;
+				eps = sqrt((double)N / (double)nParticles) * EPSILON;
 				g.setEpsilon(eps);
 			}
 			else // loop over epsilon

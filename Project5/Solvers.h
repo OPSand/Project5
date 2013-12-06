@@ -28,6 +28,11 @@ protected:
 	void Euler(double step);
 
 public:
+	// stores information on how long time execution took
+	double totalTime;
+	double leapfrogTime;
+	double rk4Time;
+	double eulerTime;
 
 	// constructors/destructors
 	Solvers(SolarSystem* system, const string& id, bool useRK4, bool useLeapfrog, bool useEuler);

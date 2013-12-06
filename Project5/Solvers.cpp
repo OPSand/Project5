@@ -148,6 +148,7 @@ vector<SolarSystem*>* Solvers::Solve(double step)
 
 	// And siplay of the timing part 
 	printf("Elapsed Time : %lf \n", elapsedTime);
+	this->totalTime = elapsedTime;
 
 	// Return calculation of the average time spent for a step of leapfrog/RG4
 	//avTime(tabElapsedTime);

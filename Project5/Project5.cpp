@@ -172,7 +172,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	// initialization & time steps (common)
 	const int N = 500; // number of celestial bodies
-	const double EPSILON = 0.04; // correction to Newton in ly to avoid infinite forces at close range
+	const double EPSILON = 0.15; // correction to Newton in ly to avoid infinite forces at close range
 	const double R0 = 20.0; // initial radius in ly
 	const double AVG_M = 10.0; // solar masses
 	const double STD_M = 1.0; // solar masses
@@ -185,7 +185,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_BIN = 20.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n/epsilon, same total mass)
-	const int N_SIMS = 8; // number of simulations to run (set to 1 to run just once)
+	const int N_SIMS = 3; // number of simulations to run (set to 1 to run just once)
 	const int N_END = 2000; // max N for last sim (ignored if N_SIMS == 1)
 	const double EPSILON_END = 0.2; // max epsilon for last sim (ignored if N_SIMS == 1)
 	const double TOTAL_M = AVG_M * N; // total mass (to be kept constant)
@@ -427,21 +427,23 @@ int _tmain(int argc, _TCHAR* argv[])
 				double EpBoundClassic = system->EpAvg(true);
 
 				// save misc. data about system to file
-				vec sysdata = vec(10);
+				vec sysdata = vec(11);
 				// parameters
 				sysdata(0) = nParticles;
 				sysdata(1) = eps;
+				// time
+				sysdata(2) = solv.totalTime;
 				// energy conservation
-				sysdata(2) = EtotBefore;
-				sysdata(3) = Etot;
-				sysdata(4) = EtotBound;
+				sysdata(3) = EtotBefore;
+				sysdata(4) = Etot;
+				sysdata(5) = EtotBound;
 				// virial theorem data
-				sysdata(5) = EkBound;
-				sysdata(6) = EpBound;
-				sysdata(7) = EpBoundClassic;
+				sysdata(6) = EkBound;
+				sysdata(7) = EpBound;
+				sysdata(8) = EpBoundClassic;
 				// distance to bound center of mass
-				sysdata(8) = avgComBound;
-				sysdata(9) = stdComBound;
+				sysdata(9) = avgComBound;
+				sysdata(10) = stdComBound;
 				fname = ostringstream();
 				fname << "sysdata_" << isim << "_" << alg << ".dat";
 				sysdata.save(fname.str(), raw_ascii);

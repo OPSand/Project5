@@ -172,9 +172,9 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	// initialization & time steps (common)
 	const int N = 500; // number of celestial bodies
-	const double EPSILON = 0.15; // correction to Newton in ly to avoid infinite forces at close range
+	const double EPSILON = 0.02; // correction to Newton in ly to avoid infinite forces at close range
 	const double R0 = 20.0; // initial radius in ly
-	const double AVG_M = 10.0; // solar masses
+	const double AVG_M = 2.0; // solar masses
 	const double STD_M = 1.0; // solar masses
 	const double CRUNCH_TIMES = 4.0; // # of crunch times to simulate for
 	const int N_STEPS = 1000; // number of steps total
@@ -185,9 +185,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_BIN = 20.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n/epsilon, same total mass)
-	const int N_SIMS = 2; // number of simulations to run (set to 1 to run just once)
+	const int N_SIMS = 4; // number of simulations to run (set to 1 to run just once)
 	const int N_END = 2000; // max N for last sim (ignored if N_SIMS == 1)
-	const double EPSILON_END = 0.25; // max epsilon for last sim (ignored if N_SIMS == 1)
+	const double EPSILON_END = 0.15; // max epsilon for last sim (ignored if N_SIMS == 1)
 	const double TOTAL_M = AVG_M * N; // total mass (to be kept constant)
 	const double STD_FACTOR = STD_M / AVG_M; // scale std. dev. to average
 
@@ -198,7 +198,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double G_YLS = cG * M_SUN * pow(cYr, 2.0) / pow(LY, 3.0); // G in years, ly, solar masses
 
 	// flags
-	const bool EPSILON_LOOP = true; // vary epsilon instead of n
+	const bool EPSILON_LOOP = false; // vary epsilon instead of n
 	const bool USE_LEAPFROG = true; // use Leapfrog method
 	const bool USE_RK4 = false; // use Runge-Kutta method
 	const bool USE_EULER = false; // use Euler-Cromer method
@@ -248,7 +248,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
 				// set epsilon (see report for explanation)
 				eps = ((double)N / (double)nParticles) * EPSILON;
-				cout << "epsilon = " << eps << endl << endl;
 				g.setEpsilon(eps);
 			}
 			else // loop over epsilon

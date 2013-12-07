@@ -174,21 +174,24 @@ int _tmain(int argc, _TCHAR* argv[])
 	const int N = 100; // number of celestial bodies
 	const double R0 = 20.0; // initial radius in ly
 	const double TOTAL_M = 1000.0; // solar masses (to be kept constant if we loop over N)
-	const double AVG_M = (TOTAL_M / (double)N); // average mass, solar masses
 	const double STD_FACTOR = 0.1; // % factor of average
 	const double CRUNCH_TIMES = 4.0; // # of crunch times to simulate for
 	const double EPSILON = 0.0; // first epsilon value to try (ignored if not looping over epsilon values)
 	const int N_STEPS = 1000; // number of steps total
 	const int N_PLOT = 100; // number of steps to plot (must be <= N_STEPS)
-	const double STEP = CRUNCH_TIMES / ((double)N_STEPS - 1.0); // step size (in crunch times)
-	const int PLOT_EVERY = N_STEPS / N_PLOT; // plot every ...th step
+	const int N_NR = 1000; // number of n0 and r0 values to try (curve fitting)
 	const double CURVEFIT_STDDEV = 1.0; // max r limit for curve fitting in standard deviations
 	const double AVG_BIN = 20.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n/epsilon, same total mass)
-	const int N_SIMS = 1; // number of simulations to run (set to 1 to run just once)
+	const int N_SIMS = 16; // number of simulations to run (set to 1 to run just once)
 	const int N_END = 2500; // max N for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == true)
 	const double EPSILON_END = 0.15; // max epsilon for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == false)
+
+	// constants calculated from other constants
+	const double AVG_M = (TOTAL_M / (double)N); // average mass, solar masses
+	const double STEP = CRUNCH_TIMES / ((double)N_STEPS - 1.0); // step size (in crunch times)
+	const int PLOT_EVERY = N_STEPS / N_PLOT; // plot every ...th step
 
 	// physical constants
 	const double LY = 9.4607e15; // m
@@ -344,7 +347,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			vector<SolarSystem*>* systems = solv.Solve(STEP);
 
 			// store info for matlab plots for the entire series of simulations
-			mat isimsPlot = mat(N_SIMS, 14);
+			mat isimsPlot = mat(N_SIMS, 18);
 
 			// for each algorithm used
 			for (int i = 0; i < systems->size(); i++)
@@ -430,11 +433,8 @@ int _tmain(int argc, _TCHAR* argv[])
 				double boundParticles = nbp(nbp.n_rows - 1, 1);
 				double finalBound = (boundParticles / n);
 
-				// curve fitting, save results to file
-				vec testFit = radialDistFitLSq(radial, system->n(), 1000);
-				fname = ostringstream();
-				fname << "curveFit_" << system->name << ".dat";
-				testFit.save(fname.str(), raw_ascii);
+				// perform curve fitting
+				vec testFit = radialDistFitLSq(radial, system->n(), N_NR);
 
 				if (DEBUG)
 				{
@@ -443,8 +443,8 @@ int _tmain(int argc, _TCHAR* argv[])
 					cout << "r0 / N^(-1/3) = " << testFit(2) << endl;
 					cout << "n0 / N^2 = " << testFit(3) << endl << endl;
 
-					cout << "(bound) avg = " << system->avgDistCoM(true) << endl;
-					cout << "(bound) stdDev = " << system->stdDevDistCoM(true) << endl;
+					cout << "(bound) avg = " << avgComBound << endl;
+					cout << "(bound) stdDev = " << stdComBound << endl;
 					cout << "(all) avg = " << system->avgDistCoM(false) << endl;
 					cout << "(all) stdDev = " << system->stdDevDistCoM(false) << endl;
 				}
@@ -465,17 +465,22 @@ int _tmain(int argc, _TCHAR* argv[])
 				// virial theorem data
 				isimsPlot(isim,8) = EkBound;
 				isimsPlot(isim,9) = EpBound;
-				// # 10 is below!
+				// NOTE: # 10 is below! (since we reset epsilon, we save that one for last)
+				// curve fitting
+				isimsPlot(isim, 11) = testFit(0);
+				isimsPlot(isim, 12) = testFit(1);
+				isimsPlot(isim, 13) = testFit(2);
+				isimsPlot(isim, 14) = testFit(3);
 				// distance to bound center of mass
-				isimsPlot(isim,11) = avgComBound;
-				isimsPlot(isim,12) = stdComBound;
+				isimsPlot(isim, 15) = avgComBound;
+				isimsPlot(isim, 16) = stdComBound;
 				// final number of bound particles
-				isimsPlot(isim,13) = finalBound;
+				isimsPlot(isim, 17) = finalBound;
 
 				// Finally:
 				// calculate "classic" potential energy instead for bound particles
 				// (i.e. ignoring epsilon in the potential)
-				// NOTE: After this point, use eps and not g.epsilon()!
+				// NOTE: After this point in the loop, use eps and not g.epsilon()!
 				g.setEpsilon(0.0);
 				system->calculate(); // re-compute potential energies
 				double EpBoundClassic = system->EpTotal(true);

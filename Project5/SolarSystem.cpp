@@ -22,7 +22,7 @@ SolarSystem::SolarSystem(const SolarSystem& other)
 	this->_plotStep = other._plotStep;
 	this->_nPlot = other._nPlot;
 	this->_grav = other._grav;
-	this->_nBoundPlot = other._nBoundPlot;
+	this->_nBoundPlot = new mat(*other._nBoundPlot);
 	this->name = other.name;
 
 	// deep copy
@@ -60,7 +60,7 @@ SolarSystem SolarSystem::operator = (const SolarSystem& other)
 		this->_plotStep = other._plotStep;
 		this->_nPlot = other._nPlot;
 		this->_grav = other._grav;
-		this->_nBoundPlot = other._nBoundPlot;
+		this->_nBoundPlot = new mat(*other._nBoundPlot);
 		this->name = other.name;
 
 		// deep copy

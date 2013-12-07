@@ -184,7 +184,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_BIN = 20.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n/epsilon, same total mass)
-	const int N_SIMS = 16; // number of simulations to run (set to 1 to run just once)
+	const int N_SIMS = 1; // number of simulations to run (set to 1 to run just once)
 	const int N_END = 2500; // max N for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == true)
 	const double EPSILON_END = 0.15; // max epsilon for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == false)
 
@@ -202,8 +202,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	// flags
 	const bool EPSILON_LOOP = true; // vary epsilon instead of n
 	const bool USE_LEAPFROG = true; // use Leapfrog method
-	const bool USE_RK4 = false; // use Runge-Kutta method
-	const bool USE_EULER = false; // use Euler-Cromer method
+	const bool USE_RK4 = true; // use Runge-Kutta method
+	const bool USE_EULER = true; // use Euler-Cromer method
 	const bool DEBUG = false; // for debugging only
 	const bool BENCHMARK = false; // To test against the project 3 code
 	#pragma endregion

@@ -344,7 +344,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			vector<SolarSystem*>* systems = solv.Solve(STEP);
 
 			// store info for matlab plots for the entire series of simulations
-			mat isimsPlot = mat(N_SIMS, 6);
+			mat isimsPlot = mat(N_SIMS, 14);
 
 			// for each algorithm used
 			for (int i = 0; i < systems->size(); i++)

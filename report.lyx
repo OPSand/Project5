@@ -1025,7 +1025,7 @@ Execution time (s)
 \begin_inset Text
 
 \begin_layout Plain Layout
-To process the two-body system
+For 1000 steps, two bodies
 \end_layout
 
 \end_inset
@@ -1034,7 +1034,7 @@ To process the two-body system
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+For 1000 steps, 100 bodies
 \end_layout
 
 \end_inset
@@ -1063,7 +1063,7 @@ Leap-frog
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+86,35
 \end_layout
 
 \end_inset
@@ -1092,7 +1092,7 @@ Forth-order Runge Kutta
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+171,25
 \end_layout
 
 \end_inset
@@ -1615,6 +1615,15 @@ Energy conservation
 \end_layout
 
 \begin_layout Paragraph
+Equilibrium
+\end_layout
+
+\begin_layout Standard
+As discussed in the theory part, according to the virial theorem, the system
+ reachs an equilibrium after 
+\end_layout
+
+\begin_layout Paragraph
 Particles ejection
 \end_layout
 
@@ -1762,9 +1771,13 @@ Behavior of the energy for N = 300 bodies,ε = 0
 \begin_layout Standard
 Without using the modified gravitational potential, we notice that the energy
  is not conserved: some particles are ejected of the system.
- For these particles, the kinetic energy blows up, which is how we can identify
- them.
- 
+ For these particles, the kinetic energy blows up, and the total energy
+ of theses particles is positive.
+\end_layout
+
+\begin_layout Standard
+// NB: Should re-run the program, seems that some parameters got messed
+ up during the process
 \end_layout
 
 \begin_layout Standard

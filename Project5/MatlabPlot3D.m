@@ -6,15 +6,15 @@ clear,clf
 % Input Parameters
 nPosi = 2; % From 0 to nPosi
 typeSolver = 'rk4';
-rows =  300*365; % Number of time steps
+rows = 1000000;% 300*365; % Number of time steps
 nbPlanets = 2; % Number of Planets
 printingSteps = 10; % Printing every x time steps ... Don't use it now, but ... Just in case ?
 bWantAGif = false; % A Gif or a JPEG ?
 bWantToSave = false; % This considerably slows down everything, but well ... !
 % Then processing with the opening
-fileToOpen_X = strcat('pos',int2str(nPosi-2),'_',typeSolver,'.dat');
-fileToOpen_Y = strcat('pos',int2str(nPosi-1),'_',typeSolver,'.dat');
-fileToOpen_Z = strcat('pos',int2str(nPosi),'_',typeSolver,'.dat');
+fileToOpen_X = strcat('sim_BM_','pos',int2str(nPosi-2),'_',typeSolver,'.dat');
+fileToOpen_Y = strcat('sim_BM_','pos',int2str(nPosi-1),'_',typeSolver,'.dat');
+fileToOpen_Z = strcat('sim_BM_','pos',int2str(nPosi),'_',typeSolver,'.dat');
 fidPosi_X = fopen(fileToOpen_X );
 fidPosi_Y = fopen(fileToOpen_Y );
 fidPosi_Z = fopen(fileToOpen_Z );
@@ -62,6 +62,7 @@ if bWantAGif == true
     end
 else
     figure(1)
+    
     filename = strcat('plot3D_for_',typeSolver,'.jpeg');
     for i = 1: rows
        
@@ -72,6 +73,7 @@ else
             ylabel('Y');
             zlabel('Z');
             hold on;
+            drawnow
     end
     title(['Plot with ', typeSolver]);
     frame = getframe(1);

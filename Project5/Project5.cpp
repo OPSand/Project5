@@ -175,7 +175,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double EPSILON = (0.1 / sqrt(5.0)); // correction to Newton in ly to avoid infinite forces at close range
 	const double R0 = 20.0; // initial radius in ly
 	const double AVG_M = 2.0; // solar masses
-	const double STD_M = 0.2; // solar masses
+	const double STD_M = 1.0; // solar masses
 	const double CRUNCH_TIMES = 4.0; // # of crunch times to simulate for
 	const int N_STEPS = 1000; // number of steps total
 	const int N_PLOT = 100; // number of steps to plot (must be <= N_STEPS)
@@ -185,8 +185,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_BIN = 20.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n/epsilon, same total mass)
-	const int N_SIMS = 2; // number of simulations to run (set to 1 to run just once)
-	const int N_END = 2500; // max N for last sim (ignored if N_SIMS == 1)
+	const int N_SIMS = 4; // number of simulations to run (set to 1 to run just once)
+	const int N_END = 2000; // max N for last sim (ignored if N_SIMS == 1)
 	const double EPSILON_END = 0.15; // max epsilon for last sim (ignored if N_SIMS == 1)
 	const double TOTAL_M = AVG_M * N; // total mass (to be kept constant)
 	const double STD_FACTOR = STD_M / AVG_M; // scale std. dev. to average
@@ -339,23 +339,22 @@ int _tmain(int argc, _TCHAR* argv[])
 			// for each algorithm used
 			for (int i = 0; i < systems->size(); i++)
 			{
+				string alg = "";
+				switch (i) // name of algorithm - must match what's going on in Solvers
+				{
+				case 0:
+					alg = "leapfrog";
+					break;
+				case 1:
+					alg = "rk4";
+					break;
+				case 2:
+					alg = "euler";
+					break;
+				}
+
 				// get system reference
 				system = systems->at(i);
-
-				// time of execution
-				double elapsedTime;
-				if (system->name == "rk4")
-				{
-					elapsedTime = solv.rk4Time;
-				}
-				else if (system->name == "euler")
-				{
-					elapsedTime = solv.eulerTime;
-				}
-				else // leapfrog
-				{
-					elapsedTime = solv.leapfrogTime;
-				}
 
 				// average total/bound energy after simulation
 				double Etot = system->EpAvg(false) + system->EkAvg(false);
@@ -369,7 +368,6 @@ int _tmain(int argc, _TCHAR* argv[])
 				double avgComBound = system->avgDistCoM(true);
 				double stdComBound = system->stdDevDistCoM(true);
 
-				cout << "Elapsed time: " << elapsedTime << endl;
 				cout << "E_k after (bound): " << EkBound << endl;
 				cout << "E_p after (bound): " << EpBound << endl;
 				cout << "E_tot after: " << Etot << endl;
@@ -389,7 +387,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				double maxR = system->avgDistCoM(true) + CURVEFIT_STDDEV * system->stdDevDistCoM(true);
 				mat radial = system->radialDistribution(maxR, AVG_BIN, true);
 				fname = ostringstream();
-				fname << "radial_after_" << isim << "_" << system->name << ".dat";
+				fname << "radial_after_" << isim << "_" << alg << ".dat";
 				radial.save(fname.str(), raw_ascii);
 
 				if (DEBUG)
@@ -399,13 +397,13 @@ int _tmain(int argc, _TCHAR* argv[])
 
 				// save the number of bound particles per time step for plotting
 				fname = ostringstream();
-				fname << "nbound_" << isim << "_" << system->name << ".dat";
+				fname << "nbound_" << isim << "_" << alg << ".dat";
 				system->nBoundPlot().save(fname.str(), raw_ascii);
 
 				// curve fitting, save results to file
 				vec testFit = radialDistFitLSq(radial, system->n(), 1000);
 				fname = ostringstream();
-				fname << "curveFit_" << isim << "_" << system->name << ".dat";
+				fname << "curveFit_" << isim << "_" << alg << ".dat";
 				testFit.save(fname.str(), raw_ascii);
 
 				if (DEBUG)
@@ -433,7 +431,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				sysdata(0) = nParticles;
 				sysdata(1) = eps;
 				// time
-				sysdata(2) = elapsedTime;
+				sysdata(2) = solv.totalTime;
 				// energy conservation
 				sysdata(3) = EtotBefore;
 				sysdata(4) = Etot;
@@ -446,7 +444,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				sysdata(9) = avgComBound;
 				sysdata(10) = stdComBound;
 				fname = ostringstream();
-				fname << "sysdata_" << isim << "_" << system->name << ".dat";
+				fname << "sysdata_" << isim << "_" << alg << ".dat";
 				sysdata.save(fname.str(), raw_ascii);
 			}
 
@@ -487,12 +485,25 @@ int _tmain(int argc, _TCHAR* argv[])
 		CelestialBody* earth = new CelestialBody("Earth", M_EARTH, system_BM, false);
 		initial3D(earth, D_EARTH, V_EARTH);
 
+		double E_k_init = system_BM->EkAvg(false);
+		double E_p_init = system_BM->EpAvg(false);
+		double E_tot_init = system_BM->EpAvg(false) + system_BM->EkAvg(false);
+		
+
 		// call this only when initialization is 100% complete!
 		Solvers solv = Solvers(system_BM, "BM", USE_RK4, USE_LEAPFROG, USE_EULER);
 
 		// this is where the magic happens :)
 		vector<SolarSystem*>* systemsBM = solv.Solve(STEP_BM);
 		printf("Aaand ... We're done \n");
+
+		cout << "E_k before : " << E_k_init << endl;
+		cout << "E_p before : " << E_p_init << endl;
+		cout << "E_tot before : " << E_tot_init << endl;
+
+		cout << "E_tot after: " << (system_BM->EpAvg(false) + system_BM->EkAvg(false)) << endl;		
+		cout << "E_k after: " << system_BM->EkAvg(false) << endl;
+		cout << "E_p after: " << system_BM->EpAvg(false) << endl;
 	}
 
 	cout << endl << "Press ENTER to exit...";

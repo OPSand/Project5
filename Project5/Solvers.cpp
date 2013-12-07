@@ -68,7 +68,7 @@ vector<SolarSystem*>* Solvers::Solve(double step)
 
 		for (int i = 0; i < n; i++) // for each time step
 		{
-			this->_rk4->plotCurrentStep(i % this->_rk4->plotEvery() == 0); // if we want to plot this step, do it
+			this->_rk4->plotCurrentStep(i, step); // if we want to plot this step, do it
 			RK4(step); // perform step
 		}
 
@@ -83,7 +83,7 @@ vector<SolarSystem*>* Solvers::Solve(double step)
 
 		for (int i = 0; i < n; i++) // for each time step
 		{
-			this->_leapfrog->plotCurrentStep(i % this->_leapfrog->plotEvery() == 0); // if we want to plot this step, do its
+			this->_leapfrog->plotCurrentStep(i, step); // if we want to plot this step, do its
 			Leapfrog(step); // perform step
 		}
 
@@ -98,7 +98,7 @@ vector<SolarSystem*>* Solvers::Solve(double step)
 
 		for (int i = 0; i < n; i++) // for each time step
 		{
-			this->_euler->plotCurrentStep(i % this->_euler->plotEvery() == 0); // if we want to plot this step, do it
+			this->_euler->plotCurrentStep(i, step); // if we want to plot this step, do it
 			Euler(step); // perform step
 		}
 

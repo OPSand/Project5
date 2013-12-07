@@ -111,7 +111,7 @@ public:
 
 	// plots all element positions if the condition is met
 	// returns true if room, false if not
-	bool plotCurrentStep(bool condition, double step);
+	bool plotCurrentStep(int istep, double step);
 
 	// number of (bound) particles within radius r
 	// from the (bound) center of mass

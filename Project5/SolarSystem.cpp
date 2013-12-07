@@ -144,7 +144,7 @@ vec SolarSystem::totalMomentum()
 
 // plots all element positions if the condition is met
 // returns true if room, false if not
-bool SolarSystem::plotCurrentStep(bool condition)
+bool SolarSystem::plotCurrentStep(bool condition, double step)
 {
 	bool success = true; // there was room, or the condition wasn't met
 
@@ -167,7 +167,10 @@ bool SolarSystem::plotCurrentStep(bool condition)
 		// plot # of bound particles (if room)
 		if (this->_plotStep < this->_nBoundPlot->n_rows)
 		{
-			this->_nBoundPlot->at(this->_plotStep, 0) = this->_plotStep;
+			// calculate time of current step
+			double time = this->_plotStep * (this->_nSteps / this->_nPlot) * step;
+
+			this->_nBoundPlot->at(this->_plotStep, 0) = time;
 			this->_nBoundPlot->at(this->_plotStep, 1) = this->nBound();
 		}
 		else

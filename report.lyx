@@ -1949,6 +1949,42 @@ reference "eq:epsilon"
  (both in solar masses).
 \end_layout
 
+\begin_layout Standard
+The criteria for accepting an 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ value are that the number of bound particles are as high as possible, while
+ the total energy, at least for the bound particles, is as conserved as
+ possible.
+ In the process, we discovered that these criteria are actually mutually
+ exclusive: The energy conservation improves if we eject many particles.
+ Our interpretation of this result is that particles that are bound but
+ close to being unbound will impact the energy bound conservation negatively:
+ If these particles are actually ejected, the remaining particles' total
+ energy is better conserved.
+ Thus, we need to look at both criteria simultaneously when deciding on
+ a value for 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+.
+ Additionally, we want 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ to be as close to 0 (and the Newtonian limit) as possible, so we get more
+ realistic results.
+\end_layout
+
+\begin_layout Standard
+Looking at (SOURCE), we see also that the number of ejected particles will
+ fluctuate considerably between simulations with the same starting parameters.
+ Ideally, we would run many simulations with the same epsilon value to eliminate
+ statistical errors - this is something that could be looked at in a future
+ study.
+\end_layout
+
 \begin_layout Paragraph
 Equilibrium
 \end_layout

@@ -262,13 +262,13 @@ void SolarSystem::calculate()
 }
 
 // average potential energy
-double SolarSystem::EpAvg(bool boundOnly)
+double SolarSystem::EpTotal(bool boundOnly)
 {
 	double sum = 0.0;
 	int n = this->n();
 
 	// for all particles
-	for (int i = 0; i < this->n(); i++)
+	for (int i = 0; i < n; i++)
 	{
 		CelestialBody* cb_i = this->body(i);
 
@@ -278,26 +278,21 @@ double SolarSystem::EpAvg(bool boundOnly)
 			// count contribution from this particle
 			sum += cb_i->Ep;
 		}
-		else // unbound (in the case that we want bound only)
-		{
-			// don't count this particle
-			n -= 1;
-		}
 	}
 
 	// NOTE: divide by 2 so we do not count each vertex twice!
 	// (each Ep is determined by PAIRS of bodies)
-	return (sum / (2.0 * this->n() ));
+	return (sum / 2.0);
 }
 
 // average kinetic energy
-double SolarSystem::EkAvg(bool boundOnly)
+double SolarSystem::EkTotal(bool boundOnly)
 {
 	double sum = 0.0;
 	int n = this->n();
 
 	// for all particles
-	for (int i = 0; i < this->n(); i++)
+	for (int i = 0; i < n; i++)
 	{
 		CelestialBody* cb_i = this->body(i);
 
@@ -307,14 +302,9 @@ double SolarSystem::EkAvg(bool boundOnly)
 			// count contribution from this particle
 			sum += cb_i->Ek();
 		}
-		else // unbound (in the case that we want bound only)
-		{
-			// don't count this particle
-			n -= 1;
-		}
 	}
 
-	return (sum / this->n());
+	return sum;
 }
 
 // return number of bound particles at the current step
@@ -560,7 +550,7 @@ mat SolarSystem::nBoundPlot()
 }
 
 // average MINIMUM distance between a pair of particles
-// O(n^2), so do not call this every step!
+/* O(n^2), so do not call this every step!
 double SolarSystem::avgMinDist()
 {
 	double sum = 0.0;
@@ -591,4 +581,4 @@ double SolarSystem::avgMinDist()
 
 	// return average
 	return (sum / n);
-}
+} */

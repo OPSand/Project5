@@ -177,7 +177,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_M = (TOTAL_M / (double)N); // average mass, solar masses
 	const double STD_FACTOR = 0.1; // % factor of average
 	const double CRUNCH_TIMES = 4.0; // # of crunch times to simulate for
-	const double EPSILON = 0s.0; // first epsilon value to try (ignored if not looping over epsilon values)
+	const double EPSILON = 0.0; // first epsilon value to try (ignored if not looping over epsilon values)
 	const int N_STEPS = 1000; // number of steps total
 	const int N_PLOT = 100; // number of steps to plot (must be <= N_STEPS)
 	const double STEP = CRUNCH_TIMES / ((double)N_STEPS - 1.0); // step size (in crunch times)
@@ -276,7 +276,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			{
 				g.setEpsilon(eps);
 			}
-			else // if not, save it for later
+			else // if not, might as well save it for later
 			{
 				eps = g.epsilon();
 			}
@@ -307,19 +307,19 @@ int _tmain(int argc, _TCHAR* argv[])
 
 #pragma region Solve and plot
 
-			// average total energy before simulation starts
-			double EtotBefore = system->EpAvg(false) + system->EkAvg(false);
+			// total energy before simulation starts
+			double EtotBefore = system->EpTotal(false) + system->EkTotal(false);
 
 			// Plot energies before simulation (all should be bound)
-			cout << "E_k before: " << system->EkAvg(false) << endl;
-			cout << "E_p before: " << system->EpAvg(false) << endl;
+			cout << "E_k before: " << system->EkTotal(false) << endl;
+			cout << "E_p before: " << system->EpTotal(false) << endl;
 			cout << "E_tot before: " << EtotBefore << endl;
 
 			if (DEBUG)
 			{
-				cout << "E_k before (bound): " << system->EkAvg(true) << endl;
-				cout << "E_p before (bound): " << system->EpAvg(true) << endl;
-				cout << "E_tot before (bound): " << (system->EpAvg(true) + system->EkAvg(true)) << endl;
+				cout << "E_k before (bound): " << system->EkTotal(true) << endl;
+				cout << "E_p before (bound): " << system->EpTotal(true) << endl;
+				cout << "E_tot before (bound): " << (system->EpTotal(true) + system->EkTotal(true)) << endl;
 
 				cout << "Center of mass (all): " << system->centerOfMass(false) << endl;
 				cout << "Center of mass (bound): " << system->centerOfMass(true) << endl;
@@ -343,8 +343,8 @@ int _tmain(int argc, _TCHAR* argv[])
 			// this is where the magic happens :)
 			vector<SolarSystem*>* systems = solv.Solve(STEP);
 
-			// store info for matlab plots if we loop over epsilon
-			mat epsilonPlot = mat(N_SIMS, 4);
+			// store info for matlab plots for the entire series of simulations
+			mat isimsPlot = mat(N_SIMS, 6);
 
 			// for each algorithm used
 			for (int i = 0; i < systems->size(); i++)
@@ -371,17 +371,23 @@ int _tmain(int argc, _TCHAR* argv[])
 
 				cout << "Elapsed time:" << elapsedTime << endl;
 
-				// average total/bound energy after simulation
-				double Etot = system->EpAvg(false) + system->EkAvg(false);
-				double EtotBound = system->EpAvg(true) + system->EkAvg(true);
+				// number of particles
+				double n = system->n();
+
+				// total/bound energy after simulation
+				double Etot = system->EpTotal(false) + system->EkTotal(false);
+				double EtotBound = system->EpTotal(true) + system->EkTotal(true);
 
 				// energy conservation (relative deltas)
 				double deltaErel = (Etot - EtotBefore) / abs(EtotBefore);
 				double deltaErelBound = (EtotBound - EtotBefore) / abs(EtotBefore);
 
-				// average kinetic/potential energy for bound particles
-				double EkBound = system->EkAvg(true);
-				double EpBound = system->EpAvg(true);
+				// total kinetic/potential energy for bound particles
+				double EkBound = system->EkTotal(true);
+				double EpBound = system->EpTotal(true);
+
+				// total energy lost to particle ejection
+				double lostEnergy = (Etot - EtotBound);
 
 				// distance to bound center of mass
 				double avgComBound = system->avgDistCoM(true);
@@ -394,8 +400,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 				if (DEBUG)
 				{
-					cout << "E_k after: " << system->EkAvg(false) << endl;
-					cout << "E_p after: " << system->EpAvg(false) << endl;
+					cout << "E_k after: " << system->EkTotal(false) << endl;
+					cout << "E_p after: " << system->EpTotal(false) << endl;
 
 					cout << "Center of mass (all): " << system->centerOfMass(false) << endl;
 					cout << "Center of mass (bound): " << system->centerOfMass(true) << endl;
@@ -421,9 +427,8 @@ int _tmain(int argc, _TCHAR* argv[])
 				nbp.save(fname.str(), raw_ascii);
 
 				// record final percentage of bound particles
-				double totalParticles = system->n();
 				double boundParticles = nbp(nbp.n_rows - 1, 1);
-				double finalBound = (boundParticles / totalParticles);
+				double finalBound = (boundParticles / n);
 
 				// curve fitting, save results to file
 				vec testFit = radialDistFitLSq(radial, system->n(), 1000);
@@ -444,59 +449,41 @@ int _tmain(int argc, _TCHAR* argv[])
 					cout << "(all) stdDev = " << system->stdDevDistCoM(false) << endl;
 				}
 
-				// save epsilon info if we loop over epsilon:
-				// 0: epsilon value
-				// 1: relative change in total energy
-				// 2: relative change in total energy (bound only)
-				// 3: final percentage of bound particles
-				if (EPSILON_LOOP)
-				{
-					epsilonPlot(isim, 0) = g.epsilon();
-					epsilonPlot(isim, 1) = deltaErel;
-					epsilonPlot(isim, 2) = deltaErelBound;
-					epsilonPlot(isim, 3) = finalBound;
-				}
+				// save info for the series of simulations:
+				// parameters
+				isimsPlot(isim,0) = nParticles;
+				isimsPlot(isim,1) = g.epsilon();
+				// time
+				isimsPlot(isim,2) = solv.totalTime;
+				// energy conservation
+				isimsPlot(isim,3) = EtotBefore;
+				isimsPlot(isim,4) = Etot;
+				isimsPlot(isim,5) = EtotBound;
+				// relative change in energy
+				isimsPlot(isim,6) = deltaErel;
+				isimsPlot(isim,7) = deltaErelBound;
+				// virial theorem data
+				isimsPlot(isim,8) = EkBound;
+				isimsPlot(isim,9) = EpBound;
+				// # 10 is below!
+				// distance to bound center of mass
+				isimsPlot(isim,11) = avgComBound;
+				isimsPlot(isim,12) = stdComBound;
+				// final number of bound particles
+				isimsPlot(isim,13) = finalBound;
 
+				// Finally:
 				// calculate "classic" potential energy instead for bound particles
 				// (i.e. ignoring epsilon in the potential)
 				// NOTE: After this point, use eps and not g.epsilon()!
 				g.setEpsilon(0.0);
 				system->calculate(); // re-compute potential energies
-				double EpBoundClassic = system->EpAvg(true);
-
-				// save misc. data about system to file
-				vec sysdata = vec(14);
-				// parameters
-				sysdata(0) = nParticles;
-				sysdata(1) = eps; // NOT g.epsilon() at this point!
-				// time
-				sysdata(2) = solv.totalTime;
-				// energy conservation
-				sysdata(3) = EtotBefore;
-				sysdata(4) = Etot;
-				sysdata(5) = EtotBound;
-				// relative change in energy
-				sysdata(6) = deltaErel;
-				sysdata(7) = deltaErelBound;
-				// virial theorem data
-				sysdata(8) = EkBound;
-				sysdata(9) = EpBound;
-				sysdata(10) = EpBoundClassic;
-				// distance to bound center of mass
-				sysdata(11) = avgComBound;
-				sysdata(12) = stdComBound;
-				// final number of bound particles
-				sysdata(13) = finalBound;
-				fname = ostringstream();
-				fname << "sysdata_" << system->name << ".dat";
-				sysdata.save(fname.str(), raw_ascii);
+				double EpBoundClassic = system->EpTotal(true);
+				isimsPlot(isim, 10) = EpBoundClassic;
 			}
 
-			// save epsilon data if we looped over epsilon
-			if (EPSILON_LOOP)
-			{
-				epsilonPlot.save("epsilonPlot.dat", raw_ascii);
-			}
+			// save data for the series of simulations
+			isimsPlot.save("isimsPlot.dat", raw_ascii);
 
 			// free up resources
 			while (systems->size() > 0)
@@ -535,9 +522,9 @@ int _tmain(int argc, _TCHAR* argv[])
 		CelestialBody* earth = new CelestialBody("Earth", M_EARTH, system_BM, false);
 		initial3D(earth, D_EARTH, V_EARTH);
 
-		double E_k_init = system_BM->EkAvg(false);
-		double E_p_init = system_BM->EpAvg(false);
-		double E_tot_init = system_BM->EpAvg(false) + system_BM->EkAvg(false);
+		double E_k_init = system_BM->EkTotal(false);
+		double E_p_init = system_BM->EpTotal(false);
+		double E_tot_init = system_BM->EpTotal(false) + system_BM->EkTotal(false);
 		
 		system_BM->name = "BM";
 
@@ -552,9 +539,9 @@ int _tmain(int argc, _TCHAR* argv[])
 		cout << "E_p before : " << E_p_init << endl;
 		cout << "E_tot before : " << E_tot_init << endl;
 
-		cout << "E_tot after: " << (system_BM->EpAvg(false) + system_BM->EkAvg(false)) << endl;		
-		cout << "E_k after: " << system_BM->EkAvg(false) << endl;
-		cout << "E_p after: " << system_BM->EpAvg(false) << endl;
+		cout << "E_tot after: " << (system_BM->EpTotal(false) + system_BM->EkTotal(false)) << endl;		
+		cout << "E_k after: " << system_BM->EkTotal(false) << endl;
+		cout << "E_p after: " << system_BM->EpTotal(false) << endl;
 	}
 
 	cout << endl << "Press ENTER to exit...";

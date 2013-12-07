@@ -38,9 +38,9 @@ public:
 	// (determining which elements are bound and their radial distribution)
 	void calculate();
 
-	// average kinetic and potential energies (for the virial theorem)
-	double EpAvg(bool boundOnly);
-	double EkAvg(bool boundOnly);
+	// total kinetic and potential energies (for the virial theorem)
+	double EpTotal(bool boundOnly);
+	double EkTotal(bool boundOnly);
 
 	int nBound(); // number of bound particles in the system
 
@@ -144,5 +144,5 @@ public:
 
 	// average MINIMUM distance between a pair of particles
 	// O(n^2), so do not call this every step!
-	double avgMinDist();
+	// double avgMinDist();
 };

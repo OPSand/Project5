@@ -234,6 +234,10 @@ int _tmain(int argc, _TCHAR* argv[])
 		{
 			ostringstream fname; // for dynamic file names
 
+			// system name
+			ostringstream isimstr = ostringstream();
+			isimstr << isim;
+
 			int nParticles;
 			double eps;
 
@@ -256,12 +260,9 @@ int _tmain(int argc, _TCHAR* argv[])
 				eps = EPSILON + isim * deltaEpsilon;
 			}
 
-			cout << endl << "--- SIMULATION " << (isim + 1) << " OF " << N_SIMS << " ---" << endl;
-			cout << "N = " << nParticles << endl;
-			cout << "epsilon = " << g.epsilon() << endl << endl;
-
 			// create system
 			SolarSystem* system = new SolarSystem(DIM, N_STEPS, PLOT_EVERY, &g);
+			system->name = isimstr.str(); // set name
 
 			// conserve the total mass & scale std.dev to average
 			double avgMass = TOTAL_M / N;
@@ -276,12 +277,12 @@ int _tmain(int argc, _TCHAR* argv[])
 				g.setEpsilon(eps);
 			}
 
-			// id of simulation (for file names)
-			ostringstream id = ostringstream();
-			id << isim;
+			cout << endl << "--- SIMULATION " << (isim + 1) << " OF " << N_SIMS << " ---" << endl;
+			cout << "N = " << nParticles << endl;
+			cout << "epsilon = " << g.epsilon() << endl << endl;
 
 			// call this only when initialization is 100% complete!
-			Solvers solv = Solvers(system, id.str(),  USE_RK4, USE_LEAPFROG, USE_EULER);
+			Solvers solv = Solvers(system,  USE_RK4, USE_LEAPFROG, USE_EULER);
 
 			if (DEBUG)
 			{
@@ -499,9 +500,10 @@ int _tmain(int argc, _TCHAR* argv[])
 		double E_p_init = system_BM->EpAvg(false);
 		double E_tot_init = system_BM->EpAvg(false) + system_BM->EkAvg(false);
 		
+		system_BM->name = "BM";
 
 		// call this only when initialization is 100% complete!
-		Solvers solv = Solvers(system_BM, "BM", USE_RK4, USE_LEAPFROG, USE_EULER);
+		Solvers solv = Solvers(system_BM, USE_RK4, USE_LEAPFROG, USE_EULER);
 
 		// this is where the magic happens :)
 		vector<SolarSystem*>* systemsBM = solv.Solve(STEP_BM);

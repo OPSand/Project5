@@ -2,13 +2,10 @@
 #include "Solvers.h"
 
 // constructor (isim = number of sim in a series)
-Solvers::Solvers(SolarSystem* system, const string& id, bool useRK4, bool useLeapfrog, bool useEuler)
+Solvers::Solvers(SolarSystem* system, bool useRK4, bool useLeapfrog, bool useEuler)
 {
 	// save pointer to original system
 	this->_system = system;
-
-	// set ID
-	this->_id = id;
 
 	// set flags
 	this->_useRK4 = useRK4;
@@ -22,19 +19,19 @@ Solvers::Solvers(SolarSystem* system, const string& id, bool useRK4, bool useLea
 	if (this->_useRK4)
 	{
 		this->_rk4 = new SolarSystem(*system); // deep copy
-		this->_rk4->name = "rk4";
+		this->_rk4->name += "_rk4";
 	}
 
 	if (this->_useLeapfrog)
 	{
 		this->_leapfrog = new SolarSystem(*system); // deep copy
-		this->_leapfrog->name = "leapfrog";
+		this->_leapfrog->name += "_leapfrog";
 	}
 
 	if (this->_useEuler)
 	{
 		this->_euler = new SolarSystem(*system); // deep copy
-		this->_euler->name = "euler";
+		this->_euler->name += "_euler";
 	}
 }
 
@@ -119,7 +116,7 @@ vector<SolarSystem*>* Solvers::Solve(double step)
 		for (int i = 0; i < this->_leapfrog->dim(); i++)
 		{
 			ostringstream fname = ostringstream();
-			fname << "sim_" << this->_id << "_pos" << i << "_leapfrog.dat";
+			fname << "sim_" << this->_leapfrog->name << "_pos" << i << "_leapfrog.dat";
 			this->_leapfrog->plotDim(i, fname.str());
 		}
 
@@ -136,7 +133,7 @@ vector<SolarSystem*>* Solvers::Solve(double step)
 		for (int i = 0; i < this->_rk4->dim(); i++)
 		{
 			ostringstream fname = ostringstream();
-			fname << "sim_" << this->_id << "_pos" << i << "_rk4.dat";
+			fname << "sim_" << this->_rk4->name << "_pos" << i << "_rk4.dat";
 			this->_rk4->plotDim(i, fname.str());
 		}
 
@@ -153,7 +150,7 @@ vector<SolarSystem*>* Solvers::Solve(double step)
 		for (int i = 0; i < this->_euler->dim(); i++)
 		{
 			ostringstream fname = ostringstream();
-			fname << "sim_" << this->_id << "_pos" << i << "_euler.dat";
+			fname << "sim_" << this->_euler->name << "_pos" << i << "_euler.dat";
 			this->_euler->plotDim(i, fname.str());
 		}
 

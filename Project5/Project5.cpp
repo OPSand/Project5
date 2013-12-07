@@ -488,7 +488,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				// distance to bound center of mass
 				isimsPlot->at(isim, 15) = avgComBound;
 				isimsPlot->at(isim, 16) = stdComBound;
-				// final number of bound particles
+				// final percentage of bound particles
 				isimsPlot->at(isim, 17) = finalBound;
 
 				// Finally:

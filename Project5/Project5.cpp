@@ -11,6 +11,7 @@
 using namespace arma;
 using namespace std;
 
+#pragma region Local Methods
 // fit radial distribution to curve (using least squares)
 // returns a vector: [ r0, n0, r0/N^(-1/3), n0/N^2 ]
 vec radialDistFitLSq(mat radialDist, int N, int nNR)
@@ -159,8 +160,7 @@ void initial3D(CelestialBody* cb, double d, double v)
 	*(cb->position) = toCartesian3D(d, theta, psi); // scale to correct radius
 	*(cb->velocity) = toCartesian3D(v, orthogonal3D(theta), psi); // orthogonal (counterclockwise) vs. position
 }
-
-
+#pragma endregion
 
 // Entry point for console application
 int _tmain(int argc, _TCHAR* argv[])
@@ -231,6 +231,11 @@ int _tmain(int argc, _TCHAR* argv[])
 				deltaEpsilon = (EPSILON_END - EPSILON) / (nSims - 1);
 			}
 		}
+
+		// store info for matlab plots for the entire series of simulations
+		mat leapfrogPlot = mat(N_SIMS, 18);
+		mat rk4Plot = mat(N_SIMS, 18);
+		mat eulerPlot = mat(N_SIMS, 18);
 
 		// run one or more simulations
 		for (int isim = 0; isim < N_SIMS; isim++)
@@ -346,9 +351,6 @@ int _tmain(int argc, _TCHAR* argv[])
 			// this is where the magic happens :)
 			vector<SolarSystem*>* systems = solv.Solve(STEP);
 
-			// store info for matlab plots for the entire series of simulations
-			mat isimsPlot = mat(N_SIMS, 18);
-
 			// for each algorithm used
 			for (int i = 0; i < systems->size(); i++)
 			{
@@ -357,19 +359,26 @@ int _tmain(int argc, _TCHAR* argv[])
 
 				cout << endl << " ** " << system->name << " **" << endl << endl;
 
-				// Plot time used
-				double elapsedTime = 0.0;
-				if (system->name == "rk4")
+				// Plot time used and...
+				double elapsedTime;
+				// ...locate correct matrix for this algorithm
+				mat isimsPlot;
+
+				// determine which algorithm was used from system name
+				if (system->name.find("rk4"))
 				{
 					elapsedTime = solv.rk4Time;
+					isimsPlot = rk4Plot;
 				}
-				else if (system->name == "euler")
+				else if (system->name.find("euler"))
 				{
 					elapsedTime = solv.eulerTime;
+					isimsPlot = eulerPlot;
 				}
 				else // leapfrog
 				{
 					elapsedTime = solv.leapfrogTime;
+					isimsPlot = leapfrogPlot;
 				}
 
 				cout << "Elapsed time:" << elapsedTime << endl;
@@ -487,9 +496,6 @@ int _tmain(int argc, _TCHAR* argv[])
 				isimsPlot(isim, 10) = EpBoundClassic;
 			}
 
-			// save data for the series of simulations
-			isimsPlot.save("isimsPlot.dat", raw_ascii);
-
 			// free up resources
 			while (systems->size() > 0)
 			{
@@ -499,8 +505,23 @@ int _tmain(int argc, _TCHAR* argv[])
 			}
 			delete systems; // finally, delete the vector
 		}
-	#pragma endregion
+
+		// save data for the series of simulations
+		if (USE_LEAPFROG)
+		{
+			leapfrogPlot.save("leapfrogPlot.dat", raw_ascii);
+		}
+		if (USE_RK4)
+		{
+			rk4Plot.save("rk4Plot.dat", raw_ascii);
+		}
+		if (USE_EULER)
+		{
+			eulerPlot.save("eulerPlot.dat", raw_ascii);
+		}
 	}
+	
+	#pragma endregion
 	#pragma region Benchmark
 
 	if (BENCHMARK) // re-create Project 3 for comparison - can we reproduce the results?

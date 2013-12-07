@@ -844,7 +844,7 @@ For both of our algorithms, the step intervalle looks like
 
 .
  Let's define h as 
-\begin_inset Formula $h=\frac{t_{max}-t_{0}}{n_{Steps}}$
+\begin_inset Formula $h=\frac{t_{max}-t_{0}}{n_{Steps-1}}$
 \end_inset
 
 .

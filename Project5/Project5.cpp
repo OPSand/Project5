@@ -323,7 +323,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				double maxR = R0;
 				mat radial = system->radialDistribution(maxR, AVG_BIN, true);
 				fname = ostringstream();
-				fname << "radial_before_" << isim << ".dat";
+				fname << "radial_before_" << system->name << ".dat";
 				radial.save(fname.str(), raw_ascii);
 
 				cout << radial << endl << endl;
@@ -395,7 +395,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				double maxR = system->avgDistCoM(true) + CURVEFIT_STDDEV * system->stdDevDistCoM(true);
 				mat radial = system->radialDistribution(maxR, AVG_BIN, true);
 				fname = ostringstream();
-				fname << "radial_after_" << isim << "_" << system->name << ".dat";
+				fname << "radial_after_" << system->name << ".dat";
 				radial.save(fname.str(), raw_ascii);
 
 				if (DEBUG)
@@ -405,13 +405,13 @@ int _tmain(int argc, _TCHAR* argv[])
 
 				// save the number of bound particles per time step for plotting
 				fname = ostringstream();
-				fname << "nbound_" << isim << "_" << system->name << ".dat";
+				fname << "nbound_" << system->name << ".dat";
 				system->nBoundPlot().save(fname.str(), raw_ascii);
 
 				// curve fitting, save results to file
 				vec testFit = radialDistFitLSq(radial, system->n(), 1000);
 				fname = ostringstream();
-				fname << "curveFit_" << isim << "_" << system->name << ".dat";
+				fname << "curveFit_" << system->name << ".dat";
 				testFit.save(fname.str(), raw_ascii);
 
 				if (DEBUG)
@@ -455,7 +455,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				sysdata(11) = avgComBound;
 				sysdata(12) = stdComBound;
 				fname = ostringstream();
-				fname << "sysdata_" << isim << "_" << system->name << ".dat";
+				fname << "sysdata_" << system->name << ".dat";
 				sysdata.save(fname.str(), raw_ascii);
 			}
 

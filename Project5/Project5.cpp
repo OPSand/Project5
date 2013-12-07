@@ -341,22 +341,27 @@ int _tmain(int argc, _TCHAR* argv[])
 			// for each algorithm used
 			for (int i = 0; i < systems->size(); i++)
 			{
-				string alg = "";
-				switch (i) // name of algorithm - must match what's going on in Solvers
-				{
-				case 0:
-					alg = "leapfrog";
-					break;
-				case 1:
-					alg = "rk4";
-					break;
-				case 2:
-					alg = "euler";
-					break;
-				}
-
 				// get system reference
 				system = systems->at(i);
+
+				cout << endl << " ** " << system->name << " **" << endl << endl;
+
+				// Plot time used
+				double elapsedTime = 0.0;
+				if (system->name == "rk4")
+				{
+					elapsedTime = solv.rk4Time;
+				}
+				else if (system->name == "euler")
+				{
+					elapsedTime = solv.eulerTime;
+				}
+				else // leapfrog
+				{
+					elapsedTime = solv.leapfrogTime;
+				}
+
+				cout << "Elapsed time:" << elapsedTime << endl;
 
 				// average total/bound energy after simulation
 				double Etot = system->EpAvg(false) + system->EkAvg(false);
@@ -389,7 +394,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				double maxR = system->avgDistCoM(true) + CURVEFIT_STDDEV * system->stdDevDistCoM(true);
 				mat radial = system->radialDistribution(maxR, AVG_BIN, true);
 				fname = ostringstream();
-				fname << "radial_after_" << isim << "_" << alg << ".dat";
+				fname << "radial_after_" << isim << "_" << system->name << ".dat";
 				radial.save(fname.str(), raw_ascii);
 
 				if (DEBUG)
@@ -399,13 +404,13 @@ int _tmain(int argc, _TCHAR* argv[])
 
 				// save the number of bound particles per time step for plotting
 				fname = ostringstream();
-				fname << "nbound_" << isim << "_" << alg << ".dat";
+				fname << "nbound_" << isim << "_" << system->name << ".dat";
 				system->nBoundPlot().save(fname.str(), raw_ascii);
 
 				// curve fitting, save results to file
 				vec testFit = radialDistFitLSq(radial, system->n(), 1000);
 				fname = ostringstream();
-				fname << "curveFit_" << isim << "_" << alg << ".dat";
+				fname << "curveFit_" << isim << "_" << system->name << ".dat";
 				testFit.save(fname.str(), raw_ascii);
 
 				if (DEBUG)
@@ -449,7 +454,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				sysdata(11) = avgComBound;
 				sysdata(12) = stdComBound;
 				fname = ostringstream();
-				fname << "sysdata_" << isim << "_" << alg << ".dat";
+				fname << "sysdata_" << isim << "_" << system->name << ".dat";
 				sysdata.save(fname.str(), raw_ascii);
 			}
 

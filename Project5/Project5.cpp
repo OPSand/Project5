@@ -173,13 +173,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	// initialization & time steps (common)
 	const int N = 100; // number of celestial bodies
 	const double R0 = 20.0; // initial radius in ly
-<<<<<<< HEAD
-	const double AVG_M = 2.0; // solar masses
-	const double STD_M = 1.0; // solar masses
-=======
 	const double AVG_M = 10.0; // solar masses
 	const double STD_FACTOR = 0.1; // % factor of average
->>>>>>> epsilon + std.dev updates
 	const double CRUNCH_TIMES = 4.0; // # of crunch times to simulate for
 	const double EPSILON = 0.0; // first epsilon value to try (ignored if not looping over epsilon values)
 	const int N_STEPS = 1000; // number of steps total
@@ -190,15 +185,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_BIN = 20.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n/epsilon, same total mass)
-<<<<<<< HEAD
-	const int N_SIMS = 4; // number of simulations to run (set to 1 to run just once)
-	const int N_END = 2000; // max N for last sim (ignored if N_SIMS == 1)
-	const double EPSILON_END = 0.15; // max epsilon for last sim (ignored if N_SIMS == 1)
-=======
 	const int N_SIMS = 16; // number of simulations to run (set to 1 to run just once)
 	const int N_END = 2500; // max N for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == true)
 	const double EPSILON_END = 0.15; // max epsilon for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == false)
->>>>>>> epsilon + std.dev updates
 	const double TOTAL_M = AVG_M * N; // total mass (to be kept constant)
 
 	// physical constants

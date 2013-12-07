@@ -177,7 +177,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_M = (TOTAL_M / (double)N); // average mass, solar masses
 	const double STD_FACTOR = 0.1; // % factor of average
 	const double CRUNCH_TIMES = 4.0; // # of crunch times to simulate for
-	const double EPSILON = 0.0; // first epsilon value to try (ignored if not looping over epsilon values)
+	const double EPSILON = 0s.0; // first epsilon value to try (ignored if not looping over epsilon values)
 	const int N_STEPS = 1000; // number of steps total
 	const int N_PLOT = 100; // number of steps to plot (must be <= N_STEPS)
 	const double STEP = CRUNCH_TIMES / ((double)N_STEPS - 1.0); // step size (in crunch times)
@@ -186,7 +186,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_BIN = 20.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n/epsilon, same total mass)
-	const int N_SIMS = 16; // number of simulations to run (set to 1 to run just once)
+	const int N_SIMS = 1; // number of simulations to run (set to 1 to run just once)
 	const int N_END = 2500; // max N for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == true)
 	const double EPSILON_END = 0.15; // max epsilon for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == false)
 

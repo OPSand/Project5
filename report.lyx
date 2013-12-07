@@ -844,7 +844,7 @@ For both of our algorithms, the step intervalle looks like
 
 .
  Let's define h as 
-\begin_inset Formula $h=\frac{t_{max}-t_{0}}{n_{Steps}}$
+\begin_inset Formula $h=\frac{t_{max}-t_{0}}{n_{Steps-1}}$
 \end_inset
 
 .
@@ -1388,12 +1388,9 @@ Elapsed Time to process the two body system
 \end_layout
 
 \end_inset
-<<<<<<< HEAD
 
 
 \end_layout
-=======
->>>>>>> 78edfc312df8d6185b36da0fe799be1a5b7e1a42
 
 \begin_layout Standard
 We can see here that the Runge Kutta algorithm takes more time to process

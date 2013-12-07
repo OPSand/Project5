@@ -215,6 +215,7 @@ pip-log.txt
 .mr.developer.cfg
 
 # Custom
+*.dat
 *.dat*
 *.lyx~
 *.lyx#

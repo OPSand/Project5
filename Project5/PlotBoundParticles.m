@@ -1,24 +1,29 @@
-fileToOpen = strcat('pos',int2str(nPosi),'_',typeSolver,'.dat');
-Plot_File = fscanf(fidPosi,'%g',[nbPlanets rows]).';
-fclose(fidPosi);
+fileToOpen = strcat('nbound_0_leapfrog','.dat');
+fidPosi = fopen(fileToOpen);
 nbSteps = 100;
+Plot_File = fscanf(fidPosi,'%g',[2 nbSteps]).';
+fclose(fidPosi);
 nbParticles = 100;
-bWantToSaveJPEG = false;
+bWantToSaveJPEG = true;
 filename = strcat('plot_for_',int2str(nbParticles),'_Particles','.jpeg');
 
 % Init of our time vector
-t = [0 (nbSteps- 1)];
-t(:)= Plot_File(:,1);
+t = [1:(nbSteps- 1)];
+for i = 1:nbSteps 
+    t(i)= Plot_File(i,1);
+end
 
 % Init of the vector holding the number of bound particles
 nbBounds = [0 (nbSteps- 1)];
-nbBounds(:) = Plot_File(:,2);
+for i = 1: nbSteps
+    nbBounds(i) = Plot_File(i,2);
+end
 
 % And then we plot !
 figure(1);
 plot(t(:),nbBounds(:),'color',rand(1,3));
 title(['Plot for ' int2str(nbParticles) ' Particles']);
-xlabel('Time');
+xlabel('Time (in t_crunch)');
 ylabel('Number of bound particles');
 grid on;
 

@@ -428,7 +428,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				double EpBoundClassic = system->EpAvg(true);
 
 				// save misc. data about system to file
-				vec sysdata = vec(11);
+				vec sysdata = vec(13);
 				// parameters
 				sysdata(0) = nParticles;
 				sysdata(1) = eps;
@@ -438,13 +438,16 @@ int _tmain(int argc, _TCHAR* argv[])
 				sysdata(3) = EtotBefore;
 				sysdata(4) = Etot;
 				sysdata(5) = EtotBound;
+				// relative change in energy
+				sysdata(6) = (Etot - EtotBefore) / abs(EtotBefore);
+				sysdata(7) = (EtotBound - EtotBefore) / abs(EtotBefore);
 				// virial theorem data
-				sysdata(6) = EkBound;
-				sysdata(7) = EpBound;
-				sysdata(8) = EpBoundClassic;
+				sysdata(8) = EkBound;
+				sysdata(9) = EpBound;
+				sysdata(10) = EpBoundClassic;
 				// distance to bound center of mass
-				sysdata(9) = avgComBound;
-				sysdata(10) = stdComBound;
+				sysdata(11) = avgComBound;
+				sysdata(12) = stdComBound;
 				fname = ostringstream();
 				fname << "sysdata_" << isim << "_" << alg << ".dat";
 				sysdata.save(fname.str(), raw_ascii);

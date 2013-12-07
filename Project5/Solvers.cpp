@@ -22,16 +22,19 @@ Solvers::Solvers(SolarSystem* system, const string& id, bool useRK4, bool useLea
 	if (this->_useRK4)
 	{
 		this->_rk4 = new SolarSystem(*system); // deep copy
+		this->_rk4->name = "rk4";
 	}
 
 	if (this->_useLeapfrog)
 	{
 		this->_leapfrog = new SolarSystem(*system); // deep copy
+		this->_leapfrog->name = "leapfrog";
 	}
 
 	if (this->_useEuler)
 	{
 		this->_euler = new SolarSystem(*system); // deep copy
+		this->_euler->name = "euler";
 	}
 }
 
@@ -59,36 +62,53 @@ Solvers::~Solvers()
 // returns the system in the state the Leapfrog algoritm leaves it in (or nullptr if that algorithm is not used)
 vector<SolarSystem*>* Solvers::Solve(double step)
 {
-	clock_t start, finish;
-	start = clock();
-	double elapsedTime = 0.0;
-	int nSize = this->_system->nSteps();
-	vec  tabElapsedTime = vec(nSize);
-	for (int i = 0; i < this->_system->nSteps(); i++) // for each time step
+	clock_t start, finish; // timers
+	int n = this->_system->nSteps();
+
+	if (this->_useRK4)
 	{
-		if (this->_useRK4)
+		start = clock(); // start timer
+
+		for (int i = 0; i < n; i++) // for each time step
 		{
 			this->_rk4->plotCurrentStep(i % this->_rk4->plotEvery() == 0); // if we want to plot this step, do it
 			RK4(step); // perform step
 		}
 
-		if (this->_useLeapfrog)
+		// Timing part: End ...
+		finish = clock();
+		this->leapfrogTime = (double)(finish - start) / CLOCKS_PER_SEC; // To convert this into seconds !
+	}
+
+	if (this->_useLeapfrog)
+	{
+		start = clock(); // start timer
+
+		for (int i = 0; i < n; i++) // for each time step
 		{
 			this->_leapfrog->plotCurrentStep(i % this->_leapfrog->plotEvery() == 0); // if we want to plot this step, do its
 			Leapfrog(step); // perform step
 		}
 
-		if (this->_useEuler)
+		// Timing part: End ...
+		finish = clock();
+		this->rk4Time = (double)(finish - start) / CLOCKS_PER_SEC; // To convert this into seconds !
+	}
+
+	if (this->_useEuler)
+	{
+		start = clock(); // start timer
+
+		for (int i = 0; i < n; i++) // for each time step
 		{
 			this->_euler->plotCurrentStep(i % this->_euler->plotEvery() == 0); // if we want to plot this step, do it
 			Euler(step); // perform step
 		}
+
+		// Timing part: End ...
+		finish = clock();
+		this->eulerTime = (double)(finish - start) / CLOCKS_PER_SEC; // To convert this into seconds !
 	}
-
-
-	// Timing part: End ...
-	finish = clock();
-	elapsedTime = (double)(finish - start) / CLOCKS_PER_SEC; // To convert this into seconds !
 
 	// put systems we want to return in here
 	vector<SolarSystem*>* returnSystems = new vector<SolarSystem*>();
@@ -146,12 +166,7 @@ vector<SolarSystem*>* Solvers::Solve(double step)
 
 	cout << "DONE!" << endl << endl;
 
-	// And siplay of the timing part 
-	printf("Elapsed Time : %lf \n", elapsedTime);
-	this->totalTime = elapsedTime;
-
-	// Return calculation of the average time spent for a step of leapfrog/RG4
-	//avTime(tabElapsedTime);
+	this->totalTime = this->leapfrogTime + this->rk4Time + this->eulerTime;
 
 	return returnSystems;
 }

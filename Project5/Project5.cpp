@@ -185,8 +185,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_BIN = 20.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n/epsilon, same total mass)
-	const int N_SIMS = 4; // number of simulations to run (set to 1 to run just once)
-	const int N_END = 2000; // max N for last sim (ignored if N_SIMS == 1)
+	const int N_SIMS = 2; // number of simulations to run (set to 1 to run just once)
+	const int N_END = 2500; // max N for last sim (ignored if N_SIMS == 1)
 	const double EPSILON_END = 0.15; // max epsilon for last sim (ignored if N_SIMS == 1)
 	const double TOTAL_M = AVG_M * N; // total mass (to be kept constant)
 	const double STD_FACTOR = STD_M / AVG_M; // scale std. dev. to average
@@ -339,22 +339,23 @@ int _tmain(int argc, _TCHAR* argv[])
 			// for each algorithm used
 			for (int i = 0; i < systems->size(); i++)
 			{
-				string alg = "";
-				switch (i) // name of algorithm - must match what's going on in Solvers
-				{
-				case 0:
-					alg = "leapfrog";
-					break;
-				case 1:
-					alg = "rk4";
-					break;
-				case 2:
-					alg = "euler";
-					break;
-				}
-
 				// get system reference
 				system = systems->at(i);
+
+				// time of execution
+				double elapsedTime;
+				if (system->name == "rk4")
+				{
+					elapsedTime = solv.rk4Time;
+				}
+				else if (system->name == "euler")
+				{
+					elapsedTime = solv.eulerTime;
+				}
+				else // leapfrog
+				{
+					elapsedTime = solv.leapfrogTime;
+				}
 
 				// average total/bound energy after simulation
 				double Etot = system->EpAvg(false) + system->EkAvg(false);
@@ -368,6 +369,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				double avgComBound = system->avgDistCoM(true);
 				double stdComBound = system->stdDevDistCoM(true);
 
+				cout << "Elapsed time: " << elapsedTime << endl;
 				cout << "E_k after (bound): " << EkBound << endl;
 				cout << "E_p after (bound): " << EpBound << endl;
 				cout << "E_tot after: " << Etot << endl;
@@ -387,7 +389,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				double maxR = system->avgDistCoM(true) + CURVEFIT_STDDEV * system->stdDevDistCoM(true);
 				mat radial = system->radialDistribution(maxR, AVG_BIN, true);
 				fname = ostringstream();
-				fname << "radial_after_" << isim << "_" << alg << ".dat";
+				fname << "radial_after_" << isim << "_" << system->name << ".dat";
 				radial.save(fname.str(), raw_ascii);
 
 				if (DEBUG)
@@ -397,13 +399,13 @@ int _tmain(int argc, _TCHAR* argv[])
 
 				// save the number of bound particles per time step for plotting
 				fname = ostringstream();
-				fname << "nbound_" << isim << "_" << alg << ".dat";
+				fname << "nbound_" << isim << "_" << system->name << ".dat";
 				system->nBoundPlot().save(fname.str(), raw_ascii);
 
 				// curve fitting, save results to file
 				vec testFit = radialDistFitLSq(radial, system->n(), 1000);
 				fname = ostringstream();
-				fname << "curveFit_" << isim << "_" << alg << ".dat";
+				fname << "curveFit_" << isim << "_" << system->name << ".dat";
 				testFit.save(fname.str(), raw_ascii);
 
 				if (DEBUG)
@@ -431,7 +433,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				sysdata(0) = nParticles;
 				sysdata(1) = eps;
 				// time
-				sysdata(2) = solv.totalTime;
+				sysdata(2) = elapsedTime;
 				// energy conservation
 				sysdata(3) = EtotBefore;
 				sysdata(4) = Etot;
@@ -444,7 +446,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				sysdata(9) = avgComBound;
 				sysdata(10) = stdComBound;
 				fname = ostringstream();
-				fname << "sysdata_" << isim << "_" << alg << ".dat";
+				fname << "sysdata_" << isim << "_" << system->name << ".dat";
 				sysdata.save(fname.str(), raw_ascii);
 			}
 

@@ -7,10 +7,11 @@ SolarSystem::SolarSystem(int dim, int nSteps, int plotEvery, Gravity* grav)
 	this->_dim = dim;
 	this->_nSteps = nSteps;
 	this->_plotStep = 0;
-	this->_nPlot = (nSteps / plotEvery);
+	this->_nPlot = (nSteps / plotEvery); // number if steps to plot
 	this->_grav = grav;
 	this->_bodies = new vector<CelestialBody*>();
 	this->_nBoundPlot = new mat(this->_nPlot, 2);
+	this->name = "";
 }
 
 // copy constructor
@@ -22,6 +23,7 @@ SolarSystem::SolarSystem(const SolarSystem& other)
 	this->_nPlot = other._nPlot;
 	this->_grav = other._grav;
 	this->_nBoundPlot = other._nBoundPlot;
+	// do not copy name
 
 	// deep copy
 	this->_bodies = new vector<CelestialBody*>();
@@ -59,6 +61,7 @@ SolarSystem SolarSystem::operator = (const SolarSystem& other)
 		this->_nPlot = other._nPlot;
 		this->_grav = other._grav;
 		this->_nBoundPlot = other._nBoundPlot;
+		// do not copy name
 
 		// deep copy
 		this->_bodies = new vector<CelestialBody*>();

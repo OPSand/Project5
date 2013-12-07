@@ -23,6 +23,8 @@ protected:
 	vec _bcom; // center of mass for bound particles
 
 public:
+	string name; // lets us identify the system
+
 	// constructors, destructors, copying
 	SolarSystem(int dim, int nSteps, int plotEvery, Gravity* grav);
 	SolarSystem(const SolarSystem& other);

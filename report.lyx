@@ -610,7 +610,7 @@ giving us this handy formula for
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-\epsilon_{2}=\sqrt{\frac{N_{1}}{N_{2}}\left(\frac{R_{2}}{R_{1}}\right)^{3}\frac{\Delta t_{2}}{\Delta t_{1}}}\cdot\epsilon_{1}
+\epsilon_{2}=\sqrt{\frac{N_{1}}{N_{2}}\left(\frac{R_{2}}{R_{1}}\right)^{3}\frac{\Delta t_{2}}{\Delta t_{1}}}\cdot\epsilon_{1}\label{eq:epsilon}
 \end{equation}
 
 \end_inset
@@ -690,9 +690,9 @@ We want
 
 \begin_layout Standard
 \begin_inset Formula 
-\[
+\begin{equation}
 E_{p}=\frac{GMm}{\epsilon}(\arctan(\frac{r}{\epsilon})-\frac{\pi}{2})\qquad(\epsilon>0)
-\]
+\end{equation}
 
 \end_inset
 
@@ -722,9 +722,9 @@ To calculate the gravitational constant with
 
 \begin_layout Standard
 \begin_inset Formula 
-\[
+\begin{equation}
 V_{n}=\frac{\pi^{\frac{n}{2}}}{\Gamma(\frac{n}{2}+1)}
-\]
+\end{equation}
 
 \end_inset
 
@@ -1094,9 +1094,6 @@ Contains code to iterate over a SolarSystem object over a number of time
  Creates copies of the system given as a parameter to do this, so we can
  keep the original system unchanged and also solve using several numerical
  methods simultaneously and compare the results.
- Currently returns the resulting system of the Leapfrog algorithm, since
- that is the one we use the most (but this behaviour is easily changed if
- desired).
  Keeping this in a separate class allows adaptation of this code to use
  other objects than the SolarSystems we employ here.
 \end_layout
@@ -1264,10 +1261,6 @@ Elapsed Time to process the two body system
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Plain Layout
 
 \end_layout
 
@@ -1698,7 +1691,11 @@ Application to a multi-bodies system
 \end_layout
 
 \begin_layout Subsubsection
-Evaluation of G
+Evaluation of 
+\begin_inset Formula $G$
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1764,7 +1761,15 @@ With a system of
 \end_layout
 
 \begin_layout Subsubsection
-Energy conservation
+Energy conservation (finding a reference value for 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Standard
+
 \end_layout
 
 \begin_layout Paragraph

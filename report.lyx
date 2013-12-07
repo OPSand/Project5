@@ -1852,7 +1852,7 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename Screen/Eval_G_Resized_.jpg
+	filename Screen/b/Eval_G_Resized.jpg
 
 \end_inset
 
@@ -2025,7 +2025,7 @@ status open
 \noindent
 \align left
 \begin_inset Graphics
-	filename Screen/Conservation_Energy_Leapfrog_Resized.jpg
+	filename Screen/d-e/plot_for_100_Particles_Epsi_0.jpeg
 	scale 45
 
 \end_inset
@@ -2034,7 +2034,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Behavior of the energy for N = 100 bodies,ε = 0
+Number of bound particles for ε = 0
 \end_layout
 
 \end_inset
@@ -2147,8 +2147,10 @@ Without using the modified gravitational potential, we notice that the energy
 \end_layout
 
 \begin_layout Standard
-// NB: Should re-run the program, seems that some parameters got messed
- up during the process
+The bigger N we take, the bigger the quantity of energy the system is taken
+ away.
+ For the biggest N we tried, the energy taken away is nearly 10 times the
+ energy of the initial system.
 \end_layout
 
 \begin_layout Standard
@@ -2178,7 +2180,7 @@ status open
 \noindent
 \align left
 \begin_inset Graphics
-	filename Screen/Conservation_Energy_Epsilon_Leapfrog_Resized.jpg
+	filename Screen/d-e/plot_for_100_Particles_Epsi_0_10.jpeg
 	scale 45
 
 \end_inset
@@ -2187,7 +2189,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Behavior of the energy for N = 100 bodies,ε = √0,0225
+Number of bound particles for ε = 0.10005
 \end_layout
 
 \end_inset
@@ -2219,7 +2221,7 @@ status open
 \noindent
 \align right
 \begin_inset Graphics
-	filename Screen/Conservation_Energy_Leapfrog_Epsilon_150_Resized.jpg
+	filename Screen/d-e/plot_for_200_Particles_Epsi_0_071.jpeg
 	scale 45
 
 \end_inset
@@ -2311,7 +2313,7 @@ Virial Theorem
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent

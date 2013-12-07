@@ -13,7 +13,7 @@ using namespace std;
 
 #pragma region Local Methods
 // fit radial distribution to curve (using least squares)
-// returns a vector: [ r0, n0, r0/N^(-1/3), n0/N^2 ]
+// returns a vector: [ n0, r0, n0/N^2r0, /N^(-1/3) ]
 vec radialDistFitLSq(mat radialDist, int N, int nNR)
 {
 	// these factors are educated guesses as to where we will find the best match
@@ -66,23 +66,23 @@ vec radialDistFitLSq(mat radialDist, int N, int nNR)
 			if ((n == 0) && (r == 0)) // first attempt: nothing to compare to
 			{
 				minsum = sum;
-				ret(0) = r0;
-				ret(1) = n0;
+				ret(0) = n0;
+				ret(1) = r0;
 			}
 			else
 			{
 				if (sum < minsum) // better match than any previous
 				{
 					minsum = sum;
-					ret(0) = r0;
-					ret(1) = n0;
+					ret(0) = n0;
+					ret(1) = r0;
 				}
 			}
 		}
 	}
 
-	ret(2) = ret(0) / rScale; // r0/N^(-1/3)
-	ret(3) = ret(1) / nScale; // n0/N^2
+	ret(2) = ret(0) / nScale; // n0/N^2
+	ret(3) = ret(1) / rScale; // r0/N^(-1/3)
 
 	return ret;
 }
@@ -184,7 +184,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_BIN = 20.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n/epsilon, same total mass)
-	const int N_SIMS = 16; // number of simulations to run (set to 1 to run just once)
+	const int N_SIMS = 15; // number of simulations to run (set to 1 to run just once)
 	const int N_END = 2500; // max N for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == true)
 	const double EPSILON_END = 0.15; // max epsilon for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == false)
 
@@ -233,9 +233,9 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 
 		// store info for matlab plots for the entire series of simulations
-		mat leapfrogPlot = mat(N_SIMS, 18);
-		mat rk4Plot = mat(N_SIMS, 18);
-		mat eulerPlot = mat(N_SIMS, 18);
+		mat* leapfrogPlot = new mat(N_SIMS, 18);
+		mat* rk4Plot = new mat(N_SIMS, 18);
+		mat* eulerPlot = new mat(N_SIMS, 18);
 
 		// run one or more simulations
 		for (int isim = 0; isim < N_SIMS; isim++)
@@ -357,20 +357,20 @@ int _tmain(int argc, _TCHAR* argv[])
 				// get system reference
 				system = systems->at(i);
 
-				cout << endl << " ** " << system->name << " **" << endl << endl;
+				cout << " ** " << system->name << " **" << endl << endl;
 
 				// Plot time used and...
 				double elapsedTime;
 				// ...locate correct matrix for this algorithm
-				mat isimsPlot;
+				mat* isimsPlot;
 
 				// determine which algorithm was used from system name
-				if (system->name.find("rk4"))
+				if (system->name.find("rk4") != string::npos)
 				{
 					elapsedTime = solv.rk4Time;
 					isimsPlot = rk4Plot;
 				}
-				else if (system->name.find("euler"))
+				else if (system->name.find("euler") != string::npos)
 				{
 					elapsedTime = solv.eulerTime;
 					isimsPlot = eulerPlot;
@@ -448,10 +448,10 @@ int _tmain(int argc, _TCHAR* argv[])
 
 				if (DEBUG)
 				{
-					cout << "r0 = " << testFit(0) << endl;
-					cout << "n0 = " << testFit(1) << endl;
-					cout << "r0 / N^(-1/3) = " << testFit(2) << endl;
-					cout << "n0 / N^2 = " << testFit(3) << endl << endl;
+					cout << "n0 = " << testFit(0) << endl;
+					cout << "r0 = " << testFit(1) << endl;
+					cout << "n0 / N^2 = " << testFit(2) << endl << endl;
+					cout << "r0 / N^(-1/3) = " << testFit(3) << endl;
 
 					cout << "(bound) avg = " << avgComBound << endl;
 					cout << "(bound) stdDev = " << stdComBound << endl;
@@ -461,31 +461,31 @@ int _tmain(int argc, _TCHAR* argv[])
 
 				// save info for the series of simulations:
 				// parameters
-				isimsPlot(isim,0) = nParticles;
-				isimsPlot(isim,1) = g.epsilon();
+				isimsPlot->at(isim, 0) = nParticles;
+				isimsPlot->at(isim, 1) = g.epsilon();
 				// time
-				isimsPlot(isim,2) = solv.totalTime;
+				isimsPlot->at(isim, 2) = elapsedTime;
 				// energy conservation
-				isimsPlot(isim,3) = EtotBefore;
-				isimsPlot(isim,4) = Etot;
-				isimsPlot(isim,5) = EtotBound;
+				isimsPlot->at(isim, 3) = EtotBefore;
+				isimsPlot->at(isim, 4) = Etot;
+				isimsPlot->at(isim, 5) = EtotBound;
 				// relative change in energy
-				isimsPlot(isim,6) = deltaErel;
-				isimsPlot(isim,7) = deltaErelBound;
+				isimsPlot->at(isim, 6) = deltaErel;
+				isimsPlot->at(isim, 7) = deltaErelBound;
 				// virial theorem data
-				isimsPlot(isim,8) = EkBound;
-				isimsPlot(isim,9) = EpBound;
+				isimsPlot->at(isim, 8) = EkBound;
+				isimsPlot->at(isim, 9) = EpBound;
 				// NOTE: # 10 is below! (since we reset epsilon, we save that one for last)
 				// curve fitting
-				isimsPlot(isim, 11) = testFit(0);
-				isimsPlot(isim, 12) = testFit(1);
-				isimsPlot(isim, 13) = testFit(2);
-				isimsPlot(isim, 14) = testFit(3);
+				isimsPlot->at(isim, 11) = testFit(0); // n0
+				isimsPlot->at(isim, 12) = testFit(1); // r0
+				isimsPlot->at(isim, 13) = testFit(2); // n0 / N^2
+				isimsPlot->at(isim, 14) = testFit(3); // r0 / N^(-1/3)
 				// distance to bound center of mass
-				isimsPlot(isim, 15) = avgComBound;
-				isimsPlot(isim, 16) = stdComBound;
+				isimsPlot->at(isim, 15) = avgComBound;
+				isimsPlot->at(isim, 16) = stdComBound;
 				// final number of bound particles
-				isimsPlot(isim, 17) = finalBound;
+				isimsPlot->at(isim, 17) = finalBound;
 
 				// Finally:
 				// calculate "classic" potential energy instead for bound particles
@@ -494,7 +494,18 @@ int _tmain(int argc, _TCHAR* argv[])
 				g.setEpsilon(0.0);
 				system->calculate(); // re-compute potential energies
 				double EpBoundClassic = system->EpTotal(true);
-				isimsPlot(isim, 10) = EpBoundClassic;
+				isimsPlot->at(isim, 10) = EpBoundClassic;
+
+				if (DEBUG)
+				{
+					cout << "isimsPlot:" << *isimsPlot << endl;
+					getchar();
+					if (leapfrogPlot != nullptr)
+					{
+						cout << "leapfrogPlot:" << *leapfrogPlot << endl;
+					}
+					getchar();
+				}
 			}
 
 			// free up resources
@@ -510,16 +521,25 @@ int _tmain(int argc, _TCHAR* argv[])
 		// save data for the series of simulations
 		if (USE_LEAPFROG)
 		{
-			leapfrogPlot.save("leapfrogPlot.dat", raw_ascii);
+			if (DEBUG)
+			{
+				cout << *leapfrogPlot;
+			}
+			leapfrogPlot->save("plotLeapfrog.dat", raw_ascii);
 		}
 		if (USE_RK4)
 		{
-			rk4Plot.save("rk4Plot.dat", raw_ascii);
+			rk4Plot->save("plotRK4.dat", raw_ascii);
 		}
 		if (USE_EULER)
 		{
-			eulerPlot.save("eulerPlot.dat", raw_ascii);
+			eulerPlot->save("plotEuler.dat", raw_ascii);
 		}
+
+		// free up resources
+		delete leapfrogPlot;
+		delete rk4Plot;
+		delete eulerPlot;
 	}
 	
 	#pragma endregion

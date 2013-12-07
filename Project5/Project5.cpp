@@ -386,13 +386,18 @@ int _tmain(int argc, _TCHAR* argv[])
 				// number of particles
 				double n = system->n();
 
+				// record final percentage of bound particles
+				double boundParticles = system->nBound();
+				double finalBound = (boundParticles / n);
+
 				// total/bound energy after simulation
 				double Etot = system->EpTotal(false) + system->EkTotal(false);
 				double EtotBound = system->EpTotal(true) + system->EkTotal(true);
 
-				// energy conservation (relative deltas)
+				// energy conservation (relative deltas: close to 0 is good)
 				double deltaErel = (Etot - EtotBefore) / abs(EtotBefore);
-				double deltaErelBound = (EtotBound - EtotBefore) / abs(EtotBefore);
+				double deltaErelBound = ((EtotBound/finalBound) - EtotBefore) / abs(EtotBefore);
+				// NOTE: We have to scale EtotBound up to account for the lower number of bound particles remaining
 
 				// total kinetic/potential energy for bound particles
 				double EkBound = system->EkTotal(true);
@@ -437,10 +442,6 @@ int _tmain(int argc, _TCHAR* argv[])
 				fname = ostringstream();
 				fname << "nbound_" << system->name << ".dat";
 				nbp.save(fname.str(), raw_ascii);
-
-				// record final percentage of bound particles
-				double boundParticles = nbp(nbp.n_rows - 1, 1);
-				double finalBound = (boundParticles / n);
 
 				// perform curve fitting
 				vec testFit = radialDistFitLSq(radial, system->n(), N_NR);

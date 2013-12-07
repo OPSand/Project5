@@ -186,7 +186,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_BIN = 20.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n/epsilon, same total mass)
-	const int N_SIMS = 16; // number of simulations to run (set to 1 to run just once)
+	const int N_SIMS = 1; // number of simulations to run (set to 1 to run just once)
 	const int N_END = 2500; // max N for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == true)
 	const double EPSILON_END = 0.15; // max epsilon for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == false)
 
@@ -197,7 +197,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double G_YLS = cG * M_SUN * pow(cYr, 2.0) / pow(LY, 3.0); // G in years, ly, solar masses
 
 	// flags
-	const bool EPSILON_LOOP = true; // vary epsilon instead of n
+	const bool EPSILON_LOOP = false; // vary epsilon instead of n
 	const bool USE_LEAPFROG = true; // use Leapfrog method
 	const bool USE_RK4 = false; // use Runge-Kutta method
 	const bool USE_EULER = false; // use Euler-Cromer method
@@ -437,7 +437,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				vec sysdata = vec(13);
 				// parameters
 				sysdata(0) = nParticles;
-				sysdata(1) = eps;
+				sysdata(1) = g.epsilon();
 				// time
 				sysdata(2) = solv.totalTime;
 				// energy conservation

@@ -675,6 +675,147 @@ The desired radius that takes into account that the outer spherical shells
 (Source.)
 \end_layout
 
+\begin_layout Subsection
+Algorithms' stability
+\end_layout
+
+\begin_layout Subsubsection
+Leapfrog algorithm
+\end_layout
+
+\begin_layout Standard
+The Leapfrog algorithm is given by the trhee following steps:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x^{(1)}(t+\frac{h}{2})=(x^{(1)}(t)+\frac{h}{2}*x^{(2)}(t)+\mathcal{O}(\Delta h^{2})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x(t+h)=x(t)+x^{(1)}(t+\frac{h}{2})+\mathcal{O}(\Delta h^{3})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x^{(1)}(t+h)=x^{(1)}(t+\frac{h}{2})+\frac{h}{2}*x^{(2)}(t+h)+\mathcal{O}(\Delta h^{2})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now, let's take a look at the approximation error for this algorithm.
+ The first step to derive this algorithm is to use Taylor expansion on the
+ position:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x(t+h)=x(t)+hx^{(1)}(t)+\frac{h^{2}}{2}x^{(2)}(t)+\mathcal{O}(\Delta h^{3})=x(t)+h(x^{(1)}(t)+\frac{h}{2}*x^{(2)}(t))+\mathcal{O}(\Delta h^{3})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In the same way, we have for the velocity:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x^{(1)}(t+\frac{h}{2})=x^{(1)}(t)+\frac{h}{2}*x^{(2)}(t)+\mathcal{O}(\Delta h^{2})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x^{(1)}(t-\frac{h}{2})=x^{(1)}(t)-\frac{h}{2}*x^{(2)}(t)+\mathcal{O}(\Delta h^{2})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x^{(1)}(t+\frac{h}{2})-x^{(1)}(t-\frac{h}{2})=x^{(1)}(t)+\frac{h}{2}*x^{(2)}(t)+\mathcal{O}(\Delta h^{2})-(x^{(1)}(t)-\frac{h}{2}*x^{(2)}(t)+\mathcal{O}(\Delta h^{2}))=h*x^{(2)}(t)+\mathcal{O}(\Delta h^{2})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+So
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x^{(1)}(t+h)=x^{(1)}(t+\frac{h}{2})+\frac{h}{2}*x^{(2)}(t+h)+\mathcal{O}(\Delta h^{2})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We can rewrite the first step thanks to the expression of 
+\begin_inset Formula $x^{(1)}(t+\frac{h}{2})$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x(t+h)=x(t)+x^{(1)}(t+\frac{h}{2})+\mathcal{O}(\Delta h^{3})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In the end, we can see that the approximation error runs like 
+\begin_inset Formula $\mathcal{O}(\Delta h^{2})$
+\end_inset
+
+ for the Leapfrog algorithm.
+\end_layout
+
 \begin_layout Section
 Implementation
 \end_layout
@@ -1018,7 +1159,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Conservation of the Energy -- Leap-frog -- A changer !!!
+Conservation of the Energy -- Leap-frog -- Length = 2 years ~
 \end_layout
 
 \end_inset
@@ -1086,7 +1227,7 @@ width "60col%"
 special "none"
 height "1in"
 height_special "totalheight"
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -1101,7 +1242,8 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Conservation of the energy -- forth-order Runge Kutta
+Conservation of the energy -- forth-order Runge Kutta = Length = 2 years
+ ~
 \end_layout
 
 \end_inset
@@ -1127,7 +1269,7 @@ width "20col%"
 special "none"
 height "1in"
 height_special "totalheight"
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -1148,6 +1290,244 @@ Conservation of the energy -- forth-order Runge Kutta -- A changer !!!
 \end_inset
 
 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="7">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Length - Time step size
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2 years - 1 day
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+300 years - 1 day
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Leap-frog
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1,33206e33-1,33206e33
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Runge Kutta 4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Not so satisfying é_è
 \end_layout
 
 \end_inset
@@ -1676,7 +2056,7 @@ We took ε =
 \begin_inset Formula $\sqrt{0,0225}$
 \end_inset
 
- was a satisfying value for the respect of the total energy conservation.
+, which was a satisfying value for the respect of the total energy conservation.
 \end_layout
 
 \begin_layout Section

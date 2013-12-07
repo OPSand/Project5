@@ -175,7 +175,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double EPSILON = (0.1 / sqrt(5.0)); // correction to Newton in ly to avoid infinite forces at close range
 	const double R0 = 20.0; // initial radius in ly
 	const double AVG_M = 2.0; // solar masses
-	const double STD_M = 1.0; // solar masses
+	const double STD_M = 0.2; // solar masses
 	const double CRUNCH_TIMES = 4.0; // # of crunch times to simulate for
 	const int N_STEPS = 1000; // number of steps total
 	const int N_PLOT = 100; // number of steps to plot (must be <= N_STEPS)

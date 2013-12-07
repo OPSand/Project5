@@ -77,7 +77,7 @@ vector<SolarSystem*>* Solvers::Solve(double step)
 
 		// Timing part: End ...
 		finish = clock();
-		this->leapfrogTime = (double)(finish - start) / CLOCKS_PER_SEC; // To convert this into seconds !
+		this->rk4Time = (double)(finish - start) / CLOCKS_PER_SEC; // To convert this into seconds !
 	}
 
 	if (this->_useLeapfrog)
@@ -92,7 +92,7 @@ vector<SolarSystem*>* Solvers::Solve(double step)
 
 		// Timing part: End ...
 		finish = clock();
-		this->rk4Time = (double)(finish - start) / CLOCKS_PER_SEC; // To convert this into seconds !
+		this->leapfrogTime = (double)(finish - start) / CLOCKS_PER_SEC; // To convert this into seconds !
 	}
 
 	if (this->_useEuler)

@@ -18,6 +18,18 @@ public:
 	~Gravity();
 	Gravity operator= (const Gravity& other);
 
+	// return gravitational constant
+	double G()
+	{
+		return this->_G;
+	}
+
+	// return smoothing (epsilon)
+	double epsilon()
+	{
+		return this->_epsilon;
+	}
+
 	// ability to update G and Epsilon after construction
 	void setG(double G);
 	void setEpsilon(double epsilon);

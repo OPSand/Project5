@@ -41,7 +41,7 @@ void CelestialBodyInitializer::randInit(SolarSystem* system, const string& name,
 }
 
 // call this to initialize system with n objects of average mass avgM (std. dev stdM) within radius r0
-void CelestialBodyInitializer::initialize(SolarSystem* system, int n, double avgM, double stdM, double r0)
+void CelestialBodyInitializer::initialize(SolarSystem* system, int n, double avgM, double stdM, double r0, double timestep)
 {
 	// generate random (negative) seeds based on clock
 	long* idum = new long(-time(NULL));
@@ -61,6 +61,9 @@ void CelestialBodyInitializer::initialize(SolarSystem* system, int n, double avg
 	// Dimensionless: https://en.wikipedia.org/wiki/N-sphere#Closed_forms
 	system->grav()->setG(G(r0, system));
 
+	// update epsilon (see report for details)
+	system->grav()->setEpsilon(epsilon(r0, system, timestep));
+
 	// garbage collection
 	delete idum;
 	delete idum2;
@@ -78,4 +81,10 @@ double CelestialBodyInitializer::G(double r0, SolarSystem* system)
 double CelestialBodyInitializer::tCrunch(double r0, SolarSystem* system, double Gyls)
 {
 	return sqrt(3.0 * cPI / (32.0 * Gyls * system->rho(r0))); // crunch time [years]
+}
+
+// calculate epsilon in your length unit of choice (see report)
+double CelestialBodyInitializer::epsilon(double r0, SolarSystem* system, double timestep)
+{
+	return (0.25 * sqrt(pow(r0, 3.0) * timestep / (2.0 * system->n())));
 }

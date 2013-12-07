@@ -171,12 +171,17 @@ int _tmain(int argc, _TCHAR* argv[])
 	const int DIM = 3;
 
 	// initialization & time steps (common)
-	const int N = 500; // number of celestial bodies
-	const double EPSILON = (0.1 / sqrt(5.0)); // correction to Newton in ly to avoid infinite forces at close range
+	const int N = 100; // number of celestial bodies
 	const double R0 = 20.0; // initial radius in ly
+<<<<<<< HEAD
 	const double AVG_M = 2.0; // solar masses
 	const double STD_M = 1.0; // solar masses
+=======
+	const double AVG_M = 10.0; // solar masses
+	const double STD_FACTOR = 0.1; // % factor of average
+>>>>>>> epsilon + std.dev updates
 	const double CRUNCH_TIMES = 4.0; // # of crunch times to simulate for
+	const double EPSILON = 0.0; // first epsilon value to try (ignored if not looping over epsilon values)
 	const int N_STEPS = 1000; // number of steps total
 	const int N_PLOT = 100; // number of steps to plot (must be <= N_STEPS)
 	const double STEP = CRUNCH_TIMES / ((double)N_STEPS - 1.0); // step size (in crunch times)
@@ -185,11 +190,16 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_BIN = 20.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n/epsilon, same total mass)
+<<<<<<< HEAD
 	const int N_SIMS = 4; // number of simulations to run (set to 1 to run just once)
 	const int N_END = 2000; // max N for last sim (ignored if N_SIMS == 1)
 	const double EPSILON_END = 0.15; // max epsilon for last sim (ignored if N_SIMS == 1)
+=======
+	const int N_SIMS = 16; // number of simulations to run (set to 1 to run just once)
+	const int N_END = 2500; // max N for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == true)
+	const double EPSILON_END = 0.15; // max epsilon for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == false)
+>>>>>>> epsilon + std.dev updates
 	const double TOTAL_M = AVG_M * N; // total mass (to be kept constant)
-	const double STD_FACTOR = STD_M / AVG_M; // scale std. dev. to average
 
 	// physical constants
 	const double LY = 9.4607e15; // m
@@ -198,7 +208,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double G_YLS = cG * M_SUN * pow(cYr, 2.0) / pow(LY, 3.0); // G in years, ly, solar masses
 
 	// flags
-	const bool EPSILON_LOOP = false; // vary epsilon instead of n
+	const bool EPSILON_LOOP = true; // vary epsilon instead of n
 	const bool USE_LEAPFROG = true; // use Leapfrog method
 	const bool USE_RK4 = false; // use Runge-Kutta method
 	const bool USE_EULER = false; // use Euler-Cromer method
@@ -246,23 +256,20 @@ int _tmain(int argc, _TCHAR* argv[])
 				// determine number of particles
 				nParticles = N + isim * deltaN;
 
-				// set epsilon (see report for explanation)
-				eps = sqrt((double)N / (double)nParticles) * EPSILON;
-				g.setEpsilon(eps);
+				// epsilon will be set by the initializer
 			}
 			else // loop over epsilon
 			{
 				// set number of particles
 				nParticles = N;
 
-				// set epsilon (since we use epsilon squared, we make the intervals linear for that)
+				// calculate epsilon value to use
 				eps = EPSILON + isim * deltaEpsilon;
-				g.setEpsilon(eps);
 			}
 
 			cout << endl << "--- SIMULATION " << (isim + 1) << " OF " << N_SIMS << " ---" << endl;
 			cout << "N = " << nParticles << endl;
-			cout << "epsilon = " << eps << endl << endl;
+			cout << "epsilon = " << g.epsilon() << endl << endl;
 
 			// create system
 			SolarSystem* system = new SolarSystem(DIM, N_STEPS, PLOT_EVERY, &g);
@@ -271,8 +278,14 @@ int _tmain(int argc, _TCHAR* argv[])
 			double avgMass = TOTAL_M / N;
 			double stdMass = STD_FACTOR * avgMass;
 
-			// add N randomly initialized celestial bodies (also sets G)
-			CelestialBodyInitializer::initialize(system, nParticles, avgMass, stdMass, R0);
+			// add N randomly initialized celestial bodies (also sets G and epsilon)
+			CelestialBodyInitializer::initialize(system, nParticles, avgMass, stdMass, R0, STEP);
+
+			// overwrite epsilon if we loop over epsilon values
+			if (EPSILON_LOOP)
+			{
+				g.setEpsilon(eps);
+			}
 
 			// id of simulation (for file names)
 			ostringstream id = ostringstream();
@@ -291,7 +304,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				}
 
 				cout << "T_CRUNCH = " << CelestialBodyInitializer::tCrunch(R0, system, G_YLS) << endl;
-				cout << "G = " << CelestialBodyInitializer::G(R0, system) << endl;
+				cout << "G = " << g.G() << endl;
 				cout << "G_YLS = " << G_YLS << endl;
 				cout << endl;
 			}

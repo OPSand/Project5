@@ -184,7 +184,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_BIN = 20.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n/epsilon, same total mass)
-	const int N_SIMS = 15; // number of simulations to run (set to 1 to run just once)
+	const int N_SIMS = 16; // number of simulations to run (set to 1 to run just once)
 	const int N_END = 2500; // max N for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == true)
 	const double EPSILON_END = 0.15; // max epsilon for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == false)
 
@@ -210,7 +210,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	if (!BENCHMARK)
 	{
-#pragma region Initialization
+		#pragma region Initialize Series
 
 		int deltaN = 0;
 		double deltaEpsilon = 0.0;
@@ -237,9 +237,13 @@ int _tmain(int argc, _TCHAR* argv[])
 		mat* rk4Plot = new mat(N_SIMS, 18);
 		mat* eulerPlot = new mat(N_SIMS, 18);
 
+		#pragma endregion
+
 		// run one or more simulations
 		for (int isim = 0; isim < N_SIMS; isim++)
 		{
+			#pragma region Initialize Simulation
+
 			ostringstream fname; // for dynamic file names
 
 			// system name
@@ -289,6 +293,10 @@ int _tmain(int argc, _TCHAR* argv[])
 				eps = g.epsilon();
 			}
 
+			#pragma endregion
+
+			#pragma region Solve and Plot Simulation
+
 			cout << endl << "--- SIMULATION " << (isim + 1) << " OF " << N_SIMS << " ---" << endl;
 			cout << "N = " << nParticles << endl;
 			cout << "epsilon = " << g.epsilon() << endl << endl;
@@ -310,10 +318,6 @@ int _tmain(int argc, _TCHAR* argv[])
 				cout << "G_YLS = " << G_YLS << endl;
 				cout << endl;
 			}
-
-#pragma endregion
-
-#pragma region Solve and plot
 
 			// total energy before simulation starts
 			double EtotBefore = system->EpTotal(false) + system->EkTotal(false);
@@ -516,7 +520,11 @@ int _tmain(int argc, _TCHAR* argv[])
 				// NOTE: Do not delete system! That is handled when solv expires!
 			}
 			delete systems; // finally, delete the vector
+
+			#pragma endregion
 		}
+
+		#pragma region Plot Series
 
 		// save data for the series of simulations
 		if (USE_LEAPFROG)
@@ -540,11 +548,11 @@ int _tmain(int argc, _TCHAR* argv[])
 		delete leapfrogPlot;
 		delete rk4Plot;
 		delete eulerPlot;
-	}
-	
-	#pragma endregion
-	#pragma region Benchmark
 
+		#pragma endregion
+	}
+
+	#pragma region Benchmark
 	if (BENCHMARK) // re-create Project 3 for comparison - can we reproduce the results?
 	{
 		//getchar(); // pause
@@ -595,5 +603,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	getchar(); // pause
 
 	#pragma endregion 
+
 	return 0;
 }

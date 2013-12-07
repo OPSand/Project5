@@ -538,7 +538,7 @@ double SolarSystem::stdDevDistCoM(bool boundOnly)
 		}
 	}
 
-	// sum is now the variance, return std.dev. instead
+	// sum/n is now the variance, return std.dev. instead
 	return sqrt(sum / n);
 }
 

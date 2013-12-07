@@ -173,7 +173,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	// initialization & time steps (common)
 	const int N = 100; // number of celestial bodies
 	const double R0 = 20.0; // initial radius in ly
-	const double AVG_M = 10.0; // solar masses
+	const double TOTAL_M = 1000.0; // solar masses (to be kept constant if we loop over N)
+	const double AVG_M = (TOTAL_M / (double)N); // average mass, solar masses
 	const double STD_FACTOR = 0.1; // % factor of average
 	const double CRUNCH_TIMES = 4.0; // # of crunch times to simulate for
 	const double EPSILON = 0.0; // first epsilon value to try (ignored if not looping over epsilon values)
@@ -188,7 +189,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	const int N_SIMS = 16; // number of simulations to run (set to 1 to run just once)
 	const int N_END = 2500; // max N for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == true)
 	const double EPSILON_END = 0.15; // max epsilon for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == false)
-	const double TOTAL_M = AVG_M * N; // total mass (to be kept constant)
 
 	// physical constants
 	const double LY = 9.4607e15; // m

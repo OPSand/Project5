@@ -844,7 +844,7 @@ For both of our algorithms, the step intervalle looks like
 
 .
  Let's define h as 
-\begin_inset Formula $h=\frac{t_{max}-t_{0}}{n_{Steps-1}}$
+\begin_inset Formula $h=\frac{t_{max}-t_{0}}{n_{Steps}-1}$
 \end_inset
 
 .
@@ -1912,7 +1912,41 @@ Energy conservation (finding a reference value for
 \end_layout
 
 \begin_layout Standard
+With a system of 
+\begin_inset Formula $N=100$
+\end_inset
 
+ particles, an initial radius of 
+\begin_inset Formula $R_{0}=20$
+\end_inset
+
+ light years and a time step of 
+\begin_inset Formula $\frac{1}{250}\tau_{crunch}$
+\end_inset
+
+, we did a series of simulations where we varied the gravitational correction
+ parameter in the interval 
+\begin_inset Formula $\epsilon\in[0,$
+\end_inset
+
+0.15].
+ According to equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:epsilon"
+
+\end_inset
+
+, the values are supposed to be independent of mass, but the masses used
+ were a normal distribution with mean 
+\begin_inset Formula $\mu=10$
+\end_inset
+
+ and 
+\begin_inset Formula $\sigma=1$
+\end_inset
+
+ (both in solar masses).
 \end_layout
 
 \begin_layout Paragraph

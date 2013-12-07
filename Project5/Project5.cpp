@@ -186,7 +186,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_BIN = 20.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n/epsilon, same total mass)
-	const int N_SIMS = 1; // number of simulations to run (set to 1 to run just once)
+	const int N_SIMS = 16; // number of simulations to run (set to 1 to run just once)
 	const int N_END = 2500; // max N for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == true)
 	const double EPSILON_END = 0.15; // max epsilon for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == false)
 
@@ -197,7 +197,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double G_YLS = cG * M_SUN * pow(cYr, 2.0) / pow(LY, 3.0); // G in years, ly, solar masses
 
 	// flags
-	const bool EPSILON_LOOP = false; // vary epsilon instead of n
+	const bool EPSILON_LOOP = true; // vary epsilon instead of n
 	const bool USE_LEAPFROG = true; // use Leapfrog method
 	const bool USE_RK4 = false; // use Runge-Kutta method
 	const bool USE_EULER = false; // use Euler-Cromer method
@@ -276,6 +276,10 @@ int _tmain(int argc, _TCHAR* argv[])
 			{
 				g.setEpsilon(eps);
 			}
+			else // if not, save it for later
+			{
+				eps = g.epsilon();
+			}
 
 			cout << endl << "--- SIMULATION " << (isim + 1) << " OF " << N_SIMS << " ---" << endl;
 			cout << "N = " << nParticles << endl;
@@ -339,6 +343,9 @@ int _tmain(int argc, _TCHAR* argv[])
 			// this is where the magic happens :)
 			vector<SolarSystem*>* systems = solv.Solve(STEP);
 
+			// store info for matlab plots if we loop over epsilon
+			mat epsilonPlot = mat(N_SIMS, 4);
+
 			// for each algorithm used
 			for (int i = 0; i < systems->size(); i++)
 			{
@@ -367,6 +374,10 @@ int _tmain(int argc, _TCHAR* argv[])
 				// average total/bound energy after simulation
 				double Etot = system->EpAvg(false) + system->EkAvg(false);
 				double EtotBound = system->EpAvg(true) + system->EkAvg(true);
+
+				// energy conservation (relative deltas)
+				double deltaErel = (Etot - EtotBefore) / abs(EtotBefore);
+				double deltaErelBound = (EtotBound - EtotBefore) / abs(EtotBefore);
 
 				// average kinetic/potential energy for bound particles
 				double EkBound = system->EkAvg(true);
@@ -404,9 +415,15 @@ int _tmain(int argc, _TCHAR* argv[])
 				}
 
 				// save the number of bound particles per time step for plotting
+				mat nbp = system->nBoundPlot();
 				fname = ostringstream();
 				fname << "nbound_" << system->name << ".dat";
-				system->nBoundPlot().save(fname.str(), raw_ascii);
+				nbp.save(fname.str(), raw_ascii);
+
+				// record final percentage of bound particles
+				double totalParticles = system->n();
+				double boundParticles = nbp(nbp.n_rows - 1, 1);
+				double finalBound = (boundParticles / totalParticles);
 
 				// curve fitting, save results to file
 				vec testFit = radialDistFitLSq(radial, system->n(), 1000);
@@ -427,17 +444,31 @@ int _tmain(int argc, _TCHAR* argv[])
 					cout << "(all) stdDev = " << system->stdDevDistCoM(false) << endl;
 				}
 
+				// save epsilon info if we loop over epsilon:
+				// 0: epsilon value
+				// 1: relative change in total energy
+				// 2: relative change in total energy (bound only)
+				// 3: final percentage of bound particles
+				if (EPSILON_LOOP)
+				{
+					epsilonPlot(isim, 0) = g.epsilon();
+					epsilonPlot(isim, 1) = deltaErel;
+					epsilonPlot(isim, 2) = deltaErelBound;
+					epsilonPlot(isim, 3) = finalBound;
+				}
+
 				// calculate "classic" potential energy instead for bound particles
 				// (i.e. ignoring epsilon in the potential)
+				// NOTE: After this point, use eps and not g.epsilon()!
 				g.setEpsilon(0.0);
 				system->calculate(); // re-compute potential energies
 				double EpBoundClassic = system->EpAvg(true);
 
 				// save misc. data about system to file
-				vec sysdata = vec(13);
+				vec sysdata = vec(14);
 				// parameters
 				sysdata(0) = nParticles;
-				sysdata(1) = g.epsilon();
+				sysdata(1) = eps; // NOT g.epsilon() at this point!
 				// time
 				sysdata(2) = solv.totalTime;
 				// energy conservation
@@ -445,8 +476,8 @@ int _tmain(int argc, _TCHAR* argv[])
 				sysdata(4) = Etot;
 				sysdata(5) = EtotBound;
 				// relative change in energy
-				sysdata(6) = (Etot - EtotBefore) / abs(EtotBefore);
-				sysdata(7) = (EtotBound - EtotBefore) / abs(EtotBefore);
+				sysdata(6) = deltaErel;
+				sysdata(7) = deltaErelBound;
 				// virial theorem data
 				sysdata(8) = EkBound;
 				sysdata(9) = EpBound;
@@ -454,9 +485,17 @@ int _tmain(int argc, _TCHAR* argv[])
 				// distance to bound center of mass
 				sysdata(11) = avgComBound;
 				sysdata(12) = stdComBound;
+				// final number of bound particles
+				sysdata(13) = finalBound;
 				fname = ostringstream();
 				fname << "sysdata_" << system->name << ".dat";
 				sysdata.save(fname.str(), raw_ascii);
+			}
+
+			// save epsilon data if we looped over epsilon
+			if (EPSILON_LOOP)
+			{
+				epsilonPlot.save("epsilonPlot.dat", raw_ascii);
 			}
 
 			// free up resources

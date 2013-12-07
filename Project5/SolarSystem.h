@@ -55,7 +55,7 @@ public:
 		return this->_dim;
 	}
 
-	// return number of time steos
+	// return number of time steps
 	int nSteps(void)
 	{
 		return this->_nSteps;
@@ -111,7 +111,7 @@ public:
 
 	// plots all element positions if the condition is met
 	// returns true if room, false if not
-	bool plotCurrentStep(bool condition);
+	bool plotCurrentStep(int istep, double step);
 
 	// number of (bound) particles within radius r
 	// from the (bound) center of mass

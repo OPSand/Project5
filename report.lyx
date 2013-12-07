@@ -829,7 +829,119 @@ The desired radius that takes into account that the outer spherical shells
 \end_layout
 
 \begin_layout Subsection
-Algorithms' stability
+Algorithms
+\end_layout
+
+\begin_layout Standard
+For both of our algorithms, the step intervalle looks like 
+\begin_inset Formula $[t_{0};t_{max}]$
+\end_inset
+
+.
+ We will work on 
+\begin_inset Formula $n_{Steps}$
+\end_inset
+
+.
+ Let's define h as 
+\begin_inset Formula $h=\frac{t_{max}-t_{0}}{n_{Steps}}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Runge-Kutta
+\end_layout
+
+\begin_layout Standard
+We have
+\begin_inset Formula $t_{i}=t_{0}+i.h\text{ for each i belonging to \ensuremath{{\displaystyle [0,n_{Steps}].}}}$
+\end_inset
+
+ We can now define 
+\begin_inset Formula $x_{i}=x(t_{i})$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The general formulae of Simpson's rule is: 
+\begin_inset Formula $\intop_{t_{i}}^{t_{i}+1}f(t,x)dt=\frac{1}{6}h(f(t_{i},x_{i})+2f(t_{i+\frac{1}{2}},x_{i+\frac{1}{2}})+f(t_{i+1},x_{i+1}))$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+Runge-Kutta's method defines four quantities, to predict and correct the
+ value of 
+\begin_inset Formula $x_{i+1}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+k_{1}=f(t_{i},x_{i})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+k_{2}=f(t_{i+\frac{1}{2}},x_{i+\frac{1}{2}})\qquad x_{i+\frac{1}{2}}=x_{i}+\frac{h}{2}k_{1}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+k_{3}=f(t_{i+\frac{1}{2}},x_{i+\frac{1}{2}}^{^{*}})\qquad y_{i+\frac{1}{2}}=x_{i}+\frac{h}{2}k_{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+k4=f(t_{i+1},x_{i+1})\qquad x_{i+1}=x_{i}+hk_{3}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In our case, we will have to compute this results six times by time step:
+ once for the x,y and z positions, and once for the x,y and z velocities.
+ 
+\end_layout
+
+\begin_layout Standard
+This Runge-Kutta algorithm is especially interesting since we only need
+ initial conditions to unfold it.
+ Its approximation error runs like 
+\begin_inset Formula $\mathcal{O}(\Delta h^{2})$
+\end_inset
+
+ .
 \end_layout
 
 \begin_layout Subsubsection
@@ -987,7 +1099,7 @@ The code is designed to be highly modular and independent of dimension to
 placement H
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -1142,15 +1254,26 @@ Energy mostly conserved, especially with gravitational correction.
 \end_layout
 
 \begin_layout Standard
+We saw in the theory part that the forth-order Runge Kutta has an approximation
+ error smaller than the Leapfrog algorithm.
+ It basically means that the local data about each particles will be more
+ accurate but since the Leapfrog method is more stable than the Runge Kutta
+ method, and gives satisfying results for small enough time steps.
+ The Runge Kutta method is more accurate to compute the velocity, but here,
+ it does not matter so much.
+ It is also important to underline the fact that the Runge Kutta method
+ generates an oscillation on the energy, while the energy is stable with
+ the Leapfrog one.
+ And if the time step gets to big, for both of our algorithm, everything
+ becomes messy, and not usable.
+\end_layout
+
+\begin_layout Standard
 \begin_inset Float table
 placement H
 wide false
 sideways false
 status open
-
-\begin_layout Plain Layout
-
-\end_layout
 
 \begin_layout Plain Layout
 \noindent
@@ -1265,8 +1388,31 @@ Elapsed Time to process the two body system
 \end_layout
 
 \end_inset
+<<<<<<< HEAD
 
 
+\end_layout
+=======
+>>>>>>> 78edfc312df8d6185b36da0fe799be1a5b7e1a42
+
+\begin_layout Standard
+We can see here that the Runge Kutta algorithm takes more time to process
+ the same set of data than the Leapfrog.
+ For small data set, the time spent by the forth order Runge Kutta algorithm
+ is twice as much as the time spent by the Leapfrog method.
+ And when we increase the number of steps, or the number of bodies, we increase
+ the time spent during processing.
+ Thus, the difference in the execution time between Runge Kutta and Leapfrog
+ becomes more and more significant.
+\end_layout
+
+\begin_layout Standard
+According to the time required to process equivalent results, the Leapfrog
+ algorithm seems more interesting.
+ Furthermore, we are going now to process on a N-body system, where N is
+ not smaller than 100.
+ Thus, we will be more interested in the statistical properties of our system,
+ than in the local accuracy of the position or the velocity.
 \end_layout
 
 \begin_layout Standard
@@ -1274,7 +1420,7 @@ Elapsed Time to process the two body system
 placement H
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -1452,7 +1598,7 @@ Conservation of the energy -- forth-order Runge Kutta -- A changer !!!
 \begin_inset Float table
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent

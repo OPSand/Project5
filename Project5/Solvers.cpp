@@ -116,7 +116,7 @@ vector<SolarSystem*>* Solvers::Solve(double step)
 		for (int i = 0; i < this->_leapfrog->dim(); i++)
 		{
 			ostringstream fname = ostringstream();
-			fname << "sim_" << this->_leapfrog->name << "_pos" << i << "_leapfrog.dat";
+			fname << "sim_" << this->_leapfrog->name << "_pos" << i << ".dat";
 			this->_leapfrog->plotDim(i, fname.str());
 		}
 
@@ -133,7 +133,7 @@ vector<SolarSystem*>* Solvers::Solve(double step)
 		for (int i = 0; i < this->_rk4->dim(); i++)
 		{
 			ostringstream fname = ostringstream();
-			fname << "sim_" << this->_rk4->name << "_pos" << i << "_rk4.dat";
+			fname << "sim_" << this->_rk4->name << "_pos" << i << ".dat";
 			this->_rk4->plotDim(i, fname.str());
 		}
 
@@ -150,7 +150,7 @@ vector<SolarSystem*>* Solvers::Solve(double step)
 		for (int i = 0; i < this->_euler->dim(); i++)
 		{
 			ostringstream fname = ostringstream();
-			fname << "sim_" << this->_euler->name << "_pos" << i << "_euler.dat";
+			fname << "sim_" << this->_euler->name << "_pos" << i << ".dat";
 			this->_euler->plotDim(i, fname.str());
 		}
 

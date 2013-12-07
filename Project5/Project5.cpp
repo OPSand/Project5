@@ -171,12 +171,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	const int DIM = 3;
 
 	// initialization & time steps (common)
-	const int N = 100; // number of celestial bodies
+	const int N = 1000; // number of celestial bodies
 	const double R0 = 20.0; // initial radius in ly
-	const double TOTAL_M = 1000.0; // solar masses (to be kept constant if we loop over N)
+	const double TOTAL_M = 1000.0; // solar masses (to be kept constant throughout)
 	const double STD_FACTOR = 0.1; // % factor of average
 	const double CRUNCH_TIMES = 4.0; // # of crunch times to simulate for
-	const double EPSILON = 0.0; // first epsilon value to try (ignored if not looping over epsilon values)
+	const double EPSILON = 0.0; // first epsilon value to try (ignored if EPSILON_LOOP == false)
 	const int N_STEPS = 1000; // number of steps total
 	const int N_PLOT = 100; // number of steps to plot (must be <= N_STEPS)
 	const int N_NR = 1000; // number of n0 and r0 values to try (curve fitting)
@@ -184,8 +184,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_BIN = 20.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n/epsilon, same total mass)
-	const int N_SIMS = 1; // number of simulations to run (set to 1 to run just once)
-	const int N_END = 2500; // max N for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == true)
+	const int N_SIMS = 3; // number of simulations to run (set to 1 to run just once)
+	const int N_END = 2000; // max N for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == true)
 	const double EPSILON_END = 0.15; // max epsilon for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == false)
 
 	// constants calculated from other constants
@@ -200,10 +200,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double G_YLS = cG * M_SUN * pow(cYr, 2.0) / pow(LY, 3.0); // G in years, ly, solar masses
 
 	// flags
-	const bool EPSILON_LOOP = true; // vary epsilon instead of n
+	const bool EPSILON_LOOP = false; // vary epsilon instead of n
 	const bool USE_LEAPFROG = true; // use Leapfrog method
-	const bool USE_RK4 = true; // use Runge-Kutta method
-	const bool USE_EULER = true; // use Euler-Cromer method
+	const bool USE_RK4 = false; // use Runge-Kutta method
+	const bool USE_EULER = false; // use Euler-Cromer method
 	const bool DEBUG = false; // for debugging only
 	const bool BENCHMARK = false; // To test against the project 3 code
 	#pragma endregion

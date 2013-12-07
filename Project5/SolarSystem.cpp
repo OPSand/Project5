@@ -23,7 +23,7 @@ SolarSystem::SolarSystem(const SolarSystem& other)
 	this->_nPlot = other._nPlot;
 	this->_grav = other._grav;
 	this->_nBoundPlot = other._nBoundPlot;
-	// do not copy name
+	this->name = other.name;
 
 	// deep copy
 	this->_bodies = new vector<CelestialBody*>();
@@ -61,7 +61,7 @@ SolarSystem SolarSystem::operator = (const SolarSystem& other)
 		this->_nPlot = other._nPlot;
 		this->_grav = other._grav;
 		this->_nBoundPlot = other._nBoundPlot;
-		// do not copy name
+		this->name = other.name;
 
 		// deep copy
 		this->_bodies = new vector<CelestialBody*>();

@@ -1105,7 +1105,7 @@ status collapsed
 \noindent
 \align left
 \begin_inset Graphics
-	filename ../../../../../Desktop/Screen/ClassDiagram.jpg
+	filename Screen/ClassDiagram.jpg
 	scale 80
 
 \end_inset
@@ -1439,7 +1439,7 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename ../../../../../Desktop/Screen/BenchMark/plot3D_for_leapfrog.jpeg
+	filename Screen/BenchMark/plot3D_for_leapfrog.jpeg
 	scale 45
 
 \end_inset
@@ -1480,7 +1480,7 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename ../../../../../Desktop/Screen/BenchMark/BM-Energy-LeapFrog.jpg
+	filename Screen/BenchMark/BM-Energy-LeapFrog.jpg
 	scale 45
 
 \end_inset
@@ -1522,7 +1522,7 @@ status collapsed
 \noindent
 \align center
 \begin_inset Graphics
-	filename ../../../../../Desktop/Screen/BenchMark/plot3D_for_rk4.jpeg
+	filename Screen/BenchMark/plot3D_for_rk4.jpeg
 	scale 45
 
 \end_inset
@@ -1564,7 +1564,7 @@ status collapsed
 \noindent
 \align right
 \begin_inset Graphics
-	filename ../../../../../Desktop/Screen/Conservation_Energy_Epsilon_Leapfrog_Resized.jpg
+	filename Screen/Conservation_Energy_Epsilon_Leapfrog_Resized.jpg
 	scale 45
 
 \end_inset
@@ -1852,7 +1852,7 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename ../../../../../Desktop/Screen/b/Eval_G_Resized.jpg
+	filename Screen/b/Eval_G_Resized.jpg
 
 \end_inset
 
@@ -2020,7 +2020,7 @@ status open
 \noindent
 \align left
 \begin_inset Graphics
-	filename ../../../../../Desktop/Project5/EPSILON/boundFraction.jpeg
+	filename Project5/EPSILON/boundFraction.jpeg
 
 \end_inset
 
@@ -2070,7 +2070,7 @@ status open
 \noindent
 \align right
 \begin_inset Graphics
-	filename ../../../../../Desktop/Project5/EPSILON/energyConservation.jpeg
+	filename Project5/EPSILON/energyConservation.jpeg
 
 \end_inset
 
@@ -2328,7 +2328,7 @@ status open
 \noindent
 \align left
 \begin_inset Graphics
-	filename ../../../../../Desktop/Screen/d-e/plot_for_100_Particles_Epsi_0.jpeg
+	filename Screen/d-e/plot_for_100_Particles_Epsi_0.jpeg
 	scale 45
 
 \end_inset
@@ -2369,7 +2369,7 @@ status open
 \noindent
 \align right
 \begin_inset Graphics
-	filename ../../../../../Desktop/Screen/Conservation_Energy_150_Resized.jpg
+	filename Screen/Conservation_Energy_150_Resized.jpg
 	scale 45
 
 \end_inset
@@ -2411,7 +2411,7 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename ../../../../../Desktop/Screen/Conservation_Energy_300_Resized.jpg
+	filename Screen/Conservation_Energy_300_Resized.jpg
 	scale 45
 
 \end_inset
@@ -2483,7 +2483,7 @@ status open
 \noindent
 \align left
 \begin_inset Graphics
-	filename ../../../../../Desktop/Screen/d-e/plot_for_100_Particles_Epsi_0_10.jpeg
+	filename Screen/d-e/plot_for_100_Particles_Epsi_0_10.jpeg
 	scale 45
 
 \end_inset
@@ -2524,7 +2524,7 @@ status open
 \noindent
 \align right
 \begin_inset Graphics
-	filename ../../../../../Desktop/Screen/d-e/plot_for_200_Particles_Epsi_0_071.jpeg
+	filename Screen/d-e/plot_for_200_Particles_Epsi_0_071.jpeg
 	scale 45
 
 \end_inset
@@ -2566,7 +2566,7 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename ../../../../../Desktop/Screen/Conservation_Energy_Leapfrog_Epsilon_300_Resized.jpg
+	filename Screen/Conservation_Energy_Leapfrog_Epsilon_300_Resized.jpg
 	scale 45
 
 \end_inset
@@ -2638,7 +2638,7 @@ status open
 \noindent
 \align left
 \begin_inset Graphics
-	filename ../../../../../Desktop/Screen/Conservation_Energy_Leapfrog_Resized.jpg
+	filename Screen/Conservation_Energy_Leapfrog_Resized.jpg
 	scale 45
 
 \end_inset
@@ -2679,7 +2679,7 @@ status open
 \noindent
 \align right
 \begin_inset Graphics
-	filename ../../../../../Desktop/Screen/Conservation_Energy_Epsilon_Leapfrog_Resized.jpg
+	filename Screen/Conservation_Energy_Epsilon_Leapfrog_Resized.jpg
 	scale 45
 
 \end_inset

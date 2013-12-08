@@ -171,7 +171,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const int DIM = 3;
 
 	// initialization & time steps (common)
-	const int N = 2; // number of celestial bodies
+	const int N = 100; // number of celestial bodies
 	const double R0 = 20.0; // initial radius in ly
 	const double TOTAL_M = 1000.0; // solar masses (to be kept constant throughout)
 	const double STD_FACTOR = 0.1; // % factor of average
@@ -184,8 +184,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_BIN = 20.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n/epsilon, same total mass)
-	const int N_SIMS = 2; // number of simulations to run (set to 1 to run just once)
-	const int N_END = 1000; // max N for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == true)
+	const int N_SIMS = 3; // number of simulations to run (set to 1 to run just once)
+	const int N_END = 300; // max N for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == true)
 	const double EPSILON_END = 0.15; // max epsilon for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == false)
 	const double N_STEPS_END = 10000; // max # of time steps
 
@@ -202,7 +202,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	// flags
 	const bool EPSILON_LOOP = false; // vary epsilon instead of n
-	const bool STEP_LOOP = true; // vary time step instead of n
+	const bool STEP_LOOP = false; // vary time step instead of n
 	const bool USE_LEAPFROG = true; // use Leapfrog method
 	const bool USE_RK4 = false; // use Runge-Kutta method
 	const bool USE_EULER = false; // use Euler-Cromer method
@@ -243,7 +243,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 
 		// store info for matlab plots for the entire series of simulations
-		const int N_COLUMNS = 19;
+		const int N_COLUMNS = 20;
 		mat* leapfrogPlot = new mat(N_SIMS, N_COLUMNS);
 		mat* rk4Plot = new mat(N_SIMS, N_COLUMNS);
 		mat* eulerPlot = new mat(N_SIMS, N_COLUMNS);
@@ -518,6 +518,8 @@ int _tmain(int argc, _TCHAR* argv[])
 				isimsPlot->at(isim, 17) = stdComBound;
 				// final percentage of bound particles
 				isimsPlot->at(isim, 18) = finalBound;
+				// lost energy due to ejection
+				isimsPlot->at(isim, 19) = lostEnergy;
 
 				// Finally:
 				// calculate "classic" potential energy instead for bound particles

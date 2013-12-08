@@ -1404,10 +1404,8 @@ We found equivalent results between the two projects, for the same time
 \end_layout
 
 \begin_layout Standard
-For small time steps, everything is well-behaving, and we find, for small
- processing lengths, the same results with the two methods.
- But when we use them for very long times, we can see that the Leapfrog
- algorithm is way more well-behaved than the Runge Kutta one.
+When we use them for very long times, we can see that the Leapfrog algorithm
+ is way more well-behaved than the Runge Kutta one.
  Thus, we can say that the Runge Kutta algorithm is not as stable as the
  Leapfrog one for when being processed for long times
 \end_layout

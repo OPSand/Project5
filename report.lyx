@@ -1985,6 +1985,178 @@ Looking at (SOURCE), we see also that the number of ejected particles will
  study.
 \end_layout
 
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "c"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Graphics
+	filename Project5/EPSILON/boundFraction.jpeg
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Fraction of bound particles at end of simulation for a range of 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ values.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align right
+\begin_inset Graphics
+	filename Project5/EPSILON/energyConservation.jpeg
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Energy-conservation-(relative"
+
+\end_inset
+
+Energy conservation (relative to starting potential energy) for a range
+ of 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ values.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The relative energy conservation in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Energy-conservation-(relative"
+
+\end_inset
+
+ was calculated using the following formula, using the total energy before
+ the simulation as our scale:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\Delta E_{rel}=\frac{E_{after}-E_{before}}{|E_{before}|}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $E_{after}$
+\end_inset
+
+ can be the total energy of all the particles and the bound particles, respectiv
+ely.
+\end_layout
+
+\begin_layout Standard
+The results show that the bound particle fraction reaches a value close
+ to the expected range for 
+\begin_inset Formula $N=100$
+\end_inset
+
+ (see FIGURE in SOURCE) with as low a value as 
+\begin_inset Formula $\epsilon\approx0.04$
+\end_inset
+
+.
+ The energy conservation takes a higher value to approach desired levels:
+ Only around 
+\begin_inset Formula $\epsilon\approx0.10$
+\end_inset
+
+ is the energy for the remaining bound particles close to the initial total
+ energy.
+ The central assumption here is that excess energy resulting from close
+ encounters ends up in unbound particles.
+ For our further purposes (curve fitting and virialization analysis), we
+ are mostly interested in the bound particles, hence we are satisfied when
+ they have a total energy compared to the total energy before the simulation.
+ However, we have also plotted the energy conservation for all the particles
+ (including the unbound ones): For our chosen value of 
+\begin_inset Formula $\epsilon=0.10$
+\end_inset
+
+, the relative change in total energy less than 40% (clearly a figure we
+ would want to improve if our focus was not on the bound particles).
+\end_layout
+
 \begin_layout Paragraph
 Equilibrium
 \end_layout

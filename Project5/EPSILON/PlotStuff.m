@@ -27,8 +27,8 @@ end
 % And then we plot !
 figure(1);
 hold on;
-plot(t(:),nbBounds(:),'color',rand(1,3));
-plot(t(:),nbBounds2(:),'color',rand(1,3));
+plot(t(:),nbBounds(:),'o','linestyle','-','color','r');
+plot(t(:),nbBounds2(:),'o','linestyle','-','color','b');
 hold off;
 title(['Energy Conservation']);
 xlabel('Epsilon (ly)');

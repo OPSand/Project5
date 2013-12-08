@@ -2281,7 +2281,7 @@ crosstalk
  If the standard deviation is significantly greater than the 10% of the
  mean we used to arrive at this result, the above formula may well not be
  applicable.
- That said, the particles that recieve a change in velocity that is too
+ That said, the particles that receive a change in velocity that is too
  high for a timestep would tend to be the lighter particles, so we would
  expect to see the fraction of bound particles decrease while the energy
  conservation should feel the impact of a greater mass variance less in

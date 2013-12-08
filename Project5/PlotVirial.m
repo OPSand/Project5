@@ -1,46 +1,90 @@
-fileToOpen = strcat('nbound_0_leapfrog','.dat');
-fidPosi = fopen(fileToOpen);
-nbSteps = 4;
-Plot_File = fscanf(fidPosi,'%g',[10 nbSteps]).';
+fileName = 'plotLeapfrog.dat';
+fidPosi = fopen(fileName);
+nbColumns = 18;
+nbSimulation = 6;
+Plot_File = fscanf(fidPosi,'%g',[nbColumns nbSimulation]).' ;
 fclose(fidPosi);
-nbParticles = 300;
 bWantToSaveJPEG = true;
-%filename = strcat('plot_for_',int2str(nbParticles),'_Particles','.jpeg');
-filename = 'plotLeapfrog.dat';
-% Init of our time vector
-t = [1 (nbSteps- 1)];
-for i = 1:nbSteps
-    t(i)= Plot_File(i,1);
+bFunctionOfEpsilon = false;
+ 
+
+% Init of our kinetic energy vector
+nbBoundsEk = [0 nbSimulation];
+for i = 1: nbSimulation
+    nbBoundsEk(i) = Plot_File(i,9);
 end
 
-% Init of the vector holding the number of bound particles
-nbBoundsEk = [0 (nbSteps- 1)];
-for i = 1: nbSteps
-    nbBoundsEk(i) = Plot_File(i,8);
-end
-nbBoundsEp = [0 (nbSteps- 1)];
-for i = 1: nbSteps
-    nbBoundsEp(i) = Plot_File(i,9);
-end
+nbBoundsEk; % Decomment to check that everything is well behaving
 
-nbBoundsVirial = [0 (nbSteps- 1)];
-for i = 1: nbSteps
+% Init of our kinetic energy vector
+ nbBoundsEp = [0 nbSimulation];
+ for i = 1: nbSimulation
+     nbBoundsEp(i) = Plot_File(i,10);
+ end
+
+ nbBoundsEp; % Decomment to check that everything is well behaving
+
+nbBoundsVirial = [0 nbSimulation];
+for i = 1: nbSimulation
     nbBoundsVirial(i) = nbBoundsEp(i)/nbBoundsEk(i);
 end
 
-% And then we plot !
-figure(1);
-plot(t(:),nbBoundsVirial(:),'color',rand(1,3));
-%title(['Plot for ' int2str(nbParticles) ' Particles']);
-%xlabel('Time (in t_c_r_u_n_c_h)');
-%ylabel('Number of bound particles');
-grid on;
+nbBoundsVirial; % Decomment to check that everything is well behaving
 
-% And eventually save the plot
-if (bWantToSaveJPEG == true)  
-    frame = getframe(1);
-    im = frame2im(frame);
-    [A,map] = rgb2ind(im,256); % To avoid 3D pictures
-    imwrite(A,map,filename,'jpeg'); 
-end
+
+if bFunctionOfEpsilon == true
+
+    % Init of our time vector
+    t = [0 (nbSimulation)];
+    for i = 1:nbSimulation
+        t(i)= Plot_File(i,2);
+    end
+
     
+    % And then we plot !
+    figure(1);
+    plot(t(:),nbBoundsVirial(:),'o','lineStyle','-');
+    title('Ration E_p/E_k in function of epsilon');
+    xlabel('Epsilon(ly)');
+    ylabel('E_p/E_k');
+    grid on;
+
+    % And eventually save the plot
+    if (bWantToSaveJPEG == true)  
+        saveName = 'Plot_Virial_Epsilon.jpeg';
+        frame = getframe(1);
+        im = frame2im(frame);
+        [A,map] = rgb2ind(im,256); % To avoid 3D pictures
+        imwrite(A,map,saveName,'jpeg'); 
+    end
+% We want if in function of the number of particles!     
+else
+    nbMaxParticles = 300;
+    nbMinParticles = 100;
+    % Init of our nbParticles vectors
+    % On va de 100 à 300 en 6 étapes
+    nbParticles = [0 nbSimulation];
+    for i = 1: nbSimulation
+        nbParticles(i) = nbMinParticles + (i-1)*(nbMaxParticles - nbMinParticles)/(nbSimulation -1);
+    end
+    nbParticles;  % Decomment to check that everything is well behaving
+    
+    % And then we plot !
+    figure(1);
+    plot(nbParticles(:),nbBoundsVirial(:),'lineStyle',':');%,'Color','g','+');
+    title('Ration E_p/E_k in function of the number of particles');
+    xlabel('N');
+    ylabel('E_p/E_k');
+    grid on;
+
+    % And eventually save the plot
+    if (bWantToSaveJPEG == true)  
+        saveName = 'Plot_Virial_N.jpeg';
+        frame = getframe(1);
+        im = frame2im(frame);
+        [A,map] = rgb2ind(im,256); % To avoid 3D pictures
+        imwrite(A,map,saveName,'jpeg'); 
+    end
+    
+end
+   

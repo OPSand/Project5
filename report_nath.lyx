@@ -244,13 +244,11 @@ Evaluation of a good time step
 \end_layout
 
 \begin_layout Standard
-To find a convenient time step size for our simulation, we decided to use
- the virial theorem.
- We know that the link between the kinetic energy and the potential energy
- for bound particles, thus, we will use this quantity to look for a good
- step size.
- We fix the number of particles to 100, and the initial radius to 20 light
- years.
+To find a convenient time step size for our simulation, we will look at
+ the total energy conservation over different time steps, for our two algorithms.
+ Our system is the fllowing: 100 particles, and an initial radius of 20
+ light years.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -482,8 +480,16 @@ We can see that in regard with the virial theorem results, having a step
  the unit for 1,000,000 years).
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Standard
+=> tries with the conservation of the Energy => Epsilon 0
+\end_layout
+
+\begin_layout Subsection
 Equilibrium
+\end_layout
+
+\begin_layout Standard
+// Insérer les plots pour N 300 (epsi & non epsi) & N 200 (epsi)
 \end_layout
 
 \begin_layout Standard
@@ -522,9 +528,144 @@ When we increase N, the number of initial particles, we increase the percentage
  of lost particles too.
  But we keep the total mass constant, which means that as N increases, the
  particles become lighter.
- Since the energy is a function of the mass, we can see that the quantity
- of lost energy ...
+ Since the energies, kinetic and potential, are both a function of the mass
+ of the processed particles, we can see that the quantity of lost energy
+ ...
  Decreases ?!
+\end_layout
+
+\begin_layout Subsection
+Virial theorem
+\end_layout
+
+\begin_layout Standard
+We demonstrate that our system was in equilibrium after 
+\begin_inset Formula $0.81\tau_{crunch}$
+\end_inset
+
+.
+ Thus, we will look at the behavior of the kinetic energy and of the potential
+ energy of our bound particles at this particular time, and test it for
+ different value of epsilon.
+ The point here is to test if we are satisfying the virial theorem or not.
+ To do so, we will plot for every epsilon tested the quantity 
+\begin_inset Formula $\frac{\left\langle P\right\rangle }{\left\langle K\right\rangle }$
+\end_inset
+
+.
+ To be consistent with the virial theorem, we want this quantity to be as
+ close as possible to 
+\begin_inset Formula $-2$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "c"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Graphics
+	filename Screen/BenchMark/plot2D_for_leapfrog.jpeg
+	scale 45
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Ratio
+\begin_inset Formula $\frac{\left\langle P\right\rangle }{\left\langle K\right\rangle }$
+\end_inset
+
+for different epsilons, N = 100
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align right
+\begin_inset Graphics
+	filename Screen/BenchMark/plot2D_for_rk4.jpeg
+	scale 45
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Ratio
+\begin_inset Formula $\frac{\left\langle P\right\rangle }{\left\langle K\right\rangle }$
+\end_inset
+
+for different N, epsilon ≈ 0.03
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+// Nath : figures should be changed é_è
 \end_layout
 
 \end_body

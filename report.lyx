@@ -312,18 +312,28 @@ Lack of a singularity in our model
 \end_layout
 
 \begin_layout Standard
-TODO: Use Elgarøy II and Peacock as sources.
-\end_layout
-
-\begin_layout Standard
 The reason we do not see a singularity in our model is that we have assumed
  pressureless (i.e.
- collisionless) matter in the Friedmann equations.
- In our simulation we will see internal pressure as kinetic energy from
- the collapse is turned into random motions by near-collisions between particles.
- This will act as a kind of pressure in our simulation and will halt the
- collapse, causing the gravitationally bound particles to form more or less
- stable orbits around the center of mass.
+ collisionless) matter that is homogenously distributed in the Friedmann
+ equations.
+ In our simulation we will see internal 
+\begin_inset Quotes eld
+\end_inset
+
+pressure
+\begin_inset Quotes erd
+\end_inset
+
+ as kinetic energy from the collapse is turned into random motions by near-colli
+sions between the point mass particles.
+ These motions will halt the collapse, causing the gravitationally bound
+ particles to form more or less stable orbits around the center of mass.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-1,key-2"
+
+\end_inset
+
  Keep in mind that the kinetic energy is not evenly distributed, so occasionally
  particles that receive more than their fair share will become unbound and
  may escape from the system before they have time to lose their energy.
@@ -333,7 +343,7 @@ The reason we do not see a singularity in our model is that we have assumed
 \end_layout
 
 \begin_layout Standard
-We say that the system is stable when the virial theorem
+We say that the system is stable when it satisfies the virial theorem
 \end_layout
 
 \begin_layout Standard
@@ -1151,6 +1161,39 @@ Class Diagram
 \end_layout
 
 \begin_layout Subsection
+Main program (Project5)
+\end_layout
+
+\begin_layout Standard
+Sets up a series of simulations so we can plot certain results as a function
+ of either 
+\begin_inset Formula $N$
+\end_inset
+
+ (number of particles), 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ (correction factor for gravitation) or 
+\begin_inset Formula $\Delta t$
+\end_inset
+
+ (time step).
+ This automated approach made the process of plotting considerably easier
+ for us than setting up everything 
+\begin_inset Quotes eld
+\end_inset
+
+by hand
+\begin_inset Quotes erd
+\end_inset
+
+ each time.
+ The main program also contains code to test the simulation against a 2D
+ benchmark (Project 3) and contains helper methods for curve fitting.
+\end_layout
+
+\begin_layout Subsection
 SolarSystem class
 \end_layout
 
@@ -1165,6 +1208,9 @@ Container class for the entire N-body system.
  and Gravity objects), which we make use of to be able to run different
  algorithms on identical copies of a system (for comparison of results and
  stability analysis).
+ Some resource intentsive properties, like potential energy, are only calculated
+ when we need to plot the data - this can be set not to happen at every
+ step to speed up the execution.
 \end_layout
 
 \begin_layout Subsection
@@ -2208,7 +2254,7 @@ s for automating the process of choosing an acceptable value for
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-\epsilon=\sqrt{\frac{100}{N}\left(\frac{R_{0}}{20}\right)^{3}\frac{\Delta t}{\frac{1}{250}}}\cdot0.1=\frac{1}{4}\sqrt{\frac{R_{0}^{3}\Delta t}{2N}}
+\epsilon=\sqrt{\frac{100}{N}\left(\frac{R_{0}}{20}\right)^{3}\frac{\Delta t}{\frac{1}{250}}}\cdot0.1=\frac{1}{4}\sqrt{\frac{R_{0}^{3}\Delta t}{2N}}\label{eq:epsilon_N100}
 \end{equation}
 
 \end_inset
@@ -2923,8 +2969,19 @@ The largest simulation we found it practical to make was a series of four
 
  values.
  The total running time in this case was about 12.5 hours on a single processor
- core.
- For the largest simulation (
+ core as expected for 
+\begin_inset Formula $\mathcal{O}(n^{2})$
+\end_inset
+
+ algorithms when the 
+\begin_inset Formula $N=100$
+\end_inset
+
+ case takes about a minute to run (depending on processor load and frequency).
+\end_layout
+
+\begin_layout Standard
+For the largest simulation (
 \begin_inset Formula $N=2000$
 \end_inset
 
@@ -3228,7 +3285,91 @@ reference "eq:curvefit"
 
 \begin_layout Standard
 We conclude that this gives a nice fit to our radial distribution.
- 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Project5/CURVEFIT/fitscaling_n0.jpeg
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename Project5/CURVEFIT/fitscaling_r0.jpeg
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Comparison to the scaling behaviour found for 
+\begin_inset Formula $n(r)$
+\end_inset
+
+ in THE SOURCE.
+ We scaled the axes to match these predictions, but did not encounter the
+ expected scaling behavior, where 
+\begin_inset Formula $n_{0}\propto N^{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $r_{0}\propto N^{-1/3}$
+\end_inset
+
+: In that case, we would expect the values to remain more or less constant.
+ However, it may well be that we are simply simulating too few particles
+ to be able to reproduce this behavior.
+ Another possible explanation is that we have not kept our 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ values constant, but used the dynamic scaling of this parameter from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:epsilon_N100"
+
+\end_inset
+
+).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -3239,6 +3380,24 @@ Conclusion
 x
 \end_layout
 
+\begin_layout Standard
+Paralellizing the code would indeed be beneficial (due to time constraints,
+ ironically, we were forced not to implement this as we would then need
+ to find out how to do this in Visual C++).
+ It is especially beneficial when doing series of many simulations that
+ should result in a plottable data set over all the values of 
+\begin_inset Formula $N$
+\end_inset
+
+ we are interested in.
+ One could then aim to distribute the load evenly over each processor.
+ Furthermore, even with just one simulation, the 
+\begin_inset Formula $\mathcal{O}(n^{2})$
+\end_inset
+
+ parts of the code (gravitational forces, potential energy), 
+\end_layout
+
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
@@ -3246,10 +3405,60 @@ key "key-1"
 
 \end_inset
 
-Elgarøy, Øystein: Lecture notes in AST 4220, fall 2009, pages 31-33: 
+Elgarøy, Øystein: Lecture notes in AST 4220, fall 2009, pp.
+ 31-33: 
 \begin_inset CommandInset href
 LatexCommand href
 target "https://www.uio.no/studier/emner/matnat/astro/AST4220/h09/course-material/lectures.pdf"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-1"
+
+\end_inset
+
+Elgarøy, Øystein: The Spherical Collapse Model: 
+\begin_inset CommandInset href
+LatexCommand href
+name "https://www.uio.no/studier/emner/matnat/astro/AST4320/h12/undervisningsmateriale/spherecollapse.pdf"
+target "https://www.uio.no/studier/emner/matnat/astro/AST4320/h12/undervisningsmateriale/spherecollapse.pdf"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-2"
+
+\end_inset
+
+Peacock, J.A.: Large scale surveys and cosmic structure (Lectures delivered
+ at the 2002 Tenerife Winter School, "Dark matter and dark energy in the
+ universe"), pp.
+ 15 - 19: 
+\begin_inset CommandInset href
+LatexCommand href
+name "http://arxiv.org/pdf/astro-ph/0309240v3.pdf"
+target "http://arxiv.org/pdf/astro-ph/0309240v3.pdf"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-3"
 
 \end_inset
 

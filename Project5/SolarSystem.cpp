@@ -435,6 +435,11 @@ mat SolarSystem::radialDistribution(double maxR, double avgBin, bool boundOnly)
 	mat plot = mat(bins, 3);
 	plot.fill(0.0);
 
+	if (this->nBound() == 0)
+	{
+		return plot;
+	}
+
 	// set r values
 	for (int i = 0; i < bins; i++)
 	{
@@ -508,6 +513,11 @@ double SolarSystem::avgDistCoM(bool boundOnly)
 		}
 	}
 
+	if (n <= 0)
+	{
+		return -1.0;
+	}
+
 	return (sum / n);
 }
 
@@ -536,6 +546,11 @@ double SolarSystem::stdDevDistCoM(bool boundOnly)
 			// don't count this particle
 			n -= 1;
 		}
+	}
+
+	if (n <= 0)
+	{
+		return -1.0;
 	}
 
 	// sum/n is now the variance, return std.dev. instead

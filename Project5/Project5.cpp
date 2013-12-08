@@ -171,12 +171,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	const int DIM = 3;
 
 	// initialization & time steps (common)
-	const int N = 100; // number of celestial bodies
+	const int N = 2; // number of celestial bodies
 	const double R0 = 20.0; // initial radius in ly
 	const double TOTAL_M = 1000.0; // solar masses (to be kept constant throughout)
 	const double STD_FACTOR = 0.1; // % factor of average
 	const double CRUNCH_TIMES = 4.0; // # of crunch times to simulate for
-	const double EPSILON = 0.0; // first epsilon value to try (ignored if EPSILON_LOOP == false)
+	const double EPSILON = 0.1; // first epsilon value to try (ignored if EPSILON_LOOP == false)
 	const int N_STEPS = 1000; // number of steps total
 	const int N_PLOT = 100; // number of steps to plot (must be <= N_STEPS)
 	const int N_NR = 1000; // number of n0 and r0 values to try (curve fitting)
@@ -184,9 +184,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_BIN = 20.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n/epsilon, same total mass)
-	const int N_SIMS = 16; // number of simulations to run (set to 1 to run just once)
+	const int N_SIMS = 2; // number of simulations to run (set to 1 to run just once)
 	const int N_END = 1000; // max N for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == true)
 	const double EPSILON_END = 0.15; // max epsilon for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == false)
+	const double N_STEPS_END = 10000; // max # of time steps
 
 	// constants calculated from other constants
 	const double AVG_M = (TOTAL_M / (double)N); // average mass, solar masses
@@ -200,7 +201,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double G_YLS = cG * M_SUN * pow(cYr, 2.0) / pow(LY, 3.0); // G in years, ly, solar masses
 
 	// flags
-	const bool EPSILON_LOOP = true; // vary epsilon instead of n
+	const bool EPSILON_LOOP = false; // vary epsilon instead of n
+	const bool STEP_LOOP = true; // vary time step instead of n
 	const bool USE_LEAPFROG = true; // use Leapfrog method
 	const bool USE_RK4 = false; // use Runge-Kutta method
 	const bool USE_EULER = false; // use Euler-Cromer method
@@ -214,14 +216,22 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		int deltaN = 0;
 		double deltaEpsilon = 0.0;
+		double deltaNSteps = 0.0;
 
 		int nSims = N_SIMS; // avoid const error
 
-		if (!EPSILON_LOOP) // loop over n
+		if ((!EPSILON_LOOP) && (!STEP_LOOP)) // loop over n
 		{
 			if (nSims > 1) // avoid division by 0
 			{
 				deltaN = (N_END - N) / (nSims - 1);
+			}
+		}
+		else if (!EPSILON_LOOP) // loop over step length
+		{
+			if (nSims > 1) // avoid division by 0
+			{
+				deltaNSteps = (N_STEPS_END - N) / (nSims - 1);
 			}
 		}
 		else // loop over epsilon
@@ -233,9 +243,10 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 
 		// store info for matlab plots for the entire series of simulations
-		mat* leapfrogPlot = new mat(N_SIMS, 18);
-		mat* rk4Plot = new mat(N_SIMS, 18);
-		mat* eulerPlot = new mat(N_SIMS, 18);
+		const int N_COLUMNS = 19;
+		mat* leapfrogPlot = new mat(N_SIMS, N_COLUMNS);
+		mat* rk4Plot = new mat(N_SIMS, N_COLUMNS);
+		mat* eulerPlot = new mat(N_SIMS, N_COLUMNS);
 
 		#pragma endregion
 
@@ -252,28 +263,45 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			int nParticles;
 			double eps;
+			int nSteps;
+			double timestep;
 
 			// create gravity (we will update it later)
 			Gravity g = Gravity(0.0, 0.0);
 
-			if (!EPSILON_LOOP) // loop over n
+			if (!EPSILON_LOOP) // loop over n or step
 			{
-				// determine number of particles
-				nParticles = N + isim * deltaN;
+				if (!STEP_LOOP) // loop over n
+				{
+					// determine number of particles
+					nParticles = N + isim * deltaN;
+					nSteps = N_STEPS;
+					timestep = STEP;
 
-				// epsilon will be set by the initializer
+					// epsilon will be set by the initializer
+				}
+				else // loop over step
+				{
+					nParticles = N;
+					nSteps = N_STEPS + isim* deltaNSteps;
+					timestep = CRUNCH_TIMES / ((double)nSteps - 1.0);
+
+					eps = EPSILON;
+				}
 			}
 			else // loop over epsilon
 			{
 				// set number of particles
 				nParticles = N;
+				nSteps = N_STEPS;
+				timestep = STEP;
 
 				// calculate epsilon value to use
 				eps = EPSILON + isim * deltaEpsilon;
 			}
 
 			// create system
-			SolarSystem* system = new SolarSystem(DIM, N_STEPS, PLOT_EVERY, &g);
+			SolarSystem* system = new SolarSystem(DIM, nSteps, PLOT_EVERY, &g);
 			system->name = isimstr.str(); // set name
 
 			// conserve the total mass & scale std.dev to average
@@ -281,10 +309,10 @@ int _tmain(int argc, _TCHAR* argv[])
 			double stdMass = STD_FACTOR * avgMass;
 
 			// add N randomly initialized celestial bodies (also sets G and epsilon)
-			CelestialBodyInitializer::initialize(system, nParticles, avgMass, stdMass, R0, STEP);
+			CelestialBodyInitializer::initialize(system, nParticles, avgMass, stdMass, R0, timestep);
 
-			// overwrite epsilon if we loop over epsilon values
-			if (EPSILON_LOOP)
+			// overwrite epsilon if we loop over epsilon values / timestep
+			if ((EPSILON_LOOP) || (STEP_LOOP))
 			{
 				g.setEpsilon(eps);
 			}
@@ -353,7 +381,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			cout << endl << "Running simulation";
 
 			// this is where the magic happens :)
-			vector<SolarSystem*>* systems = solv.Solve(STEP);
+			vector<SolarSystem*>* systems = solv.Solve(timestep);
 
 			// for each algorithm used
 			for (int i = 0; i < systems->size(); i++)
@@ -466,29 +494,30 @@ int _tmain(int argc, _TCHAR* argv[])
 				// parameters
 				isimsPlot->at(isim, 0) = nParticles;
 				isimsPlot->at(isim, 1) = g.epsilon();
+				isimsPlot->at(isim, 2) = timestep;
 				// time
-				isimsPlot->at(isim, 2) = elapsedTime;
+				isimsPlot->at(isim, 3) = elapsedTime;
 				// energy conservation
-				isimsPlot->at(isim, 3) = EtotBefore;
-				isimsPlot->at(isim, 4) = Etot;
-				isimsPlot->at(isim, 5) = EtotBound;
+				isimsPlot->at(isim, 4) = EtotBefore;
+				isimsPlot->at(isim, 5) = Etot;
+				isimsPlot->at(isim, 6) = EtotBound;
 				// relative change in energy
-				isimsPlot->at(isim, 6) = deltaErel;
-				isimsPlot->at(isim, 7) = deltaErelBound;
+				isimsPlot->at(isim, 7) = deltaErel;
+				isimsPlot->at(isim, 8) = deltaErelBound;
 				// virial theorem data
-				isimsPlot->at(isim, 8) = EkBound;
-				isimsPlot->at(isim, 9) = EpBound;
-				// NOTE: # 10 is below! (since we reset epsilon, we save that one for last)
+				isimsPlot->at(isim, 9) = EkBound;
+				isimsPlot->at(isim, 10) = EpBound;
+				// NOTE: # 11 is below! (since we reset epsilon, we save that one for last)
 				// curve fitting
-				isimsPlot->at(isim, 11) = testFit(0); // n0
-				isimsPlot->at(isim, 12) = testFit(1); // r0
-				isimsPlot->at(isim, 13) = testFit(2); // n0 / N^2
-				isimsPlot->at(isim, 14) = testFit(3); // r0 / N^(-1/3)
+				isimsPlot->at(isim, 12) = testFit(0); // n0
+				isimsPlot->at(isim, 13) = testFit(1); // r0
+				isimsPlot->at(isim, 14) = testFit(2); // n0 / N^2
+				isimsPlot->at(isim, 15) = testFit(3); // r0 / N^(-1/3)
 				// distance to bound center of mass
-				isimsPlot->at(isim, 15) = avgComBound;
-				isimsPlot->at(isim, 16) = stdComBound;
+				isimsPlot->at(isim, 16) = avgComBound;
+				isimsPlot->at(isim, 17) = stdComBound;
 				// final percentage of bound particles
-				isimsPlot->at(isim, 17) = finalBound;
+				isimsPlot->at(isim, 18) = finalBound;
 
 				// Finally:
 				// calculate "classic" potential energy instead for bound particles
@@ -497,7 +526,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				g.setEpsilon(0.0);
 				system->calculate(); // re-compute potential energies
 				double EpBoundClassic = system->EpTotal(true);
-				isimsPlot->at(isim, 10) = EpBoundClassic;
+				isimsPlot->at(isim, 11) = EpBoundClassic;
 
 				if (DEBUG)
 				{

@@ -143,7 +143,7 @@ We start with the parametric form of the Friedmann equations for a closed
  universe containing only dust in addition to curvature
 \begin_inset CommandInset citation
 LatexCommand cite
-key "key-1"
+key "elgaroy1"
 
 \end_inset
 
@@ -330,20 +330,30 @@ sions between the point mass particles.
  particles to form more or less stable orbits around the center of mass.
 \begin_inset CommandInset citation
 LatexCommand cite
-key "key-1,key-2"
+key "elgaroy2,peacock"
 
 \end_inset
 
  Keep in mind that the kinetic energy is not evenly distributed, so occasionally
  particles that receive more than their fair share will become unbound and
  may escape from the system before they have time to lose their energy.
- (SOURCE: Given) predicts that this should happen to roughly ?? % of the
- particles.
- (TODO: rewrite?)
+ It is predicted that this should happen to a certain percentage of the
+ particles, depending on 
+\begin_inset Formula $N$
+\end_inset
+
+, with a lower bound of 50%.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "thesource"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-We say that the system is stable when it satisfies the virial theorem
+We say that the system is stable when it satisfies the virial theorem:
 \end_layout
 
 \begin_layout Standard
@@ -365,8 +375,15 @@ where
  are the averages of the potential and kinetic energies (actually, these
  are supposed to be time averages for the total energies of the entire system,
  but it turns out that the averages of a point in time of the energies per
- particle is a good approximation to this (SOURCE).
- (SOURCE: Elgarøy II) shows that his happens at time 
+ particle is a good approximation to this
+\begin_inset CommandInset citation
+LatexCommand cite
+key "frode"
+
+\end_inset
+
+.
+ It can be shown that this happens at time 
 \begin_inset Formula $\tau_{vir}=0.81\tau_{crunch}$
 \end_inset
 
@@ -381,7 +398,13 @@ where
 \end_inset
 
  to mark the point when the system is virialized).
- 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "elgaroy2"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -518,8 +541,22 @@ The challenge with the
 \begin_inset Formula $\epsilon$
 \end_inset
 
- experimentally (see TODO: FIGURE), and then we determined how this value
- would scale to different simulations in the following way:
+ experimentally (see figures 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Fraction-of-bound"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Energy-conservation-(relative"
+
+\end_inset
+
+), and then we determined how this value would scale to different simulations
+ in the following way:
 \end_layout
 
 \begin_layout Standard
@@ -750,7 +787,14 @@ To calculate the gravitational constant with
 \begin_inset Formula $\rho_{0}.$
 \end_inset
 
- This is accomplished by the following formula:
+ This is accomplished by the following formula
+\begin_inset CommandInset citation
+LatexCommand cite
+key "volume"
+
+\end_inset
+
+:
 \end_layout
 
 \begin_layout Standard
@@ -764,17 +808,20 @@ V_{n}=\frac{\pi^{\frac{n}{2}}}{\Gamma(\frac{n}{2}+1)}
 
 \end_layout
 
-\begin_layout Standard
-(Source.)
-\end_layout
-
 \begin_layout Subsection
 Uniform distribution in the n-ball
 \end_layout
 
 \begin_layout Standard
 Our dimension-independent algorithm for generating uniformly distributed
- points inside the n-ball is:
+ points inside the n-ball is
+\begin_inset CommandInset citation
+LatexCommand cite
+key "uniform"
+
+\end_inset
+
+:
 \end_layout
 
 \begin_layout Enumerate
@@ -857,10 +904,6 @@ The desired radius that takes into account that the outer spherical shells
 \end_layout
 
 \end_deeper
-\begin_layout Standard
-(Source.)
-\end_layout
-
 \begin_layout Subsection
 Algorithms
 \end_layout
@@ -1241,7 +1284,14 @@ This class allows each SolarSystem to use a different gravity.
 
  value to dampen collisions.
  For future use it is possible to extend this class to include any form
- of modified gravity (which is of interest in cosmology, SOURCE).
+ of modified gravity (which is an object of interest in cosmology
+\begin_inset CommandInset citation
+LatexCommand cite
+key "gravity"
+
+\end_inset
+
+).
  The only thing the SolarSystem class requires of this object is that it
  is able to return a force and potential energy when two CelestialBody objects
  are given as input.
@@ -1259,7 +1309,7 @@ Sets up a uniform position distribution given an initial max radius (generalized
  Also generates normal distributed random masses.
  Doing this in a separate class allows the SolarSystem class to be as general
  as possible (we might not want a random distribution every time, but when
- we do, this class will do the job).
+ we do, this class will provide it).
  Keeping this class dimension independent makes it more general and easier
  to use in other projects.
 \end_layout
@@ -1916,10 +1966,10 @@ Bound particles
 \end_layout
 
 \begin_layout Standard
-Wher we refer to bound particles, we refer to those particles that have
- a negative total energy.
+Wher we refer to bound particles, we refer to those particles that are not
+ gravitationally bound.
  Since potential energy is negative (at most 0), and kinetic energy is positive
- (at least 0), we say that a particle is bound when its 
+ (at least 0), we say that a particle is bound when its total energy 
 \begin_inset Formula $E_{tot}=E_{k}+E_{p}<0$
 \end_inset
 
@@ -2009,8 +2059,14 @@ reference "fig:Fraction-of-bound"
 \end_layout
 
 \begin_layout Standard
-Looking at (SOURCE), we see also that the number of ejected particles will
- fluctuate considerably between simulations with the same starting parameters.
+We also see that the number of ejected particles will fluctuate considerably
+ between simulations with the same starting parameters.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "thesource"
+
+\end_inset
+
  Ideally, we would run many simulations with the same epsilon value to eliminate
  statistical errors - this is something that could be looked at in a future
  study.
@@ -2168,7 +2224,15 @@ The results show that the bound particle fraction reaches a value close
 \begin_inset Formula $N=100$
 \end_inset
 
- (see FIGURE in SOURCE) with as low a value as 
+ (see fig.
+ 3 in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "thesource"
+
+\end_inset
+
+) with as low a value as 
 \begin_inset Formula $\epsilon\approx0.04$
 \end_inset
 
@@ -2198,7 +2262,16 @@ reference "fig:Fraction-of-bound"
 
 .
  This is a result of the low number of particles: We expect the bound particle
- fraction to fluctuate (again, see FIGURE in SOURCE).
+ fraction to fluctuate considerably between simulations with the same starting
+ parameters (again, see fig.
+ 3 in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "thesource"
+
+\end_inset
+
+).
  Thus, when the energy difference for bound particles starts mirroring the
  number of bound particles, we interpret this as the curve having stabilized
  (the relative energy diference for all the particles seems to reach a plateau
@@ -2945,14 +3018,6 @@ After running the system for a few
  
 \end_layout
 
-\begin_layout Standard
-We took ε = 
-\begin_inset Formula $\sqrt{0,0225}$
-\end_inset
-
-, which was a satisfying value for the respect of the total energy conservation.
-\end_layout
-
 \begin_layout Subsection
 Radial distribution and density in equilibrium
 \end_layout
@@ -3151,7 +3216,14 @@ gy bound particles (less energy lost to the unbound particles).
 \begin_inset Formula $N$
 \end_inset
 
- as noted in THE SOURCE.
+ as noted in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "thesource"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -3335,7 +3407,14 @@ Comparison to the scaling behaviour found for
 \begin_inset Formula $n(r)$
 \end_inset
 
- in THE SOURCE.
+ in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "thesource"
+
+\end_inset
+
+.
  We scaled the axes to match these predictions, but did not encounter the
  expected scaling behavior, where 
 \begin_inset Formula $n_{0}\propto N^{2}$
@@ -3401,11 +3480,12 @@ Paralellizing the code would indeed be beneficial (due to time constraints,
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-key "key-1"
+key "elgaroy1"
 
 \end_inset
 
-Elgarøy, Øystein: Lecture notes in AST 4220, fall 2009, pp.
+Ø.
+ Elgarøy: Lecture notes in AST 4220, University of Oslo, fall 2009, pp.
  31-33: 
 \begin_inset CommandInset href
 LatexCommand href
@@ -3419,11 +3499,12 @@ target "https://www.uio.no/studier/emner/matnat/astro/AST4220/h09/course-materia
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-key "key-1"
+key "elgaroy2"
 
 \end_inset
 
-Elgarøy, Øystein: The Spherical Collapse Model: 
+Ø.
+ Elgarøy: The Spherical Collapse Model: 
 \begin_inset CommandInset href
 LatexCommand href
 name "https://www.uio.no/studier/emner/matnat/astro/AST4320/h12/undervisningsmateriale/spherecollapse.pdf"
@@ -3437,18 +3518,19 @@ target "https://www.uio.no/studier/emner/matnat/astro/AST4320/h12/undervisningsm
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-key "key-2"
+key "peacock"
 
 \end_inset
 
-Peacock, J.A.: Large scale surveys and cosmic structure (Lectures delivered
- at the 2002 Tenerife Winter School, "Dark matter and dark energy in the
- universe"), pp.
+J.A.
+ Peacock: Large scale surveys and cosmic structure (Lectures delivered at
+ the 2002 Tenerife Winter School, "Dark matter and dark energy in the universe")
+, pp.
  15 - 19: 
 \begin_inset CommandInset href
 LatexCommand href
-name "http://arxiv.org/pdf/astro-ph/0309240v3.pdf"
-target "http://arxiv.org/pdf/astro-ph/0309240v3.pdf"
+name "http://arxiv.org/abs/astro-ph/0309240"
+target "http://arxiv.org/abs/astro-ph/0309240"
 
 \end_inset
 
@@ -3458,7 +3540,131 @@ target "http://arxiv.org/pdf/astro-ph/0309240v3.pdf"
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-key "key-3"
+key "thesource"
+
+\end_inset
+
+M.
+ Joyce, B.
+ Marcos, F.
+ Sylos Labini: 
+\begin_inset Quotes eld
+\end_inset
+
+Cold uniform spherical collapse revisited
+\begin_inset Quotes erd
+\end_inset
+
+, 2010: 
+\begin_inset CommandInset href
+LatexCommand href
+name "http://arxiv.org/abs/1011.0614"
+target "http://arxiv.org/abs/1011.0614"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "frode"
+
+\end_inset
+
+F.K.
+ Hansen: 
+\begin_inset Quotes eld
+\end_inset
+
+The Virial Theorem
+\begin_inset Quotes erd
+\end_inset
+
+, lecture notes in AST 1100, University of Oslo, fall 2013: 
+\begin_inset CommandInset href
+LatexCommand href
+name "https://www.uio.no/studier/emner/matnat/astro/AST1100/h13/undervisningsmateriale/lecture5.pdf"
+target "https://www.uio.no/studier/emner/matnat/astro/AST1100/h13/undervisningsmateriale/lecture5.pdf"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "volume"
+
+\end_inset
+
+R.
+ Feres: 
+\begin_inset Quotes eld
+\end_inset
+
+Math 350 Fall 2012 - Homework 8 Solutions
+\begin_inset Quotes erd
+\end_inset
+
+, Washington University in St.
+ Louis: 
+\begin_inset CommandInset href
+LatexCommand href
+name "http://www.math.wustl.edu/~feres/Math350Fall2012/Math350F12HW08Sol.pdf"
+target "http://www.math.wustl.edu/~feres/Math350Fall2012/Math350F12HW08Sol.pdf"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "uniform"
+
+\end_inset
+
+Rubinstein: <title unknown>, photocopy from University of Colorado at Boulder:
+ 
+\begin_inset CommandInset href
+LatexCommand href
+name "http://ecee.colorado.edu/~fmeyer/class/ecen5322/rubinstein.pdf"
+target "http://ecee.colorado.edu/~fmeyer/class/ecen5322/rubinstein.pdf"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "gravity"
+
+\end_inset
+
+T.
+ Clifton, P.
+ G.
+ Ferreira, A.
+ Padilla, C.
+ Skordis: 
+\begin_inset Quotes eld
+\end_inset
+
+Modified Gravity and Cosmology
+\begin_inset Quotes erd
+\end_inset
+
+, 2011: 
+\begin_inset CommandInset href
+LatexCommand href
+name "http://arxiv.org/abs/1106.2476"
+target "http://arxiv.org/abs/1106.2476"
 
 \end_inset
 

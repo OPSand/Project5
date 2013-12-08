@@ -32,7 +32,7 @@ hold off;
 title('Scaling of n0 with N');
 xlabel('N');
 ylabel('n0 / N²');
-axis([0, 2250, 0, 0.01]);
+%axis([0, 2250, 0, 0.01]);
 grid on;
 
 % And eventually save the plot
@@ -51,7 +51,7 @@ hold off;
 title('Scaling of r0 with N');
 xlabel('N');
 ylabel('r0 / N^(^-^1^/^3^)');
-axis([0, 2250, 0, 1]);
+%axis([0, 2250, 0, 1]);
 grid on;
 
 % And eventually save the plot

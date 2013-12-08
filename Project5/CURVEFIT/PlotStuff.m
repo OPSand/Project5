@@ -5,7 +5,7 @@ fclose(fidLeap);
 
 simID = 3;
 nbParticles = 2000;
-nbSteps = 67;
+nbSteps = 67; % 18 35 53 67
 fileRad = strcat('radial_after_',num2str(simID),'_leapfrog.dat');
 fidRad = fopen(fileRad);
 Rad_File = fscanf(fidRad,'%g',[3 nbSteps]).';
@@ -23,8 +23,8 @@ for i = 1: (nbSteps)
     rN13(i) = r(i) / (nbParticles^(-1/3));
 end
 
-n0 = Plot_File(4,12);
-r0 = Plot_File(4,13);
+n0 = Plot_File(simID+1,12);
+r0 = Plot_File(simID+1,13);
 
 n = [1 (nbSteps)];
 nN2 = [1 (nbSteps)];

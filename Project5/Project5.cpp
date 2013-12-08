@@ -223,23 +223,37 @@ int _tmain(int argc, _TCHAR* argv[])
 	const bool USE_EULER = false; // use Euler-Cromer method
 	const bool DEBUG = false; // for debugging only
 	const bool BENCHMARK = false; // To test against the project 3 code
+	const bool REDO_CURVEFIT = true; // see below
 	#pragma endregion
+
+	if (REDO_CURVEFIT)
+	{
+		// it may not look like much, but this snippet of code allows us to re-do the curve fit
+		// without repeating a 12-hour simulation.
+		for (int i = 0; i < 4; i++)
+		{
+			ostringstream inputfile;
+			// add absolute path below. remember: \\ is backslash!
+			inputfile << "radial_after_" << i << "_leapfrog.dat";
+			mat radial;
+			bool ok = radial.load(inputfile.str(), auto_detect);
+
+			if (ok == true)
+			{
+				ostringstream newfile;
+				newfile << "recovery_" << i << ".dat";
+				vec testFit = radialDistFitLSq(radial, ((i+1)*500), N_NR);
+				testFit.save(newfile.str(), raw_ascii);
+			}
+			else
+			{
+				// error message from armadillo will appear ("can't open" means file not found)
+			}
+		}
+	}
 
 	if (!BENCHMARK)
 	{
-		// very cheesy, remove later :P
-		mat radial;
-		bool status = radial.load("C:\\Users\\OddPetter\\Dropbox\\Studier\\comp phys\\projects\\Project5\\Project5\\input.dat", auto_detect);
-		if (status == true)
-		{
-			vec testFit = radialDistFitLSq(radial, 2000, N_NR);
-			testFit.save("2000recovery.dat", raw_ascii);
-		}
-		else
-		{
-			// error message
-		}
-
 		#pragma region Initialize Series
 
 		int deltaN = 0;

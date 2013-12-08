@@ -2907,6 +2907,330 @@ We took ε =
 , which was a satisfying value for the respect of the total energy conservation.
 \end_layout
 
+\begin_layout Subsection
+Radial distribution and density in equilibrium
+\end_layout
+
+\begin_layout Standard
+The largest simulation we found it practical to make was a series of four
+ simulations 
+\begin_inset Formula $N\in[500,2000]$
+\end_inset
+
+ using the auto-generated 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ values.
+ The total running time in this case was about 12.5 hours on a single processor
+ core.
+ For the largest simulation (
+\begin_inset Formula $N=2000$
+\end_inset
+
+), we got the following radial distribution of particles:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Project5/CURVEFIT/radial2000.jpeg
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Radial distribution (histogram) for 
+\begin_inset Formula $N=2000$
+\end_inset
+
+, with 
+\begin_inset Formula $r$
+\end_inset
+
+ in the range 
+\begin_inset Formula $[0,\mu_{bound}+1\sigma_{bound}$
+\end_inset
+
+].
+ For the bound particles we got 
+\begin_inset Formula $\mu_{bound}=4.83$
+\end_inset
+
+ ly and 
+\begin_inset Formula $\sigma_{bound}=9.68$
+\end_inset
+
+ ly (measured from the bound particles' center of mass).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In other words, we get a standard deviation that is about twice as large
+ as the average.
+ Looking at these values for all four simulations, we see that this is a
+ general trend:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Project5/CURVEFIT/avgstd.jpeg
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset Formula $\mu{}_{bound}$
+\end_inset
+
+ (black) and 
+\begin_inset Formula $\sigma_{bound}$
+\end_inset
+
+ (red), plotted against 
+\begin_inset Formula $N$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We attribute the large standard deviation to the fact that some particles,
+ while still bound, have been excited to such high kinetic energy levels
+ that they are close to not being bound anymore (these would be the same
+ particles responsible for the virial theorem not holding exactly even for
+ the bound particles).
+ Thus, we expect the standard deviation to vary roughly as the number of
+ bound particles does - more bound particles means a higher changce of high-ener
+gy bound particles (less energy lost to the unbound particles).
+ It is clear, however, that we do not have sufficient data to find an expression
+ for 
+\begin_inset Formula $\mu_{bound}(N)$
+\end_inset
+
+, however we note that the radius does indeed shrink with increased 
+\begin_inset Formula $N$
+\end_inset
+
+ as noted in THE SOURCE.
+\end_layout
+
+\begin_layout Standard
+We then proceeded to plot the number density 
+\begin_inset Formula $n(r)=\frac{N(r)}{V(r)}$
+\end_inset
+
+ for each spherical shell in our histogram and used the method of least
+ squares to fit these data to a curve of the form
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+n(r)=\frac{n_{0}}{1+\left(\frac{r}{r_{0}}\right)^{4}}\label{eq:curvefit}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where we seek to determine the value of the constant 
+\begin_inset Formula $n_{0}=n(0)$
+\end_inset
+
+ (the core number density) and 
+\begin_inset Formula $r_{0}$
+\end_inset
+
+.
+ The latter serves as a scale length for 
+\begin_inset Formula $n(r)$
+\end_inset
+
+, as seen by the fact that 
+\begin_inset Formula $n(r_{0})=\frac{n_{0}}{2}$
+\end_inset
+
+, thus 
+\begin_inset Formula $r_{0}$
+\end_inset
+
+ is the radius at which we find that the core density has initially halved
+ (it is easily seen that this trend does not continue as we move further
+ out, however).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Project5/CURVEFIT/fit2000.jpeg
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset Formula $n(r)$
+\end_inset
+
+ (logarithmic) plotted against 
+\begin_inset Formula $r$
+\end_inset
+
+ for 
+\begin_inset Formula $N=2000$
+\end_inset
+
+.
+ The blue curve is from our histogram, the red curve is given by (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:curvefit"
+
+\end_inset
+
+) with 
+\begin_inset Formula $n_{0}=114.59$
+\end_inset
+
+ ly
+\begin_inset Formula $^{-3}$
+\end_inset
+
+, 
+\begin_inset Formula $r_{0}=0.86$
+\end_inset
+
+ ly.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We conclude that this gives a nice fit to our radial distribution.
+ 
+\end_layout
+
 \begin_layout Section
 Conclusion
 \end_layout

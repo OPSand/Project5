@@ -80,6 +80,6 @@ if (bWantToSaveJPEG == true)
     frame = getframe(4);
     im = frame2im(frame);
     [A,map] = rgb2ind(im,256); % To avoid 3D pictures
-    imwrite(A,map,filename,'jpeg'); 
+    imwrite(A,map,filename2,'jpeg'); 
 end
     

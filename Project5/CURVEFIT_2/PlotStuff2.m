@@ -1,7 +1,7 @@
 fileToOpen = strcat('plotLeapfrog','.dat');
 fidPosi = fopen(fileToOpen);
-nbRows = 4;
-Plot_File = fscanf(fidPosi,'%g',[18 nbRows]).';
+nbRows = 3;
+Plot_File = fscanf(fidPosi,'%g',[20 nbRows]).';
 fclose(fidPosi);
 bWantToSaveJPEG = true;
 filename = strcat('fitscaling_n0.jpeg');
@@ -16,12 +16,12 @@ end
 % Init of the vector holding the number of bound particles
 nbBounds = [1 (nbRows)];
 for i = 1: (nbRows)
-    nbBounds(i) = Plot_File(i,14);
+    nbBounds(i) = Plot_File(i,15);
 end
 
 rbBounds = [1 (nbRows)];
 for i = 1: (nbRows)
-    rbBounds(i) = Plot_File(i,15);
+    rbBounds(i) = Plot_File(i,16);
 end
 
 % And then we plot !
@@ -32,7 +32,7 @@ hold off;
 title('Scaling of n0 with N');
 xlabel('N');
 ylabel('n0 / N²');
-axis([0, 2250, 0, 0.01]);
+%axis([0, 2250, 0, 0.01]);
 grid on;
 
 % And eventually save the plot
@@ -51,7 +51,7 @@ hold off;
 title('Scaling of r0 with N');
 xlabel('N');
 ylabel('r0 / N^(^-^1^/^3^)');
-axis([0, 2250, 0, 1]);
+%axis([0, 2250, 0, 1]);
 grid on;
 
 % And eventually save the plot

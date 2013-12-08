@@ -1,7 +1,7 @@
 fileToOpen = strcat('plotLeapfrog','.dat');
 fidPosi = fopen(fileToOpen);
-nbRows = 4;
-Plot_File = fscanf(fidPosi,'%g',[18 nbRows]).';
+nbRows = 7;
+Plot_File = fscanf(fidPosi,'%g',[20 nbRows]).';
 fclose(fidPosi);
 bWantToSaveJPEG = true;
 filename = strcat('avgstd.jpeg');
@@ -15,12 +15,12 @@ end
 % Init of the vector holding the number of bound particles
 avg = [1 (nbRows)];
 for i = 1: (nbRows)
-    avg(i) = Plot_File(i,16);
+    avg(i) = Plot_File(i,17);
 end
 
 std = [1 (nbRows)];
 for i = 1: (nbRows)
-    std(i) = Plot_File(i,17);
+    std(i) = Plot_File(i,18);
 end
 
 % And then we plot !

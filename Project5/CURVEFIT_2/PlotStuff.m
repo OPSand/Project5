@@ -1,11 +1,11 @@
 fileLeap = strcat('plotLeapfrog.dat');
 fidLeap = fopen(fileLeap);
-Plot_File = fscanf(fidLeap,'%g',[18 4]).';
+Plot_File = fscanf(fidLeap,'%g',[20 3]).';
 fclose(fidLeap);
 
-simID = 3;
-nbParticles = 2000;
-nbSteps = 67;
+simID = 2;
+nbParticles = 300;
+nbSteps = 11;
 fileRad = strcat('radial_after_',num2str(simID),'_leapfrog.dat');
 fidRad = fopen(fileRad);
 Rad_File = fscanf(fidRad,'%g',[3 nbSteps]).';
@@ -23,8 +23,8 @@ for i = 1: (nbSteps)
     rN13(i) = r(i) / (nbParticles^(-1/3));
 end
 
-n0 = Plot_File(4,12);
-r0 = Plot_File(4,13);
+n0 = Plot_File(3,13);
+r0 = Plot_File(3,14);
 
 n = [1 (nbSteps)];
 nN2 = [1 (nbSteps)];
@@ -80,6 +80,6 @@ if (bWantToSaveJPEG == true)
     frame = getframe(4);
     im = frame2im(frame);
     [A,map] = rgb2ind(im,256); % To avoid 3D pictures
-    imwrite(A,map,filename,'jpeg'); 
+    imwrite(A,map,filename2,'jpeg'); 
 end
     

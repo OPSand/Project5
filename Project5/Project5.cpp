@@ -16,15 +16,30 @@ using namespace std;
 // returns a vector: [ n0, r0, n0/N^2r0, /N^(-1/3) ]
 vec radialDistFitLSq(mat radialDist, int N, int nNR)
 {
-	// these factors are educated guesses as to where we will find the best match
+	// search from 0 to this factor times the estimated value
 	const double nFact = 2.0;
 	const double rFact = 2.0;
+
+	// n in first bin
+	const double nFirst = radialDist(0, 2);
 
 	// range to search
 	double minN0 = 0.0;
 	double minR0 = 0.0;
 	double maxN0 = nFact * radialDist(0, 2); // use the first bin as a starting point
-	double maxR0 = rFact * radialDist(0, 0); // use the first bin as a starting point
+
+	// find the first bin where n(r) has dropped to less than half of the initial value
+	// (r = r0 gives n = 0.5 * n0, after all)
+	double nSearch = nFirst;
+	int i = 1; // start search at second bin
+	while ((nSearch > (0.5 * nFirst)) && (i < radialDist.n_rows)) // assume the density decreases
+	{
+		nSearch = radialDist(i, 2);
+		i++;
+	}
+
+	// there! the index i is now a good place to look for r0
+	double maxR0 = rFact * radialDist(i, 0);
 	
 	// step size for n0 and r0 trials, respectively
 	double deltaN = (maxN0 - minN0) / (nNR - 1.0);
@@ -184,7 +199,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_BIN = 20.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n/epsilon, same total mass)
-	const int N_SIMS = 3; // number of simulations to run (set to 1 to run just once)
+	const int N_SIMS = 1; // number of simulations to run (set to 1 to run just once)
 	const int N_END = 300; // max N for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == true)
 	const double EPSILON_END = 0.15; // max epsilon for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == false)
 	const double N_STEPS_END = 10000; // max # of time steps
@@ -203,7 +218,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	// flags
 	const bool EPSILON_LOOP = false; // vary epsilon instead of n
 	const bool STEP_LOOP = false; // vary time step instead of n
-	const bool USE_LEAPFROG = true; // use Leapfrog method
+	const bool USE_LEAPFROG = false; // use Leapfrog method
 	const bool USE_RK4 = false; // use Runge-Kutta method
 	const bool USE_EULER = false; // use Euler-Cromer method
 	const bool DEBUG = false; // for debugging only
@@ -212,6 +227,19 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	if (!BENCHMARK)
 	{
+		// very cheesy, remove later :P
+		mat radial;
+		bool status = radial.load("C:\\Users\\OddPetter\\Dropbox\\Studier\\comp phys\\projects\\Project5\\Project5\\input.dat", auto_detect);
+		if (status == true)
+		{
+			vec testFit = radialDistFitLSq(radial, 2000, N_NR);
+			testFit.save("2000recovery.dat", raw_ascii);
+		}
+		else
+		{
+			// error message
+		}
+
 		#pragma region Initialize Series
 
 		int deltaN = 0;

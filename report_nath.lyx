@@ -472,15 +472,6 @@ We can see that in regard with the virial theorem results, having a step
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $\tau_{crunch}$
-\end_inset
-
- is evaluated in millions of years, thus, its unit could be the megaannum
- (i.e.
- the unit for 1,000,000 years).
-\end_layout
-
-\begin_layout Standard
 => tries with the conservation of the Energy => Epsilon 0
 \end_layout
 
@@ -493,7 +484,7 @@ Equilibrium
 \end_layout
 
 \begin_layout Standard
-As discussed in the theory part, the system reachs an equilibrium.
+As discussed in the theory part, the system seems to reach an equilibrium.
  We can see it happens around 
 \begin_inset Formula $1\tau_{crunch}$
 \end_inset

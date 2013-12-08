@@ -176,7 +176,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double TOTAL_M = 1000.0; // solar masses (to be kept constant throughout)
 	const double STD_FACTOR = 0.1; // % factor of average
 	const double CRUNCH_TIMES = 4.0; // # of crunch times to simulate for
-	const double EPSILON = 0.1; // first epsilon value to try (ignored if EPSILON_LOOP == false)
+	const double EPSILON = 0.0; // first epsilon value to try (ignored if EPSILON_LOOP == false)
 	const int N_STEPS = 1000; // number of steps total
 	const int N_PLOT = 100; // number of steps to plot (must be <= N_STEPS)
 	const int N_NR = 1000; // number of n0 and r0 values to try (curve fitting)
@@ -184,7 +184,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_BIN = 20.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n/epsilon, same total mass)
-	const int N_SIMS = 3; // number of simulations to run (set to 1 to run just once)
+	const int N_SIMS = 16; // number of simulations to run (set to 1 to run just once)
 	const int N_END = 300; // max N for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == true)
 	const double EPSILON_END = 0.15; // max epsilon for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == false)
 	const double N_STEPS_END = 10000; // max # of time steps
@@ -201,7 +201,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double G_YLS = cG * M_SUN * pow(cYr, 2.0) / pow(LY, 3.0); // G in years, ly, solar masses
 
 	// flags
-	const bool EPSILON_LOOP = false; // vary epsilon instead of n
+	const bool EPSILON_LOOP = true; // vary epsilon instead of n
 	const bool STEP_LOOP = false; // vary time step instead of n
 	const bool USE_LEAPFROG = true; // use Leapfrog method
 	const bool USE_RK4 = false; // use Runge-Kutta method

@@ -22,7 +22,7 @@
 \graphics default
 \default_output_format default
 \output_sync 0
-\bibtex_command default
+\bibtex_command bibtex
 \index_command default
 \paperfontsize default
 \spacing single
@@ -86,30 +86,44 @@ cold collapse
 \begin_inset Quotes erd
 \end_inset
 
-.
+ (where 
+\begin_inset Quotes eld
+\end_inset
+
+cold
+\begin_inset Quotes erd
+\end_inset
+
+ comes from the fact that the particles have no initial velocity).
  To do so, we will begin with the approximation that stars are particles,
- ponctual points, then we will use a simple smoothing algorithm to increase
- the numerical stability of our system.
+ point masses.
+ Then, we will use a simple smoothing algorithm to increase the numerical
+ stability of our system.
+ We have outlined a method to find an optimal smoothing parameter if one
+ begins from a well-tested value.
+ This value can then be scaled to fit other simulations with a suprisingly
+ simple formula.
 \end_layout
 
 \begin_layout Standard
 Numerous algorithms could have been used to simulate the behavior of the
  cluster.
- We chose to focus on the Leap-frog and on the forth-order Runge Kutta ones.:if
- each one of the numeric methods has its pros and cons, we want here to
- find the one which gives priority to the stability instead of the short-term
- accuracy.
- Indeed, due to the number of particles in our cluster, we will be interested
- in the statistical properties of our system instead of in the specific
- characteristics of each particles.
+ We chose to focus on the Leapfrog and on the fourth-order Runge Kutta methods.
+ Each one of the numeric methods has its pros and cons; we seek to find
+ the one which gives priority to the stability instead of the short-term
+ accuracy, as well as a reasonable running time.
+ Due to the number of particles in our cluster, we will be interested in
+ the statistical properties of our system instead of in the specific characteris
+tics of each particle.
 \end_layout
 
 \begin_layout Standard
 Our goal in this report is to simulate and to study the behavior of a cluster,
  after having paid attention to the algorithm used to derive the results.
- Thus, the first part of the report will be a discussion on the algorithms,
- and on the methods we implemented to help us, then, we will talk about
- the cluster's behavior itself.
+ The first part of the report will focus on the analytical properties of
+ the model (including algorithms).
+ We then proceed to give an overview of the code structure, and finally
+ present and discuss our results.
 \end_layout
 
 \begin_layout Section
@@ -125,11 +139,15 @@ Derivation of the expression for
 \end_layout
 
 \begin_layout Standard
-Start with Elgarøy's notes (where 
-\begin_inset Formula $t=0$
+We start with the parametric form of the Friedmann equations for a closed
+ universe containing only dust in addition to curvature
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-1"
+
 \end_inset
 
- at the Big Bang singularity for our sub-universe) and get
+:
 \end_layout
 
 \begin_layout Standard
@@ -163,7 +181,12 @@ t(\psi)=\frac{\Omega_{m0}}{2H_{0}(\Omega_{m0}-1)^{3/2}}(\psi-\sin\psi).
 \end_layout
 
 \begin_layout Standard
-From these results we see that 
+We will use 
+\begin_inset Formula $t=0$
+\end_inset
+
+ at the Big Bang singularity for our sub-universe.
+ From these results we see that 
 \begin_inset Formula $t_{max}=t(\psi=\pi)$
 \end_inset
 
@@ -2807,19 +2830,24 @@ Conclusion
 \end_layout
 
 \begin_layout Standard
-What we learned:
+x
 \end_layout
 
-\begin_layout Itemize
-?
-\end_layout
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-1"
 
-\begin_layout Subsection
-Critique
-\end_layout
+\end_inset
 
-\begin_layout Itemize
-?
+Elgarøy, Øystein: Lecture notes in AST 4220, fall 2009, pages 31-33: 
+\begin_inset CommandInset href
+LatexCommand href
+target "https://www.uio.no/studier/emner/matnat/astro/AST4220/h09/course-material/lectures.pdf"
+
+\end_inset
+
+
 \end_layout
 
 \end_body

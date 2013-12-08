@@ -2157,6 +2157,99 @@ The results show that the bound particle fraction reaches a value close
  would want to improve if our focus was not on the bound particles).
 \end_layout
 
+\begin_layout Standard
+Using this result, we propose inserting the following values into equation
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:epsilon"
+
+\end_inset
+
+: 
+\begin_inset Formula $\epsilon_{1}=0.1$
+\end_inset
+
+, 
+\begin_inset Formula $\Delta t_{1}=\frac{1}{250}$
+\end_inset
+
+, 
+\begin_inset Formula $N_{1}=100$
+\end_inset
+
+, 
+\begin_inset Formula $R_{1}=20$
+\end_inset
+
+.
+ We then get the following formula that we have used in the remaining simulation
+s for automating the process of choosing an acceptable value for 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\epsilon=\sqrt{\frac{100}{N}\left(\frac{R_{0}}{20}\right)^{3}\frac{\Delta t}{\frac{1}{250}}}\cdot0.1=\frac{1}{4}\sqrt{\frac{R_{0}^{3}\Delta t}{2N}}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which we expect could be of use in future versions of this project.
+\end_layout
+
+\begin_layout Standard
+This formula gave us consistently good results with regards to energy conservati
+on and particle rejection.
+ However, for future projects, we would look at running many more simulations
+ like the one we used to pick the reference value 
+\begin_inset Formula $\epsilon=0.1$
+\end_inset
+
+, to ensure that the process is statistically sound.
+ One should also keep in mind that the way we scale 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ is linear in the sense that we only consider one pair of particle at a
+ time, not looking at 
+\begin_inset Quotes eld
+\end_inset
+
+crosstalk
+\begin_inset Quotes erd
+\end_inset
+
+ from multi-particle collisions.
+ Furthermore, we have assumed that all the particles have the same mass:
+ If the standard deviation is significantly greater than the 10% of the
+ mean we used to arrive at this result, the above formula may well not be
+ applicable.
+ That sais, the particles that recieve a change in velocity that is too
+ high for a timestep would tend to be the lighter particles, so we would
+ expect to see the fraction of bound particles decrease while the energy
+ conservation should feel the impact of a greater mass variance less in
+ this case.
+\end_layout
+
+\begin_layout Standard
+Another interesting prospect is to seek a closed form solution for a reference
+ value for 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ (before scaling it), instead of taking the brute force approach and iterate
+ over a set of possible values like we did here.
+\end_layout
+
 \begin_layout Paragraph
 Equilibrium
 \end_layout

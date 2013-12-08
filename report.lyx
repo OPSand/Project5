@@ -1958,7 +1958,15 @@ The criteria for accepting an
  the total energy, at least for the bound particles, is as conserved as
  possible.
  In the process, we discovered that these criteria are actually mutually
- exclusive: The energy conservation improves if we eject many particles.
+ exclusive (see figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Fraction-of-bound"
+
+\end_inset
+
+): The energy conservation for bound particles improves if we eject many
+ particles.
  Our interpretation of this result is that particles that are bound but
  close to being unbound will impact the energy bound conservation negatively:
  If these particles are actually ejected, the remaining particles' total
@@ -2020,6 +2028,12 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Fraction-of-bound"
+
+\end_inset
+
 Fraction of bound particles at end of simulation for a range of 
 \begin_inset Formula $\epsilon$
 \end_inset
@@ -2127,7 +2141,7 @@ ely.
 
 \begin_layout Standard
 The results show that the bound particle fraction reaches a value close
- to the expected range for 
+ to the extrapolated value for 
 \begin_inset Formula $N=100$
 \end_inset
 
@@ -2136,25 +2150,48 @@ The results show that the bound particle fraction reaches a value close
 \end_inset
 
 .
- The energy conservation takes a higher value to approach desired levels:
- Only around 
+ The energy conservation takes a higher value to approach desired levels.
+ Around 
 \begin_inset Formula $\epsilon\approx0.10$
 \end_inset
 
- is the energy for the remaining bound particles close to the initial total
- energy.
- The central assumption here is that excess energy resulting from close
- encounters ends up in unbound particles.
- For our further purposes (curve fitting and virialization analysis), we
- are mostly interested in the bound particles, hence we are satisfied when
- they have a total energy compared to the total energy before the simulation.
- However, we have also plotted the energy conservation for all the particles
- (including the unbound ones): For our chosen value of 
+ we notice that the two curves start behaving opposite of one another: When
+ one value of 
+\begin_inset Formula $\Delta E_{rel}$
+\end_inset
+
+ goes up, the other goes down for the same 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+.
+ Note also that the curve for the bound particles starts mirroring the fraction
+ in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Fraction-of-bound"
+
+\end_inset
+
+.
+ This is a result of the low number of particles: We expect the bound particle
+ fraction to fluctuate (again, see FIGURE in SOURCE).
+ Thus, when the energy difference for bound particles starts mirroring the
+ number of bound particles, we interpret this as the curve having stabilized
+ (the relative energy diference for all the particles seems to reach a plateau
+ at this point).
+ On the other hand, when 
+\begin_inset Formula $\epsilon<0.10$
+\end_inset
+
+, we do not see this behaviour: Both curves are in decline.
+ Hence our (admittedly shaky) basis for choosing 
 \begin_inset Formula $\epsilon=0.10$
 \end_inset
 
-, the relative change in total energy less than 40% (clearly a figure we
- would want to improve if our focus was not on the bound particles).
+ is that after this point, we can no longer distinguish improvements in
+ energy conservation from random fluctuactions caused by variations in the
+ fraction of bound particles.
 \end_layout
 
 \begin_layout Standard
@@ -2204,18 +2241,29 @@ s for automating the process of choosing an acceptable value for
 
 \begin_layout Standard
 which we expect could be of use in future versions of this project.
-\end_layout
-
-\begin_layout Standard
-This formula gave us consistently good results with regards to energy conservati
-on and particle rejection.
+ This formula gave us consistently acceptable results with regards to energy
+ conservation and particle rejection.
  However, for future projects, we would look at running many more simulations
  like the one we used to pick the reference value 
 \begin_inset Formula $\epsilon=0.1$
 \end_inset
 
-, to ensure that the process is statistically sound.
- One should also keep in mind that the way we scale 
+, to ensure that the process is statistically sound (and preferrably with
+ a higher number of particles): While the value we chose has been good enough
+ in practice, we do not claim to have found the optimal value for the case
+ we were studying, and expect future projects to be able to achieve much
+ more accurate results using the method we have oulined above.
+ Another interesting prospect is to seek a closed form solution for a reference
+ value for 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ (before scaling it), instead of taking the brute force approach and iterate
+ over a set of possible values like we did here.
+\end_layout
+
+\begin_layout Standard
+One should also keep in mind that the way we scale 
 \begin_inset Formula $\epsilon$
 \end_inset
 
@@ -2233,21 +2281,11 @@ crosstalk
  If the standard deviation is significantly greater than the 10% of the
  mean we used to arrive at this result, the above formula may well not be
  applicable.
- That sais, the particles that recieve a change in velocity that is too
+ That said, the particles that recieve a change in velocity that is too
  high for a timestep would tend to be the lighter particles, so we would
  expect to see the fraction of bound particles decrease while the energy
  conservation should feel the impact of a greater mass variance less in
  this case.
-\end_layout
-
-\begin_layout Standard
-Another interesting prospect is to seek a closed form solution for a reference
- value for 
-\begin_inset Formula $\epsilon$
-\end_inset
-
- (before scaling it), instead of taking the brute force approach and iterate
- over a set of possible values like we did here.
 \end_layout
 
 \begin_layout Paragraph

@@ -1,10 +1,10 @@
 fileToOpen = strcat('plotLeapfrog','.dat');
 fidPosi = fopen(fileToOpen);
 nbRows = 16;
-Plot_File = fscanf(fidPosi,'%g',[18 nbRows]).';
+Plot_File = fscanf(fidPosi,'%g',[20 nbRows]).';
 fclose(fidPosi);
 bWantToSaveJPEG = true;
-filename = strcat('energyConservation.jpeg');
+filename = strcat('lostenergyepsilon.jpeg');
 
 % Init of our time vector
 t = [1 (nbRows)];
@@ -15,25 +15,18 @@ end
 % Init of the vector holding the number of bound particles
 nbBounds = [1 (nbRows)];
 for i = 1: (nbRows)
-    nbBounds(i) = Plot_File(i,7);
-end
-
-% Init of the vector holding the number of bound particles
-nbBounds2 = [1 (nbRows)];
-for i = 1: (nbRows)
-    nbBounds2(i) = Plot_File(i,8);
+    nbBounds(i) = Plot_File(i,20);
 end
 
 % And then we plot !
 figure(1);
-hold on;
-plot(t(:),nbBounds(:),'o','linestyle','-','color','r');
-plot(t(:),nbBounds2(:),'o','linestyle','-','color','b');
-hold off;
-title(['Energy Conservation']);
+%hold on;
+semilogy(t(:),nbBounds(:),'o','linestyle','-','color','k');
+%hold off;
+title('Energy loss as function of epsilon');
 xlabel('Epsilon (ly)');
-ylabel('Relative change in energy (1 = 100%)');
-axis([0, 0.16, -0.2, 1]);
+ylabel('Energy loss due to particle ejection (log)');
+%axis([0, 0.16, -0.2, 1]);
 grid on;
 
 % And eventually save the plot

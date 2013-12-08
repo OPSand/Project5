@@ -2676,6 +2676,88 @@ After adding the smoothing part in our gravitational potential, we can see
  more stable: we lose less particles than before.
 \end_layout
 
+\begin_layout Standard
+The energy loss due to particle ejection also drops by a considerable amount
+ when we increase 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+, until 
+\begin_inset Formula $\epsilon\approx0.4$
+\end_inset
+
+, at which point random fluctuations take over.
+ This is the same behaviour that was found for the fraction of bound particles
+ with the same 
+\begin_inset Formula $N$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Project5/EPSILON_LOST/lostenergyepsilon.jpeg
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Energy loss (
+\begin_inset Formula $\Delta E=\sum E_{all}-\sum E_{bound}$
+\end_inset
+
+) for different values of 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+, made using 
+\begin_inset Formula $N=100$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 Virial Theorem
 \end_layout

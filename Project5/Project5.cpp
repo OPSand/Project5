@@ -18,18 +18,14 @@ vec radialDistFitLSq(mat radialDist, int N, int nNR)
 {
 	// these factors are educated guesses as to where we will find the best match
 	const double nFact = 2.0;
-	const double rFact = 1.0;
-
-	// dependence of n0 and r0 on N taken from http://arxiv.org/abs/1011.0614
-	double nScale = pow((double)N, 2.0);
-	double rScale = pow((double)N, -(1.0 / 3.0));
+	const double rFact = 2.0;
 
 	// range to search
 	double minN0 = 0.0;
 	double minR0 = 0.0;
-	double maxN0 = nFact * nScale;
-	double maxR0 = rFact * rScale;
-
+	double maxN0 = nFact * radialDist(0, 2); // use the first bin as a starting point
+	double maxR0 = rFact * radialDist(0, 0); // use the first bin as a starting point
+	
 	// step size for n0 and r0 trials, respectively
 	double deltaN = (maxN0 - minN0) / (nNR - 1.0);
 	double deltaR = (maxR0 - minR0) / (nNR - 1.0);
@@ -80,6 +76,10 @@ vec radialDistFitLSq(mat radialDist, int N, int nNR)
 			}
 		}
 	}
+
+	// dependence of n0 and r0 on N taken from http://arxiv.org/abs/1011.0614
+	double nScale = pow((double)N, 2.0);
+	double rScale = pow((double)N, -(1.0 / 3.0));
 
 	ret(2) = ret(0) / nScale; // n0/N^2
 	ret(3) = ret(1) / rScale; // r0/N^(-1/3)
@@ -184,7 +184,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_BIN = 20.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n/epsilon, same total mass)
-	const int N_SIMS = 16; // number of simulations to run (set to 1 to run just once)
+	const int N_SIMS = 3; // number of simulations to run (set to 1 to run just once)
 	const int N_END = 300; // max N for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == true)
 	const double EPSILON_END = 0.15; // max epsilon for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == false)
 	const double N_STEPS_END = 10000; // max # of time steps
@@ -201,7 +201,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double G_YLS = cG * M_SUN * pow(cYr, 2.0) / pow(LY, 3.0); // G in years, ly, solar masses
 
 	// flags
-	const bool EPSILON_LOOP = true; // vary epsilon instead of n
+	const bool EPSILON_LOOP = false; // vary epsilon instead of n
 	const bool STEP_LOOP = false; // vary time step instead of n
 	const bool USE_LEAPFROG = true; // use Leapfrog method
 	const bool USE_RK4 = false; // use Runge-Kutta method

@@ -1,6 +1,7 @@
+nbSteps = 3;
 fileLeap = strcat('plotLeapfrog.dat');
 fidLeap = fopen(fileLeap);
-Plot_File = fscanf(fidLeap,'%g',[20 4]).';
+Plot_File = fscanf(fidLeap,'%g',[20 nbSteps]).';
 fclose(fidLeap);
 
 bWantToSaveJPEG = true;
@@ -23,7 +24,7 @@ sTitle = strcat('Effect of N on energy lost due to particle ejection');
 title(sTitle);
 xlabel('N');
 ylabel('Energy lost (solar masses*ly²/tcrunch²)');
-%axis([0, 0.16, -0.2, 1]);
+axis([0, 350, 0, 350000]);
 grid on;
 
 % And eventually save the plot

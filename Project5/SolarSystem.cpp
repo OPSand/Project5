@@ -513,11 +513,13 @@ double SolarSystem::avgDistCoM(bool boundOnly)
 		}
 	}
 
+	// in the case of NO bound particles
 	if (n <= 0)
 	{
 		return -1.0;
 	}
 
+	// return the mean
 	return (sum / n);
 }
 
@@ -548,6 +550,7 @@ double SolarSystem::stdDevDistCoM(bool boundOnly)
 		}
 	}
 
+	// in the case of NO bound particles
 	if (n <= 0)
 	{
 		return -1.0;

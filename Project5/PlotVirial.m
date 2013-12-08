@@ -1,7 +1,7 @@
 fileName = 'plotLeapfrog.dat';
 fidPosi = fopen(fileName);
 nbColumns = 18;
-nbSimulation = 6;
+nbSimulation = 5;
 Plot_File = fscanf(fidPosi,'%g',[nbColumns nbSimulation]).' ;
 fclose(fidPosi);
 bWantToSaveJPEG = true;
@@ -11,7 +11,7 @@ bFunctionOfEpsilon = false;
 % Init of our kinetic energy vector
 nbBoundsEk = [0 nbSimulation];
 for i = 1: nbSimulation
-    nbBoundsEk(i) = Plot_File(i,9);
+    nbBoundsEk(i) = Plot_File(i,10);
 end
 
 nbBoundsEk; % Decomment to check that everything is well behaving
@@ -19,7 +19,7 @@ nbBoundsEk; % Decomment to check that everything is well behaving
 % Init of our kinetic energy vector
  nbBoundsEp = [0 nbSimulation];
  for i = 1: nbSimulation
-     nbBoundsEp(i) = Plot_File(i,10);
+     nbBoundsEp(i) = Plot_File(i,11);
  end
 
  nbBoundsEp; % Decomment to check that everything is well behaving

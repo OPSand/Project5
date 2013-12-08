@@ -1238,19 +1238,171 @@ Results and analysis
 \end_layout
 
 \begin_layout Subsection
-Benchmarks
+BenchmarksValidation:
 \end_layout
 
 \begin_layout Standard
-Reproduce project 3 2-body problem.
+We worked during a previous project on the implementation of the Runge Kutta
+ algorithm to simulate the behavior of the Solar System.
+ To test our code, we also wrote the Euler-Cromer algorithm.
+ The outputs of our previous project were validated.
+ In order to testify that our code works, we tested it against our previous
+ results, in two dimensions, then we extended it in three dimensions.
 \end_layout
 
 \begin_layout Standard
-Center of mass conserved.
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "c"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Graphics
+	filename Screen/BenchMark/plot2D_for_leapfrog.jpeg
+	scale 35
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Simulation with our Leapfrog algorithm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align right
+\begin_inset Graphics
+	filename Screen/BenchMark/plot2D_for_rk4.jpeg
+	scale 35
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Simulation with our Runge Kutta - 4 algorithm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Screen/BenchMark/Orbite_Earth_Circu.png
+	scale 45
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Simulation of our previous project
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-Energy mostly conserved, especially with gravitational correction.
+We found equivalent results between the two projects, for the same time
+ step size, one point per day, and the same length of simulation, two years,
+ which lead us to says that our current code is working.
+ 
+\end_layout
+
+\begin_layout Standard
+When we use them for very long times, we can see that the Leapfrog algorithm
+ is way more well-behaved than the Runge Kutta one.
+ Thus, we can say that the Runge Kutta algorithm is not as stable as the
+ Leapfrog one for when being processed for long times
 \end_layout
 
 \begin_layout Standard
@@ -1404,20 +1556,11 @@ We can see here that the Runge Kutta algorithm takes more time to process
 \end_layout
 
 \begin_layout Standard
-According to the time required to process equivalent results, the Leapfrog
- algorithm seems more interesting.
- Furthermore, we are going now to process on a N-body system, where N is
- not smaller than 100.
- Thus, we will be more interested in the statistical properties of our system,
- than in the local accuracy of the position or the velocity.
-\end_layout
-
-\begin_layout Standard
 \begin_inset Float figure
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -1516,7 +1659,7 @@ width "60col%"
 special "none"
 height "1in"
 height_special "totalheight"
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -1558,13 +1701,13 @@ width "20col%"
 special "none"
 height "1in"
 height_special "totalheight"
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
 \align right
 \begin_inset Graphics
-	filename Screen/Conservation_Energy_Epsilon_Leapfrog_Resized.jpg
+	filename Screen/BenchMark/BM-Energy-LeapFrog.jpg
 	scale 45
 
 \end_inset
@@ -1579,244 +1722,6 @@ Conservation of the energy -- forth-order Runge Kutta -- A changer !!!
 \end_inset
 
 
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float table
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\noindent
-\align center
-\begin_inset Tabular
-<lyxtabular version="3" rows="3" columns="7">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-Length - Time step size
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-2 years - 1 day
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-300 years - 1 day
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-Leap-frog
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-1,33206e33-1,33206e33
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-Runge Kutta 4
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Not so satisfying é_è
 \end_layout
 
 \end_inset
@@ -1900,7 +1805,37 @@ With a system of
 \begin_inset Formula $\tau_{crunch}$
 \end_inset
 
+.
+\end_layout
 
+\begin_layout Standard
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+ is evaluated in millions of years, thus, its unit could be the megaannum
+ (i.e.
+ the unit for 1,000,000 years).
+\end_layout
+
+\begin_layout Subsubsection
+Choice of the algorithm
+\end_layout
+
+\begin_layout Standard
+We will look for a satisfying time step.To do so, we will look at the total
+ energy conservation over different time steps, for our two algorithms.
+ Our system is the following: 100 particles, and an initial radius of 20
+ light years.
+ 
+\end_layout
+
+\begin_layout Standard
+According to the time required to process equivalent results, the Leapfrog
+ algorithm seems more interesting.
+ Furthermore, we are going now to process on a N-body system, where N is
+ at least equal to 100.
+ Thus, we will be more interested in the statistical properties of our system,
+ than in the local accuracy of the position or the velocity.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2289,16 +2224,49 @@ crosstalk
 \end_layout
 
 \begin_layout Paragraph
-Equilibrium
+Particles ejection and equilibrium
 \end_layout
 
 \begin_layout Standard
-As discussed in the theory part, according to the virial theorem, the system
- reachs an equilibrium after 
+As discussed in the theory part, the system seems to reach an equilibrium.
+ We can see it happens around 
+\begin_inset Formula $1\tau_{crunch}$
+\end_inset
+
+.
+ And we know, after deriving the theoritical results, that it, in fact,
+ happens after 
+\begin_inset Formula $0.81\tau_{crunch}$
+\end_inset
+
+ (i.e.
+ for circa 6,458 millions of years).
+ 
 \end_layout
 
-\begin_layout Paragraph
-Particles ejection
+\begin_layout Standard
+After this time, we can this on the following plots displaying the number
+ of bound particles in regard to the time, that suddenly, the number of
+ ejected particles blows up.
+ And we can see, as expected, that without using the smoothing function,
+ we lose a lot more of particles in just a few 
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+.
+ The results are stabilized when we add epsilon, and the quantity of lost
+ particles decreased.
+ 
+\end_layout
+
+\begin_layout Standard
+When we increase N, the number of initial particles, we increase the percentage
+ of lost particles too.
+ But we keep the total mass constant, which means that as N increases, the
+ particles become lighter.
+ Since the energies, kinetic and potential, are both a function of the mass
+ of the processed particles, we can see that the quantity of lost energy
+ 
 \end_layout
 
 \begin_layout Standard
@@ -2329,7 +2297,7 @@ status open
 \align left
 \begin_inset Graphics
 	filename Screen/d-e/plot_for_100_Particles_Epsi_0.jpeg
-	scale 45
+	scale 35
 
 \end_inset
 
@@ -2337,7 +2305,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Number of bound particles for ε = 0
+Number of bound particles for N initial = 100 bodies, ε = 0
 \end_layout
 
 \end_inset
@@ -2369,8 +2337,8 @@ status open
 \noindent
 \align right
 \begin_inset Graphics
-	filename Screen/Conservation_Energy_150_Resized.jpg
-	scale 45
+	filename Screen/d-e/plot_for_200_Particles_Epsi_0.jpeg
+	scale 35
 
 \end_inset
 
@@ -2378,7 +2346,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Behavior of the energy for N = 150 bodies,ε = 0
+Number of bound particles for N initial = 200 bodies, ε = 0
 \end_layout
 
 \end_inset
@@ -2411,8 +2379,8 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename Screen/Conservation_Energy_300_Resized.jpg
-	scale 45
+	filename Screen/d-e/plot_for_300_Particles_Epsi_0.jpeg
+	scale 35
 
 \end_inset
 
@@ -2420,7 +2388,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Behavior of the energy for N = 300 bodies,ε = 0
+Number of bound particles for N initial = 300 bodies, ε = 0
 \end_layout
 
 \end_inset
@@ -2443,17 +2411,10 @@ Behavior of the energy for N = 300 bodies,ε = 0
 \end_layout
 
 \begin_layout Standard
-Without using the modified gravitational potential, we notice that the energy
- is not conserved: some particles are ejected of the system.
+Without using the modified gravitational potential, the energy is clearly
+ not conserved: a lot of particles are ejected out of the system.
  For these particles, the kinetic energy blows up, and the total energy
  of theses particles is positive.
-\end_layout
-
-\begin_layout Standard
-The bigger N we take, the bigger the quantity of energy the system is taken
- away.
- For the biggest N we tried, the energy taken away is nearly 10 times the
- energy of the initial system.
 \end_layout
 
 \begin_layout Standard
@@ -2484,7 +2445,7 @@ status open
 \align left
 \begin_inset Graphics
 	filename Screen/d-e/plot_for_100_Particles_Epsi_0_10.jpeg
-	scale 45
+	scale 35
 
 \end_inset
 
@@ -2492,7 +2453,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Number of bound particles for ε = 0.10005
+Number of bound particles for N initial = 100, ε = 0.10005
 \end_layout
 
 \end_inset
@@ -2525,7 +2486,7 @@ status open
 \align right
 \begin_inset Graphics
 	filename Screen/d-e/plot_for_200_Particles_Epsi_0_071.jpeg
-	scale 45
+	scale 35
 
 \end_inset
 
@@ -2533,7 +2494,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Number of bound particles for ε = 0,071
+Number of bound particles for N initial = 200, ε = 0,071
 \end_layout
 
 \end_inset
@@ -2566,8 +2527,8 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename Screen/Conservation_Energy_Leapfrog_Epsilon_300_Resized.jpg
-	scale 45
+	filename Screen/d-e/plot_for_300_Particles_Epsi_0_06.jpeg
+	scale 35
 
 \end_inset
 
@@ -2575,7 +2536,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Behavior of the energy for N = 300 bodies, ε = √0,0225
+Number of bound particles for N initial =300 bodies, ε = 0,06
 \end_layout
 
 \end_inset
@@ -2638,7 +2599,7 @@ status open
 \noindent
 \align left
 \begin_inset Graphics
-	filename Screen/Conservation_Energy_Leapfrog_Resized.jpg
+	filename Screen/f/Virial_Epsilon.jpg
 	scale 45
 
 \end_inset
@@ -2647,7 +2608,11 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Evolution of Energy with the Leapfrog algorithm, ε = 0
+Ratio
+\begin_inset Formula $\frac{\left\langle P\right\rangle }{\left\langle K\right\rangle }$
+\end_inset
+
+for different epsilons, N = 100
 \end_layout
 
 \end_inset
@@ -2679,7 +2644,7 @@ status open
 \noindent
 \align right
 \begin_inset Graphics
-	filename Screen/Conservation_Energy_Epsilon_Leapfrog_Resized.jpg
+	filename Screen/f/Virial_N.jpg
 	scale 45
 
 \end_inset
@@ -2688,7 +2653,11 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Evolution of Energy with the Leapfrog algorithm, ε = √0,0225
+Ratio
+\begin_inset Formula $\frac{\left\langle P\right\rangle }{\left\langle K\right\rangle }$
+\end_inset
+
+for different N, epsilon ≈ 0.03
 \end_layout
 
 \end_inset

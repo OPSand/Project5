@@ -171,7 +171,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const int DIM = 3;
 
 	// initialization & time steps (common)
-	const int N = 1000; // number of celestial bodies
+	const int N = 100; // number of celestial bodies
 	const double R0 = 20.0; // initial radius in ly
 	const double TOTAL_M = 1000.0; // solar masses (to be kept constant throughout)
 	const double STD_FACTOR = 0.1; // % factor of average
@@ -184,8 +184,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double AVG_BIN = 20.0; // avg. number of particles in each bin (curve fitting)
 
 	// initialization & time steps (run many with different n/epsilon, same total mass)
-	const int N_SIMS = 3; // number of simulations to run (set to 1 to run just once)
-	const int N_END = 2000; // max N for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == true)
+	const int N_SIMS = 16; // number of simulations to run (set to 1 to run just once)
+	const int N_END = 1000; // max N for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == true)
 	const double EPSILON_END = 0.15; // max epsilon for last sim (ignored if N_SIMS == 1 or if EPSILON_LOOP == false)
 
 	// constants calculated from other constants
@@ -200,7 +200,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	const double G_YLS = cG * M_SUN * pow(cYr, 2.0) / pow(LY, 3.0); // G in years, ly, solar masses
 
 	// flags
-	const bool EPSILON_LOOP = false; // vary epsilon instead of n
+	const bool EPSILON_LOOP = true; // vary epsilon instead of n
 	const bool USE_LEAPFROG = true; // use Leapfrog method
 	const bool USE_RK4 = false; // use Runge-Kutta method
 	const bool USE_EULER = false; // use Euler-Cromer method
@@ -400,8 +400,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 				// energy conservation (relative deltas: close to 0 is good)
 				double deltaErel = (Etot - EtotBefore) / abs(EtotBefore);
-				double deltaErelBound = ((EtotBound/finalBound) - EtotBefore) / abs(EtotBefore);
-				// NOTE: We have to scale EtotBound up to account for the lower number of bound particles remaining
+				double deltaErelBound = (EtotBound - EtotBefore) / abs(EtotBefore);
 
 				// total kinetic/potential energy for bound particles
 				double EkBound = system->EkTotal(true);

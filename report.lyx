@@ -1238,7 +1238,7 @@ Results and analysis
 \end_layout
 
 \begin_layout Subsection
-BenchmarksValidation:
+Benchmarks and validation
 \end_layout
 
 \begin_layout Standard
@@ -1838,12 +1838,31 @@ According to the time required to process equivalent results, the Leapfrog
  than in the local accuracy of the position or the velocity.
 \end_layout
 
+\begin_layout Subsection
+Energy conservation 
+\end_layout
+
 \begin_layout Subsubsection
-Energy conservation (finding a reference value for 
+Bound particles
+\end_layout
+
+\begin_layout Standard
+Wher we refer to bound particles, we refer to those particles that have
+ a negative total energy.
+ Since potential energy is negative (at most 0), and kinetic energy is positive
+ (at least 0), we say that a particle is bound when its 
+\begin_inset Formula $E_{tot}=E_{k}+E_{p}<0$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Finding a reference value for 
 \begin_inset Formula $\epsilon$
 \end_inset
 
-)
+
 \end_layout
 
 \begin_layout Standard
@@ -2223,7 +2242,7 @@ crosstalk
  this case.
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsection
 Particles ejection and equilibrium
 \end_layout
 
@@ -2266,7 +2285,73 @@ When we increase N, the number of initial particles, we increase the percentage
  particles become lighter.
  Since the energies, kinetic and potential, are both a function of the mass
  of the processed particles, we can see that the quantity of lost energy
- 
+ increases sharply with N and is nearly linear:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Project5/LOST_ENERGY/lostenergy.jpeg
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Lost energy as a function of N, using the 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ scaling in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:epsilon"
+
+\end_inset
+
+).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2568,7 +2653,7 @@ After adding the smoothing part in our gravitational potential, we can see
  more stable: we lose less particles than before.
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsection
 Virial Theorem
 \end_layout
 

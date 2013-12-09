@@ -1894,7 +1894,7 @@ Conservation of the energy -- forth-order Runge Kutta
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -1995,7 +1995,15 @@ We saw in the theory part that the forth-order Runge Kutta has an approximation
  The Runge Kutta method is also more accurate to compute the velocity, but
  here, it does not matter so much.
  As we can see on the above figures, with bigger time steps, we have a more
- stable system with the Runge Kutta algorithm than with the Leapfrog algorithm.
+ stable system with the Runge Kutta algorithm than with the Leapfrog algorithm
+ as stated in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "algo1"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -2113,10 +2121,15 @@ For the choice of the time step size, we simulate the system with two random
 \end_layout
 
 \begin_layout Standard
-But we should expect, as stated in // Source ?! einstein.drexel.edu/courses/Comp_P
-hys/Integrators/leapfrog/ // Will take care of this later ^^', that at some
- point, the results given by the Runge Kutta method drifts, while they are
- still rather stable with the Leapfrog algorithm.
+But we should expect, as stated in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "algo2"
+
+\end_inset
+
+, that at some point, the results given by the Runge Kutta method drifts,
+ while they are still rather stable with the Leapfrog algorithm.
  And since we want to simulate a system over a long time period, with at
  least 100 particles, we are more interested in the long term statistical
  accuracy of our system than in the local accuracy of the position or velocity
@@ -2233,7 +2246,7 @@ According to the time required to process equivalent results, the Leapfrog
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -3218,6 +3231,7 @@ The energy loss due to particle ejection also drops by a considerable amount
 
 \begin_layout Standard
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
@@ -3460,6 +3474,7 @@ For the largest simulation (
 
 \begin_layout Standard
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
@@ -3542,9 +3557,10 @@ In other words, we get a standard deviation that is about twice as large
 
 \begin_layout Standard
 \begin_inset Float figure
+placement H
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Box Frameless
@@ -3682,9 +3698,10 @@ where we seek to determine the value of the constant
 
 \begin_layout Standard
 \begin_inset Float figure
+placement H
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Box Frameless
@@ -3771,9 +3788,10 @@ We conclude that this gives a nice fit to our radial distribution.
 
 \begin_layout Standard
 \begin_inset Float figure
+placement H
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Box Frameless
@@ -3868,10 +3886,6 @@ Conclusion
 \end_layout
 
 \begin_layout Standard
-x
-\end_layout
-
-\begin_layout Standard
 Paralellizing the code would indeed be beneficial (due to time constraints,
  ironically, we were forced not to implement this as we would then need
  to find out how to do this in Visual C++).
@@ -3919,7 +3933,7 @@ key "elgaroy2"
  Elgarøy: The Spherical Collapse Model: 
 \begin_inset CommandInset href
 LatexCommand href
-name "https://www.uio.no/studier/emner/matnat/astro/AST4320/h12/undervisningsmateriale/spherecollapse.pdf"
+name "https://www.uio.no/studier/emner/matnat/astro/AST4320/h12/ undervisningsmateriale/spherecollapse.pdf"
 target "https://www.uio.no/studier/emner/matnat/astro/AST4320/h12/undervisningsmateriale/spherecollapse.pdf"
 
 \end_inset
@@ -3997,7 +4011,7 @@ The Virial Theorem
 , lecture notes in AST 1100, University of Oslo, fall 2013: 
 \begin_inset CommandInset href
 LatexCommand href
-name "https://www.uio.no/studier/emner/matnat/astro/AST1100/h13/undervisningsmateriale/lecture5.pdf"
+name "https://www.uio.no/studier/emner/matnat/astro/AST1100/h13/ undervisningsmateriale/lecture5.pdf"
 target "https://www.uio.no/studier/emner/matnat/astro/AST1100/h13/undervisningsmateriale/lecture5.pdf"
 
 \end_inset
@@ -4077,6 +4091,61 @@ Modified Gravity and Cosmology
 LatexCommand href
 name "http://arxiv.org/abs/1106.2476"
 target "http://arxiv.org/abs/1106.2476"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "algo1"
+
+\end_inset
+
+A.
+ Clement, A.
+ Clement, G.
+ Fenchel, J.
+ Fenchel, J.
+ Lycnh: 
+\begin_inset Quotes eld
+\end_inset
+
+Numerical Intregration Methods
+\begin_inset Quotes erd
+\end_inset
+
+, 2008: 
+\begin_inset CommandInset href
+LatexCommand href
+target "http://www.challenge.nm.org/archive/07-08/finalreports/82.pdf"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "algo2"
+
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+The Leapfrog Integrator
+\begin_inset Quotes erd
+\end_inset
+
+, photocopy from the University of Drexel: 
+\begin_inset CommandInset href
+LatexCommand href
+target "http://einstein.drexel.edu/courses/Comp_Phys/Integrators/leapfrog/"
 
 \end_inset
 

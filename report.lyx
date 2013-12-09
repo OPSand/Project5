@@ -68,6 +68,29 @@ Project 5, FYS 3150 / 4150, fall 2013
 Student #
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Introduction
 \end_layout
@@ -1251,7 +1274,7 @@ Container class for the entire N-body system.
  and Gravity objects), which we make use of to be able to run different
  algorithms on identical copies of a system (for comparison of results and
  stability analysis).
- Some resource intentsive properties, like potential energy, are only calculated
+ Some resource intensive properties, like potential energy, are only calculated
  when we need to plot the data - this can be set not to happen at every
  step to speed up the execution.
 \end_layout
@@ -1535,8 +1558,9 @@ status open
 \noindent
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="3" columns="3">
+<lyxtabular version="3" rows="3" columns="4">
 <features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
@@ -1554,7 +1578,16 @@ Execution time (s)
 \begin_inset Text
 
 \begin_layout Plain Layout
-For 1000 steps, two bodies
+1000 steps, 2 bodies
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1000 steps, 100 bodies
 \end_layout
 
 \end_inset
@@ -1563,7 +1596,7 @@ For 1000 steps, two bodies
 \begin_inset Text
 
 \begin_layout Plain Layout
-For 1000 steps, 100 bodies
+5000 steps, 100 bodies
 \end_layout
 
 \end_inset
@@ -1588,11 +1621,20 @@ Leap-frog
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
 86,35
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+405,73
 \end_layout
 
 \end_inset
@@ -1603,7 +1645,7 @@ Leap-frog
 \begin_inset Text
 
 \begin_layout Plain Layout
-Forth-order Runge Kutta 
+ Runge Kutta 4
 \end_layout
 
 \end_inset
@@ -1617,11 +1659,20 @@ Forth-order Runge Kutta
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
 171,25
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1456,12
 \end_layout
 
 \end_inset
@@ -1635,7 +1686,7 @@ Forth-order Runge Kutta
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Elapsed Time to process the two body system 
+Elapsed Time for different parameters
 \end_layout
 
 \end_inset
@@ -1866,6 +1917,7 @@ status open
 \align left
 \begin_inset Graphics
 	filename Screen/a/plot3D_for_sim_BM_leapfrog_ST (2).jpeg
+	scale 35
 
 \end_inset
 
@@ -1906,6 +1958,7 @@ status open
 \align right
 \begin_inset Graphics
 	filename Screen/a/plot3D_for_sim_BM_leapfrog_ST_RK4.jpeg
+	scale 35
 
 \end_inset
 
@@ -1973,6 +2026,8 @@ status open
 \align left
 \begin_inset Graphics
 	filename Screen/a/Plot_Conservation_E_Leapfrog.jpeg
+	lyxscale 45
+	scale 35
 
 \end_inset
 
@@ -1980,7 +2035,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Behavior of the system with smaller time steps, during 4 
+Energy conservation for different time steps - 4 
 \begin_inset Formula $\tau_{crunch}$
 \end_inset
 
@@ -2017,6 +2072,8 @@ status open
 \align right
 \begin_inset Graphics
 	filename Screen/a/Plot_Conservation_E_rk4.jpeg
+	lyxscale 45
+	scale 45
 
 \end_inset
 
@@ -2024,7 +2081,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Behavior of the system with smaller time steps, during 4 
+Energy conservation for different time steps - 4 
 \begin_inset Formula $\tau_{crunch}$
 \end_inset
 
@@ -2176,7 +2233,7 @@ According to the time required to process equivalent results, the Leapfrog
 placement H
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -2199,6 +2256,8 @@ status open
 \align left
 \begin_inset Graphics
 	filename Screen/b/Plot_Conservation_E_Leapfrog.jpeg
+	lyxscale 45
+	scale 45
 
 \end_inset
 
@@ -2206,7 +2265,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Behavior of the system with smaller time steps, during 4 
+Energy conservation for different time steps - 4 
 \begin_inset Formula $\tau_{crunch}$
 \end_inset
 
@@ -2243,6 +2302,8 @@ status open
 \align right
 \begin_inset Graphics
 	filename Screen/b/Plot_Conservation_E_rk4.jpeg
+	lyxscale 45
+	scale 45
 
 \end_inset
 
@@ -2250,7 +2311,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Behavior of the system with smaller time steps, during 4 
+Energy conservation for different time steps - 4 
 \begin_inset Formula $\tau_{crunch}$
 \end_inset
 
@@ -2436,6 +2497,7 @@ status open
 \align left
 \begin_inset Graphics
 	filename Project5/EPSILON/boundFraction.jpeg
+	scale 35
 
 \end_inset
 
@@ -2486,6 +2548,7 @@ status open
 \align right
 \begin_inset Graphics
 	filename Project5/EPSILON/energyConservation.jpeg
+	scale 35
 
 \end_inset
 
@@ -2770,7 +2833,7 @@ When we increase N, the number of initial particles, we increase the percentage
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Box Frameless
@@ -2787,8 +2850,11 @@ height_special "totalheight"
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Project5/LOST_ENERGY/lostenergy.jpeg
+	scale 45
 
 \end_inset
 
@@ -3171,8 +3237,11 @@ height_special "totalheight"
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Project5/EPSILON_LOST/lostenergyepsilon.jpeg
+	scale 45
 
 \end_inset
 
@@ -3222,11 +3291,11 @@ Virial Theorem
 placement H
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
-\align left
+\align center
 \begin_inset Box Frameless
 position "t"
 hor_pos "c"
@@ -3410,8 +3479,11 @@ height_special "totalheight"
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Project5/curvefit/radial2000.jpeg
+	scale 45
 
 \end_inset
 
@@ -3489,8 +3561,11 @@ height_special "totalheight"
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Project5/curvefit/avgstd.jpeg
+	scale 45
 
 \end_inset
 
@@ -3522,10 +3597,6 @@ status open
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Plain Layout
 
 \end_layout
 
@@ -3630,8 +3701,11 @@ height_special "totalheight"
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Project5/curvefit/fit2000.jpeg
+	scale 45
 
 \end_inset
 
@@ -3718,12 +3792,14 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Project5/curvefit/fitscaling_n0.jpeg
+	scale 35
 
 \end_inset
 
 
 \begin_inset Graphics
 	filename Project5/curvefit/fitscaling_r0.jpeg
+	scale 35
 
 \end_inset
 

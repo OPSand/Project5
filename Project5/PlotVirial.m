@@ -71,7 +71,7 @@ else
     
     % And then we plot !
     figure(1);
-    plot(nbParticles(:),nbBoundsVirial(:),'lineStyle',':');%,'Color','g','+');
+    plot(nbParticles(:),nbBoundsVirial(:),'o','lineStyle','-');%,'Color','g','+');
     title('Ration E_p/E_k in function of the number of particles');
     xlabel('N');
     ylabel('E_p/E_k');

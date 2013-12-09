@@ -263,7 +263,7 @@ void SolarSystem::calculate()
 	}
 }
 
-// average potential energy
+// total potential energy
 double SolarSystem::EpTotal(bool boundOnly)
 {
 	double sum = 0.0;
@@ -287,7 +287,7 @@ double SolarSystem::EpTotal(bool boundOnly)
 	return (sum / 2.0);
 }
 
-// average kinetic energy
+// total kinetic energy
 double SolarSystem::EkTotal(bool boundOnly)
 {
 	double sum = 0.0;

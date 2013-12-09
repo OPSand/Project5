@@ -141,8 +141,4 @@ public:
 
 	// coordinates of center of mass
 	vec centerOfMass(bool boundOnly);
-
-	// average MINIMUM distance between a pair of particles
-	// O(n^2), so do not call this every step!
-	// double avgMinDist();
 };

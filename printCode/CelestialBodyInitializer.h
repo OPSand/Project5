@@ -1,3 +1,5 @@
+// CelestialBodyInitializer.h
+
 #pragma once
 
 #include "CelestialBody.h"

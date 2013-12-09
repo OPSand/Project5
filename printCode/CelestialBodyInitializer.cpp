@@ -1,3 +1,5 @@
+// CelestialBodyInitializer.cpp
+
 #include "stdafx.h"
 #include "CelestialBodyInitializer.h"
 

@@ -1,3 +1,5 @@
+// CelestialBody.cpp
+
 #include "stdafx.h"
 #include "CelestialBody.h"
 #include "SolarSystem.h"

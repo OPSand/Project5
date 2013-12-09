@@ -65,7 +65,7 @@ Project 5, FYS 3150 / 4150, fall 2013
 \end_layout
 
 \begin_layout Author
-Student #
+Student number 531008 (in collaboration with student number 555070)
 \end_layout
 
 \begin_layout Standard
@@ -121,17 +121,18 @@ cold
  To do so, we will begin with the approximation that stars are particles,
  point masses.
  Then, we will use a simple smoothing algorithm to increase the numerical
- stability of our system.
- We have outlined a method to find an optimal smoothing parameter if one
- begins from a well-tested value.
+ stability of our system, for which we are able to derive a potential energy.
+ We have also outlined a method to find an optimal smoothing parameter if
+ one begins from a well-tested value.
  This value can then be scaled to fit other simulations with a suprisingly
  simple formula.
+ However, it has some important limitations that we will discuss.
 \end_layout
 
 \begin_layout Standard
 Numerous algorithms could have been used to simulate the behavior of the
  cluster.
- We chose to focus on the Leapfrog and on the fourth-order Runge Kutta methods.
+ We chose to focus on the Leapfrog and on the fourth-order Runge-Kutta methods.
  Each one of the numeric methods has its pros and cons; we seek to find
  the one which gives priority to the stability instead of the short-term
  accuracy, as well as a reasonable running time.
@@ -359,7 +360,7 @@ key "elgaroy2,peacock"
 
  Keep in mind that the kinetic energy is not evenly distributed, so occasionally
  particles that receive more than their fair share will become unbound and
- may escape from the system before they have time to lose their energy.
+ may escape from the system before their energy surplus is removed.
  It is predicted that this should happen to a certain percentage of the
  particles, depending on 
 \begin_inset Formula $N$
@@ -405,7 +406,7 @@ key "frode"
 
 \end_inset
 
-.
+).
  It can be shown that this happens at time 
 \begin_inset Formula $\tau_{vir}=0.81\tau_{crunch}$
 \end_inset
@@ -509,10 +510,17 @@ where for the latter equality we have used the definitions of average mass
 \end_inset
 
  is the volume of the n-dimensional ball with radius 
-\begin_inset Formula $R_{0}.$
+\begin_inset Formula $R_{0}$
 \end_inset
 
+ (see equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:volumenball"
 
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Standard
@@ -529,11 +537,7 @@ This means our gravitational constant and our time unit both depend on
 \end_inset
 
 .
- We can verify that the units for 
-\begin_inset Formula $G$
-\end_inset
-
- are now correct with 
+ With 
 \begin_inset Formula $R_{0}$
 \end_inset
 
@@ -541,15 +545,127 @@ This means our gravitational constant and our time unit both depend on
 \begin_inset Formula $\mu$
 \end_inset
 
- given in solar masses.
+ given in solar masses, we get the desired units for 
+\begin_inset Formula $G$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsection
-Calculating 
+Gravitational potential with modified gravity
+\end_layout
+
+\begin_layout Standard
+In many of our simulation we will use a smoothing term in our gravitational
+ potential to compensate for the fact that we use time steps on a certain
+ length.
+ With point masses (that do not have a collisional cross section), the forces
+ will approach infinity as 
+\begin_inset Formula $r\rightarrow0$
+\end_inset
+
+ with the classical Newtonian approach.
+ We therefore modify the forces using a length scale 
+\begin_inset Formula $\epsilon,$
+\end_inset
+
+ at which point the forces will converge toward the finite magnitude 
+\begin_inset Formula $\frac{GMm}{\epsilon^{2}}$
+\end_inset
+
+ instead of infinity.
+ This modification will have minimal effect when 
+\begin_inset Formula $r\gg\epsilon$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+However, this also slightly changes the way we calculate the potential energy.
+ Starting with the magnitude of the force
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+F=\frac{GMm}{r^{2}+\epsilon^{2}}=\frac{GMm}{\epsilon^{2}}\frac{1}{(\frac{r}{\epsilon})^{2}+1}=\frac{GMm}{\epsilon^{2}}\frac{1}{u^{2}+1}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where we have used the subsitution 
+\begin_inset Formula $u=\frac{r}{\epsilon}$
+\end_inset
+
+ which gives 
+\begin_inset Formula $\frac{du}{dr}=\frac{1}{\epsilon}$
+\end_inset
+
+, hence 
+\begin_inset Formula $dr=\epsilon\cdot du$
+\end_inset
+
+, and so
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+E_{p}=m\Phi=\int Fdr=\frac{GMm}{\epsilon^{2}}\int\frac{1}{u^{2}+1}\epsilon du=\frac{GMm}{\epsilon}(\arctan(u)+C)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We want 
+\begin_inset Formula $E_{p}\rightarrow0$
+\end_inset
+
+ as 
+\begin_inset Formula $r\rightarrow\infty$
+\end_inset
+
+, and since 
+\begin_inset Formula $\arctan(u)\rightarrow\frac{\pi}{2}$
+\end_inset
+
+ as 
+\begin_inset Formula $u\rightarrow\infty$
+\end_inset
+
+, we achieve this by choosing 
+\begin_inset Formula $C=-\frac{\pi}{2}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+E_{p}=\frac{GMm}{\epsilon}(\arctan(\frac{r}{\epsilon})-\frac{\pi}{2})\qquad(\epsilon>0)
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Scaling the gravitational smoothing parameter 
 \begin_inset Formula $\epsilon$
 \end_inset
 
- automatically
+ 
 \end_layout
 
 \begin_layout Standard
@@ -712,87 +828,6 @@ giving us this handy formula for
 \end_layout
 
 \begin_layout Subsection
-Gravitational potential with modified gravity
-\end_layout
-
-\begin_layout Standard
-Starting with the magnitude of the force
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\[
-F=\frac{GMm}{r^{2}+\epsilon^{2}}=\frac{GMm}{\epsilon^{2}}\frac{1}{(\frac{r}{\epsilon})^{2}+1}=\frac{GMm}{\epsilon^{2}}\frac{1}{u^{2}+1}
-\]
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-where we have used the subsitution 
-\begin_inset Formula $u=\frac{r}{\epsilon}$
-\end_inset
-
- which gives 
-\begin_inset Formula $\frac{du}{dr}=\frac{1}{\epsilon}$
-\end_inset
-
-, hence 
-\begin_inset Formula $dr=\epsilon\cdot du$
-\end_inset
-
-, and so
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\[
-E_{p}=m\Phi=\int Fdr=\frac{GMm}{\epsilon^{2}}\int\frac{1}{u^{2}+1}\epsilon du=\frac{GMm}{\epsilon}(\arctan(u)+C)
-\]
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-We want 
-\begin_inset Formula $E_{p}\rightarrow0$
-\end_inset
-
- as 
-\begin_inset Formula $r\rightarrow\infty$
-\end_inset
-
-, and since 
-\begin_inset Formula $\arctan(u)\rightarrow\frac{\pi}{2}$
-\end_inset
-
- as 
-\begin_inset Formula $u\rightarrow\infty$
-\end_inset
-
-, we achieve this by choosing 
-\begin_inset Formula $C=-\frac{\pi}{2}$
-\end_inset
-
-:
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\begin{equation}
-E_{p}=\frac{GMm}{\epsilon}(\arctan(\frac{r}{\epsilon})-\frac{\pi}{2})\qquad(\epsilon>0)
-\end{equation}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection
 Volume of the n-ball
 \end_layout
 
@@ -823,7 +858,7 @@ key "volume"
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-V_{n}=\frac{\pi^{\frac{n}{2}}}{\Gamma(\frac{n}{2}+1)}
+V_{n}=\frac{\pi^{\frac{n}{2}}}{\Gamma(\frac{n}{2}+1)}\label{eq:volumenball}
 \end{equation}
 
 \end_inset
@@ -932,17 +967,16 @@ Algorithms
 \end_layout
 
 \begin_layout Standard
-For both of our algorithms, the step intervalle looks like 
+For both of our algorithms, the step interval is 
 \begin_inset Formula $[t_{0};t_{max}]$
 \end_inset
 
 .
- We will work on 
+ The number of steps we call 
 \begin_inset Formula $n_{Steps}$
 \end_inset
 
-.
- Let's define h as 
+, and the resulting step length is 
 \begin_inset Formula $h=\frac{t_{max}-t_{0}}{n_{Steps}-1}$
 \end_inset
 
@@ -954,8 +988,8 @@ Runge-Kutta
 \end_layout
 
 \begin_layout Standard
-We have
-\begin_inset Formula $t_{i}=t_{0}+i.h\text{ for each i belonging to \ensuremath{{\displaystyle [0,n_{Steps}].}}}$
+We have 
+\begin_inset Formula $t_{i}=t_{0}+i\cdot h\text{ for each i belonging to \ensuremath{{\displaystyle [0,n_{Steps}].}}}$
 \end_inset
 
  We can now define 
@@ -966,7 +1000,7 @@ We have
 \end_layout
 
 \begin_layout Standard
-The general formulae of Simpson's rule is: 
+The general formula for Simpson's rule is: 
 \begin_inset Formula $\intop_{t_{i}}^{t_{i}+1}f(t,x)dt=\frac{1}{6}h(f(t_{i},x_{i})+2f(t_{i+\frac{1}{2}},x_{i+\frac{1}{2}})+f(t_{i+1},x_{i+1}))$
 \end_inset
 
@@ -1028,19 +1062,20 @@ k4=f(t_{i+1},x_{i+1})\qquad x_{i+1}=x_{i}+hk_{3}
 \end_layout
 
 \begin_layout Standard
-In our case, we will have to compute this results six times by time step:
- once for the x,y and z positions, and once for the x,y and z velocities.
- 
-\end_layout
-
-\begin_layout Standard
 This Runge-Kutta algorithm is especially interesting since we only need
  initial conditions to unfold it.
  Its approximation error runs like 
-\begin_inset Formula $\mathcal{O}(\Delta h^{2})$
+\begin_inset Formula $\mathcal{O}(\Delta h^{4})$
 \end_inset
 
  .
+\begin_inset CommandInset citation
+LatexCommand cite
+key "algo1"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
@@ -1054,7 +1089,7 @@ The Leapfrog algorithm is given by the trhee following steps:
 \begin_layout Standard
 \begin_inset Formula 
 \[
-x^{(1)}(t+\frac{h}{2})=(x^{(1)}(t)+\frac{h}{2}*x^{(2)}(t)+\mathcal{O}(\Delta h^{2})
+x^{(1)}(t+\frac{h}{2})=(x^{(1)}(t)+\frac{h}{2}\cdot x^{(2)}(t)+\mathcal{O}(\Delta h^{2})
 \]
 
 \end_inset
@@ -1076,7 +1111,7 @@ x(t+h)=x(t)+x^{(1)}(t+\frac{h}{2})+\mathcal{O}(\Delta h^{3})
 \begin_layout Standard
 \begin_inset Formula 
 \[
-x^{(1)}(t+h)=x^{(1)}(t+\frac{h}{2})+\frac{h}{2}*x^{(2)}(t+h)+\mathcal{O}(\Delta h^{2})
+x^{(1)}(t+h)=x^{(1)}(t+\frac{h}{2})+\frac{h}{2}\cdot x^{(2)}(t+h)+\mathcal{O}(\Delta h^{2})
 \]
 
 \end_inset
@@ -1093,7 +1128,7 @@ Now, let's take a look at the approximation error for this algorithm.
 \begin_layout Standard
 \begin_inset Formula 
 \[
-x(t+h)=x(t)+hx^{(1)}(t)+\frac{h^{2}}{2}x^{(2)}(t)+\mathcal{O}(\Delta h^{3})=x(t)+h(x^{(1)}(t)+\frac{h}{2}*x^{(2)}(t))+\mathcal{O}(\Delta h^{3})
+x(t+h)=x(t)+hx^{(1)}(t)+\frac{h^{2}}{2}x^{(2)}(t)+\mathcal{O}(\Delta h^{3})=x(t)+h(x^{(1)}(t)+\frac{h}{2}\cdot x^{(2)}(t))+\mathcal{O}(\Delta h^{3})
 \]
 
 \end_inset
@@ -1108,7 +1143,7 @@ In the same way, we have for the velocity:
 \begin_layout Standard
 \begin_inset Formula 
 \[
-x^{(1)}(t+\frac{h}{2})=x^{(1)}(t)+\frac{h}{2}*x^{(2)}(t)+\mathcal{O}(\Delta h^{2})
+x^{(1)}(t+\frac{h}{2})=x^{(1)}(t)+\frac{h}{2}\cdot x^{(2)}(t)+\mathcal{O}(\Delta h^{2})
 \]
 
 \end_inset
@@ -1119,7 +1154,7 @@ x^{(1)}(t+\frac{h}{2})=x^{(1)}(t)+\frac{h}{2}*x^{(2)}(t)+\mathcal{O}(\Delta h^{2
 \begin_layout Standard
 \begin_inset Formula 
 \[
-x^{(1)}(t-\frac{h}{2})=x^{(1)}(t)-\frac{h}{2}*x^{(2)}(t)+\mathcal{O}(\Delta h^{2})
+x^{(1)}(t-\frac{h}{2})=x^{(1)}(t)-\frac{h}{2}\cdot x^{(2)}(t)+\mathcal{O}(\Delta h^{2})
 \]
 
 \end_inset
@@ -1130,7 +1165,7 @@ x^{(1)}(t-\frac{h}{2})=x^{(1)}(t)-\frac{h}{2}*x^{(2)}(t)+\mathcal{O}(\Delta h^{2
 \begin_layout Standard
 \begin_inset Formula 
 \[
-x^{(1)}(t+\frac{h}{2})-x^{(1)}(t-\frac{h}{2})=x^{(1)}(t)+\frac{h}{2}*x^{(2)}(t)+\mathcal{O}(\Delta h^{2})-(x^{(1)}(t)-\frac{h}{2}*x^{(2)}(t)+\mathcal{O}(\Delta h^{2}))=h*x^{(2)}(t)+\mathcal{O}(\Delta h^{2})
+x^{(1)}(t+\frac{h}{2})-x^{(1)}(t-\frac{h}{2})=x^{(1)}(t)+\frac{h}{2}\cdot x^{(2)}(t)+\mathcal{O}(\Delta h^{2})-(x^{(1)}(t)-\frac{h}{2}\cdot x^{(2)}(t)+\mathcal{O}(\Delta h^{2}))=h\cdot x^{(2)}(t)+\mathcal{O}(\Delta h^{2})
 \]
 
 \end_inset
@@ -1178,6 +1213,13 @@ In the end, we can see that the approximation error runs like
 \end_inset
 
  for the Leapfrog algorithm.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "algo1"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -1327,14 +1369,38 @@ CelestialBodyInitializer class
 \end_layout
 
 \begin_layout Standard
-Sets up a uniform position distribution given an initial max radius (generalized
- for any number of dimensions).
+Sets up a uniform position distribution given an initial maximum radius
+ (generalized for any number of dimensions).
  Also generates normal distributed random masses.
  Doing this in a separate class allows the SolarSystem class to be as general
  as possible (we might not want a random distribution every time, but when
  we do, this class will provide it).
  Keeping this class dimension independent makes it more general and easier
  to use in other projects.
+ Sets the values of 
+\begin_inset Formula $G$
+\end_inset
+
+ and 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ based on the initial state of the SolarSystem, using eqs.
+ (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:G"
+
+\end_inset
+
+) and (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:epsilon_N100"
+
+\end_inset
+
+), respectively.
 \end_layout
 
 \begin_layout Subsection
@@ -1350,14 +1416,15 @@ Contains code to iterate over a SolarSystem object over a number of time
  methods simultaneously and compare the results.
  Keeping this in a separate class allows adaptation of this code to use
  other objects than the SolarSystems we employ here.
+ Also times the execution of each algorithm used.
 \end_layout
 
 \begin_layout Subsection
-GaussPDF class
+GaussPDF class (not included in appendix)
 \end_layout
 
 \begin_layout Standard
-This is simply a static class wrapper for the code given at:
+This is simply a static class wrapper we made for the code provided at:
 \end_layout
 
 \begin_layout Standard
@@ -1384,12 +1451,11 @@ Benchmarks and validation
 \end_layout
 
 \begin_layout Standard
-We worked during a previous project on the implementation of the Runge Kutta
+In a previous project, we worked on the implementation of the Runge-Kutta
  algorithm to simulate the behavior of the Solar System.
  To test our code, we also wrote the Euler-Cromer algorithm.
- The outputs of our previous project were validated.
- In order to testify that our code works, we tested it against our previous
- results, in two dimensions, then we extended it in three dimensions.
+ In order to verify that our code works, we tested it against our previous
+ results, in two dimensions, then we extended it to three dimensions.
 \end_layout
 
 \begin_layout Standard
@@ -1397,7 +1463,7 @@ We worked during a previous project on the implementation of the Runge Kutta
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -1469,7 +1535,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Simulation with our Runge Kutta - 4 algorithm
+Simulation with our Runge-Kutta - 4 algorithm
 \end_layout
 
 \end_inset
@@ -1535,16 +1601,24 @@ Simulation of our previous project
 
 \begin_layout Standard
 We found equivalent results between the two projects, for the same time
- step size, one point per day, and the same length of simulation, two years,
- which lead us to says that our current code is working.
+ step size (one point per day) and the same length of simulation (two years).
  
 \end_layout
 
 \begin_layout Standard
-When we use them for very long times, we can see that the Leapfrog algorithm
- is way more well-behaved than the Runge Kutta one.
- Thus, we can say that the Runge Kutta algorithm is not as stable as the
- Leapfrog one for when being processed for long times
+When we use them for very long times, the Leapfrog algorithm should be more
+ well-behaved than the Runge-Kutta one
+\begin_inset CommandInset citation
+LatexCommand cite
+key "algo2"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+We also did an analysis on runnning time of the two algorithms:
 \end_layout
 
 \begin_layout Standard
@@ -1607,7 +1681,7 @@ Execution time (s)
 \begin_inset Text
 
 \begin_layout Plain Layout
-Leap-frog
+Leapfrog
 \end_layout
 
 \end_inset
@@ -1645,7 +1719,7 @@ Leap-frog
 \begin_inset Text
 
 \begin_layout Plain Layout
- Runge Kutta 4
+ Runge-Kutta 4
 \end_layout
 
 \end_inset
@@ -1700,14 +1774,19 @@ Elapsed Time for different parameters
 \end_layout
 
 \begin_layout Standard
-We can see here that the Runge Kutta algorithm takes more time to process
+We can see here that the Runge-Kutta algorithm takes more time to process
  the same set of data than the Leapfrog.
- For small data set, the time spent by the forth order Runge Kutta algorithm
+ For small data set, the time spent by the forth order Runge-Kutta algorithm
  is twice as much as the time spent by the Leapfrog method.
- And when we increase the number of steps, or the number of bodies, we increase
- the time spent during processing.
- Thus, the difference in the execution time between Runge Kutta and Leapfrog
+ And when we increase the number of steps, or the number of bodies, the
+ relative time spent grows even shorter for the Leapfrog algorithm.
+ Thus, the difference in the execution time between Runge-Kutta and Leapfrog
  becomes more and more significant.
+\end_layout
+
+\begin_layout Standard
+Looking at the energy conservation, we see significantly better results
+ with Runge-Kutta compared to Leapfrog for the 2-body problem.
 \end_layout
 
 \begin_layout Standard
@@ -1715,7 +1794,7 @@ We can see here that the Runge Kutta algorithm takes more time to process
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -1746,7 +1825,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Conservation of the Energy -- Leap-frog -- Length
+Conservation of energy -- Leapfrog -- Length: 2 yars
 \end_layout
 
 \end_inset
@@ -1787,7 +1866,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Conservation of the Energy -- Leap-frog
+Conservation of energy -- Leapfrog
 \end_layout
 
 \end_inset
@@ -1829,8 +1908,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Conservation of the energy -- forth-order Runge Kutta = Length = 2 years
- ~
+Conservation of eenergy -- fourth-order Runge-Kutta -- Length: 2 years
 \end_layout
 
 \end_inset
@@ -1871,7 +1949,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Conservation of the energy -- forth-order Runge Kutta
+Conservation of energy -- fourth-order Runge-Kutta
 \end_layout
 
 \end_inset
@@ -1925,7 +2003,8 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Behavior of the system with bigger time steps, during 10 years -- Leapfrog
+Behavior of the system with bigger time steps after 10 years with Leapfrog.
+ 2-body problem with position plotted for all time steps.
 \end_layout
 
 \end_inset
@@ -1966,8 +2045,9 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Behavior of the system with bigger time steps, during 10 years -- Runge
- Kutta 4
+Behavior of the system with bigger time steps after 10 years with Runge-Kutta
+ (4th order).
+ 2-body problem with position plotted for all time steps.
 \end_layout
 
 \end_inset
@@ -1986,16 +2066,16 @@ Behavior of the system with bigger time steps, during 10 years -- Runge
 \end_layout
 
 \begin_layout Standard
-We saw in the theory part that the forth-order Runge Kutta has an approximation
+We saw in the theory part that the forth-order Runge-Kutta has an approximation
  error smaller than the Leapfrog algorithm.
  It basically means that for small time steps, local data about each particles
- will be more accurate with the Runge Kutta method than with the Leapfrog
+ will be more accurate with the Runge-Kutta method than with the Leapfrog
  method, even though this one still gives us interesting results for reasonably
  small time steps.
- The Runge Kutta method is also more accurate to compute the velocity, but
+ The Runge-Kutta method is also more accurate to compute the velocity, but
  here, it does not matter so much.
  As we can see on the above figures, with bigger time steps, we have a more
- stable system with the Runge Kutta algorithm than with the Leapfrog algorithm
+ stable system with the Runge-Kutta algorithm than with the Leapfrog algorithm
  as stated in 
 \begin_inset CommandInset citation
 LatexCommand cite
@@ -2043,11 +2123,11 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Energy conservation for different time steps - 4 
+Energy conservation for different time steps after 4 
 \begin_inset Formula $\tau_{crunch}$
 \end_inset
 
--- Leapfrog
+ (Leapfrog).
 \end_layout
 
 \end_inset
@@ -2089,11 +2169,11 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Energy conservation for different time steps - 4 
+Energy conservation for different time steps after 4 
 \begin_inset Formula $\tau_{crunch}$
 \end_inset
 
- -- Runge Kutta 4
+ (Runge-Kutta).
 \end_layout
 
 \end_inset
@@ -2128,13 +2208,188 @@ key "algo2"
 
 \end_inset
 
-, that at some point, the results given by the Runge Kutta method drifts,
- while they are still rather stable with the Leapfrog algorithm.
- And since we want to simulate a system over a long time period, with at
- least 100 particles, we are more interested in the long term statistical
- accuracy of our system than in the local accuracy of the position or velocity
- of each particle.
- Thus, we can say that the most convenient method here is the Leapfrog method.
+, that at some point, the results given by the Runge-Kutta method will start
+ to drift, while they are still rather stable with the Leapfrog algorithm.
+ Curiously, we were unable to reproduce this effect in our 2-body simulations
+ (we used energy conservation to look for this effect).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="4">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Time steps
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1000000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100000
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+10000
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Leapfrog
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2,66412 + 33 | - 2,68958 + 33
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2,66412 + 33 | - 2,68958 + 33
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2,66412 + 33 | - 2,68958 + 33
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Runge-Kutta
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2,66412 + 33 | - 2,66412 + 33
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2,66412 + 33 | - 2,68958 + 33
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2,66412 + 33 | - 2,68958 + 33
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Initial and final total energy in function of the time step size
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Since we want to simulate a system over a long time period, with at least
+ 100 particles, we are more interested in the long term statistical accuracy
+ of our system than in the local accuracy of the position or velocity of
+ each particle.
+ In the end, our choice of algorithm comes down to running time, long-term
+ stability and the addition of the smoothing factor 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+.
+ The latter gives us more leeway when it comes to time step length (a connection
+ which is seen in equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:epsilon"
+
+\end_inset
+
+), in which case we are more concerned about our system being stable in
+ the long run.
+ We therefore prefer the Leapfrog algorithm in our simulations.
 \end_layout
 
 \begin_layout Subsection
@@ -2212,33 +2467,28 @@ With a system of
 \end_layout
 
 \begin_layout Standard
+A natural time unit for 
 \begin_inset Formula $\tau_{crunch}$
 \end_inset
 
- is evaluated in millions of years, thus, its unit could be the megaannum
- (i.e.
- the unit for 1,000,000 years).
+ is thus Myrs (
+\begin_inset Formula $10^{6}$
+\end_inset
+
+ yrs).
 \end_layout
 
 \begin_layout Subsubsection
-Choice of the algorithm
+Applying the algorithms to a many-body simulation
 \end_layout
 
 \begin_layout Standard
-We will look for a satisfying time step.To do so, we will look at the total
- energy conservation over different time steps, for our two algorithms.
+We now extend our code to include more than two particles.
+ To find an appropriate time step length, we will look at the total energy
+ conservation over different time steps, for our two algorithms.
  Our system is the following: 100 particles, and an initial radius of 20
  light years.
  
-\end_layout
-
-\begin_layout Standard
-According to the time required to process equivalent results, the Leapfrog
- algorithm seems more interesting.
- Furthermore, we are going now to process on a N-body system, where N is
- at least equal to 100.
- Thus, we will be more interested in the statistical properties of our system,
- than in the local accuracy of the position or the velocity.
 \end_layout
 
 \begin_layout Standard
@@ -2328,7 +2578,7 @@ Energy conservation for different time steps - 4
 \begin_inset Formula $\tau_{crunch}$
 \end_inset
 
- -- Runge Kutta 4
+ -- Runge-Kutta 4
 \end_layout
 
 \end_inset
@@ -2354,17 +2604,16 @@ With more particles than before, we can see that the conservation of the
  45% of our initial particles.
  So there has to be a difference between the initial energy and the final
  one.
- We can see on the above figures that Runge Kutta is less accurate than
+ We can see on the above figures that Runge-Kutta is less accurate than
  Leapfrog, which is more stable.
  As stated before, we are more in a long-term stable algorithm, rather than
  in locally accurate one.
- Thus, and due to the astrophysics nature of our problem, we would rather
- use the Leapfrog method, than the forth order Runge Kutta one.
- When using the Leapfrog method, we will choose a time step of 
+ When using the Leapfrog method, we initially chose a time step length of
+ 
 \begin_inset Formula $2,5.10^{-3}\tau_{crunch}$
 \end_inset
 
- .
+ to be able to see the effect of the gravitational smoothing parameter.
 \end_layout
 
 \begin_layout Subsection
@@ -2760,7 +3009,7 @@ which we expect could be of use in future versions of this project.
  a higher number of particles): While the value we chose has been good enough
  in practice, we do not claim to have found the optimal value for the case
  we were studying, and expect future projects to be able to achieve much
- more accurate results using the method we have oulined above.
+ more accurate results using the method we have outlined above.
  Another interesting prospect is to seek a closed form solution for a reference
  value for 
 \begin_inset Formula $\epsilon$
@@ -2775,7 +3024,7 @@ One should also keep in mind that the way we scale
 \begin_inset Formula $\epsilon$
 \end_inset
 
- is linear in the sense that we only consider one pair of particle at a
+ is linear in the sense that we only consider one pair of particles at a
  time, not looking at 
 \begin_inset Quotes eld
 \end_inset
@@ -2801,26 +3050,35 @@ Particles ejection and equilibrium
 \end_layout
 
 \begin_layout Standard
-As discussed in the theory part, the system seems to reach an equilibrium.
- We can see it happens around 
+As discussed in the theory part, we observe from animations that the system
+ collapses and reaches a turnaround point at about 
 \begin_inset Formula $1\tau_{crunch}$
 \end_inset
 
-.
- And we know, after deriving the theoritical results, that it, in fact,
- happens after 
+, which is close to the teoretical value of 
 \begin_inset Formula $0.81\tau_{crunch}$
 \end_inset
 
  (i.e.
- for circa 6,458 millions of years).
+ after 6.46 Myrs).
  
 \end_layout
 
 \begin_layout Standard
-After this time, we can this on the following plots displaying the number
- of bound particles in regard to the time, that suddenly, the number of
- ejected particles blows up.
+After this time, we can observe on the following plots displaying the number
+ of bound particles that there is a massive increase of unbound particles
+ at this time.
+ This happens when the outermost particles fall onto the very dense core
+ and are accelerated by the strong central gravitational potential.
+ With many near-collisions in a short time, we then reproduce the results
+ in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "thesource"
+
+\end_inset
+
+.
  And we can see, as expected, that without using the smoothing function,
  we lose a lot more of particles in just a few 
 \begin_inset Formula $\tau_{crunch}$
@@ -2829,7 +3087,29 @@ After this time, we can this on the following plots displaying the number
 .
  The results are stabilized when we add epsilon, and the quantity of lost
  particles decreased.
+ Without the smoothed potential, we keep losing particles even after the
+ remaining particle reach equilibrium.
+ With an 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ value that is sufficientlt high, however, this does not happen (compare
+ for instance fig.
  
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Number-of-boundNO_EPS"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Number-of-boundEPSILON"
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Standard
@@ -2837,9 +3117,18 @@ When we increase N, the number of initial particles, we increase the percentage
  of lost particles too.
  But we keep the total mass constant, which means that as N increases, the
  particles become lighter.
- Since the energies, kinetic and potential, are both a function of the mass
- of the processed particles, we can see that the quantity of lost energy
- increases sharply with N and is nearly linear:
+ What is then the net effect of this in terms of energy? Since the energies,
+ kinetic and potential, are both a function of the mass of the processed
+ particles, we can see that the quantity of lost energy increases sharply
+ with N and is nearly linear (fig.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Lost-energy-as"
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Standard
@@ -2883,6 +3172,12 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Lost-energy-as"
+
+\end_inset
+
 Lost energy as a function of N, using the 
 \begin_inset Formula $\epsilon$
 \end_inset
@@ -2902,10 +3197,6 @@ reference "eq:epsilon"
 
 \end_layout
 
-\begin_layout Plain Layout
-
-\end_layout
-
 \end_inset
 
 
@@ -2916,7 +3207,7 @@ reference "eq:epsilon"
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -3030,6 +3321,12 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Number-of-boundNO_EPS"
+
+\end_inset
+
 Number of bound particles for N initial = 300 bodies, ε = 0
 \end_layout
 
@@ -3055,8 +3352,8 @@ Number of bound particles for N initial = 300 bodies, ε = 0
 \begin_layout Standard
 Without using the modified gravitational potential, the energy is clearly
  not conserved: a lot of particles are ejected out of the system.
- For these particles, the kinetic energy blows up, and the total energy
- of theses particles is positive.
+ For these particles, the kinetic energy increases substantially, and the
+ total energy of theses particles becomes positive.
 \end_layout
 
 \begin_layout Standard
@@ -3064,7 +3361,7 @@ Without using the modified gravitational potential, the energy is clearly
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -3178,6 +3475,12 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Number-of-boundEPSILON"
+
+\end_inset
+
 Number of bound particles for N initial =300 bodies, ε = 0,06
 \end_layout
 
@@ -3202,10 +3505,10 @@ Number of bound particles for N initial =300 bodies, ε = 0,06
 
 \begin_layout Standard
 After adding the smoothing part in our gravitational potential, we can see
- that the quantity kinetic energy does not blow up anymore, and the quantity
- of energy lost is a lot smaller than before: this was expected, since we
- reduced the numerical instability by adding this ε factor in the calculation
- of our Newtonian force.
+ that the kinetic energy increases less violently, and the quantity of energy
+ lost is a lot smaller than before: this was expected, since we reduced
+ the numerical instability by adding this ε factor in the calculation of
+ our Newtonian force.
  Thus, the behavior of particles when they come closer to each other is
  more stable: we lose less particles than before.
 \end_layout
@@ -3305,7 +3608,7 @@ Virial Theorem
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -3419,22 +3722,29 @@ After running the system for a few
 \end_inset
 
 , for our bound system.
- We can see that the virial theorem is met in the case where the smoothing
- function is used, with an 
+ We can see that the virial theorem is almost met (with a factor of 1.5 instead
+ of 2) in the case where the smoothing function is used, with an 
 \begin_inset Formula $\epsilon$
 \end_inset
 
- of 
-\begin_inset Formula $\sqrt{0,0225}$
-\end_inset
-
-, and is not met in our initial case (i.e.
+ of 0.03, and is not met in our initial case (i.e.
  without using the smoothing function).
  The smoothing function helps us to take care of the numerical instability
  generated when two particles are too close.
- Indeed, with the standard gravitational potentiel, we lose too many particles.
+ Indeed, with the standard gravitational potential, we lose too many particles.
  Thus, the introduction of ε solves this problem.
  
+\end_layout
+
+\begin_layout Standard
+Why is the virial theorem not satisfied exactly? It turns out that the kinetic
+ energy of the particles is a little too high, as a side effect of the time
+ steps we use (even with smoothing).
+ Thus, even with only considering bound particles, some will have a slightly
+ higher energy than they should due to a near-collision in the particle's
+ near past.
+ These will occur frequently in the dense core of our cluster, preventing
+ us from reaching the exact proportion the virial theorem specifies.
 \end_layout
 
 \begin_layout Subsection
@@ -3497,7 +3807,7 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename Project5/curvefit/radial2000.jpeg
+	filename Project5/CURVEFIT/radial2000.jpeg
 	scale 45
 
 \end_inset
@@ -3560,7 +3870,7 @@ In other words, we get a standard deviation that is about twice as large
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Box Frameless
@@ -3580,7 +3890,7 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename Project5/curvefit/avgstd.jpeg
+	filename Project5/CURVEFIT/avgstd.jpeg
 	scale 45
 
 \end_inset
@@ -3628,8 +3938,8 @@ We attribute the large standard deviation to the fact that some particles,
  particles responsible for the virial theorem not holding exactly even for
  the bound particles).
  Thus, we expect the standard deviation to vary roughly as the number of
- bound particles does - more bound particles means a higher changce of high-ener
-gy bound particles (less energy lost to the unbound particles).
+ bound particles does - more bound particles means a higher chance of high-energ
+y bound particles (less energy lost to the unbound particles).
  It is clear, however, that we do not have sufficient data to find an expression
  for 
 \begin_inset Formula $\mu_{bound}(N)$
@@ -3721,7 +4031,7 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename Project5/curvefit/fit2000.jpeg
+	filename Project5/CURVEFIT/fit2000.jpeg
 	scale 45
 
 \end_inset
@@ -3809,14 +4119,14 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename Project5/curvefit/fitscaling_n0.jpeg
+	filename Project5/CURVEFIT/fitscaling_n0.jpeg
 	scale 35
 
 \end_inset
 
 
 \begin_inset Graphics
-	filename Project5/curvefit/fitscaling_r0.jpeg
+	filename Project5/CURVEFIT/fitscaling_r0.jpeg
 	scale 35
 
 \end_inset
@@ -3886,6 +4196,24 @@ Conclusion
 \end_layout
 
 \begin_layout Standard
+The running time is severely affected because we simulate every particle.
+ A better approach might be to divide the particles into cells and then
+ study only the interactions within each cell and between the cells (treating
+ where cells as entities for this purpose).
+\end_layout
+
+\begin_layout Standard
+One could also consider adaptive time steps, however, this is unlikely to
+ scale well, since the amount of near-collisions that demand a smaller time
+ step, will increase sharply with higher 
+\begin_inset Formula $N$
+\end_inset
+
+.
+ There will always be a particle colliding with another somewhere.
+\end_layout
+
+\begin_layout Standard
 Paralellizing the code would indeed be beneficial (due to time constraints,
  ironically, we were forced not to implement this as we would then need
  to find out how to do this in Visual C++).
@@ -3900,7 +4228,9 @@ Paralellizing the code would indeed be beneficial (due to time constraints,
 \begin_inset Formula $\mathcal{O}(n^{2})$
 \end_inset
 
- parts of the code (gravitational forces, potential energy), 
+ parts of the code (gravitational forces, potential energy), could be divided
+ among processors (each core being given a subset of the particle pairs/vertices
+ to work on).
 \end_layout
 
 \begin_layout Bibliography

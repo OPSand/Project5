@@ -1,0 +1,4066 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command bibtex
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Project 5, FYS 3150 / 4150, fall 2013
+\end_layout
+
+\begin_layout Author
+Student #
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FloatList figure
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+Open clusters are groups of up to a few thousands stars, held together by
+ mutual gravitational attraction.
+ Open clusters generally last for a few hundred milions years.
+ In it also important to underline that the parameters of the cluster's
+ stars are kind of constant, since they are made from the same material.
+ We want to build a model for such a cluster, and study its 
+\begin_inset Quotes eld
+\end_inset
+
+cold collapse
+\begin_inset Quotes erd
+\end_inset
+
+ (where 
+\begin_inset Quotes eld
+\end_inset
+
+cold
+\begin_inset Quotes erd
+\end_inset
+
+ comes from the fact that the particles have no initial velocity).
+ To do so, we will begin with the approximation that stars are particles,
+ point masses.
+ Then, we will use a simple smoothing algorithm to increase the numerical
+ stability of our system.
+ We have outlined a method to find an optimal smoothing parameter if one
+ begins from a well-tested value.
+ This value can then be scaled to fit other simulations with a suprisingly
+ simple formula.
+\end_layout
+
+\begin_layout Standard
+Numerous algorithms could have been used to simulate the behavior of the
+ cluster.
+ We chose to focus on the Leapfrog and on the fourth-order Runge Kutta methods.
+ Each one of the numeric methods has its pros and cons; we are looking for
+ the one which gives priority to the stability instead of the short-term
+ accuracy, as well as a reasonable running time.
+ Due to the number of particles in our cluster, we will be interested in
+ the statistical properties of our system instead of in the specific characteris
+tics of each particle.
+\end_layout
+
+\begin_layout Standard
+Our goal in this report is to simulate and to study the behavior of a cluster,
+ after having paid attention to the algorithm used to derive the results.
+ The first part of the report will focus on the analytical properties of
+ the model (including algorithms).
+ We then proceed to give an overview of the code structure, and finally
+ present and discuss our results.
+\end_layout
+
+\begin_layout Section
+Theory
+\end_layout
+
+\begin_layout Subsection
+Derivation of the expression for 
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We start with the parametric form of the Friedmann equations for a closed
+ universe containing only dust in addition to curvature
+\begin_inset CommandInset citation
+LatexCommand cite
+key "elgaroy1"
+
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+R(\psi)=a(\psi)R_{0}=\frac{R_{0}\Omega_{m0}}{2(\Omega_{m0}-1)}(1-\cos\psi)
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $a(\psi)$
+\end_inset
+
+ is the dimensionless scale factor and
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+t(\psi)=\frac{\Omega_{m0}}{2H_{0}(\Omega_{m0}-1)^{3/2}}(\psi-\sin\psi).
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We will use 
+\begin_inset Formula $t=0$
+\end_inset
+
+ at the Big Bang singularity for our sub-universe.
+ From these results we see that 
+\begin_inset Formula $t_{max}=t(\psi=\pi)$
+\end_inset
+
+ and 
+\begin_inset Formula $t_{crunch}=t(\psi=2\pi),$
+\end_inset
+
+ thus the elapsed time between these events is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\tau_{crunch}=t_{crunch}-t_{max}=\frac{\pi\Omega_{m0}}{2H_{0}(\Omega_{m0}-1)^{3/2}}.
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The mass parameter is defined by
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\Omega_{m0}=\frac{8\pi G\rho_{0}}{3H_{0}^{2}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and for readability we will make the substitution
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+u^{2}=8\pi G\rho_{0}-3H_{0}^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+thus
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+(\Omega_{m0}-1)^{-3/2}=(\frac{u^{2}}{3H_{0}^{2}})^{-3/2}=3\sqrt{3}H_{0}^{3}u^{-3}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{\Omega_{m0}}{(\Omega_{m0}-1)^{3/2}}=\frac{8\pi G\rho_{0}}{3H_{0}^{2}}3\sqrt{3}H_{0}^{3}u^{-3}=8\sqrt{3}\pi G\rho_{0}H_{0}u^{-3}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\tau_{crunch}=\frac{\pi}{2H_{0}}8\sqrt{3}\pi G\rho_{0}H_{0}u^{-3}=4\sqrt{3}\pi^{2}G\rho_{0}u^{-3}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now we remember that at the time when 
+\begin_inset Formula $\rho=\rho_{0},$
+\end_inset
+
+ everything is at rest, so we have 
+\begin_inset Formula $H_{0}=(\frac{\dot{a}}{a})_{\tau=0}=0$
+\end_inset
+
+.
+ Inserting this, we get 
+\begin_inset Formula $u^{2}=8\pi G\rho_{0}$
+\end_inset
+
+, and
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\tau_{crunch}=4\sqrt{3}\pi^{2}G\rho_{0}(8\pi G\rho_{0})^{-3/2}=\sqrt{\frac{4^{2}3\pi^{4}G^{2}\rho_{0}^{2}}{8^{3}\pi^{3}G^{3}\rho_{0}^{3}}}=\sqrt{\frac{3\pi}{32G\rho_{0}}}\label{eq:tcrunch}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which is what we wanted to show.
+\end_layout
+
+\begin_layout Subsection
+Lack of a singularity in our model
+\end_layout
+
+\begin_layout Standard
+The reason we do not see a singularity in our model is that we have assumed
+ pressureless (i.e.
+ collisionless) matter that is homogenously distributed in the Friedmann
+ equations.
+ In our simulation we will see internal 
+\begin_inset Quotes eld
+\end_inset
+
+pressure
+\begin_inset Quotes erd
+\end_inset
+
+ as kinetic energy from the collapse is turned into random motions by near-colli
+sions between the point mass particles.
+ These motions will halt the collapse, causing the gravitationally bound
+ particles to form more or less stable orbits around the center of mass.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "elgaroy2,peacock"
+
+\end_inset
+
+ Keep in mind that the kinetic energy is not evenly distributed, so occasionally
+ particles that receive more than their fair share will become unbound and
+ may escape from the system before they have time to lose their energy.
+ It is predicted that this should happen to a certain percentage of the
+ particles, depending on 
+\begin_inset Formula $N$
+\end_inset
+
+, with a lower bound of 50%.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "thesource"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We say that the system is stable when it satisfies the virial theorem:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+2\left\langle K\right\rangle =-\left\langle P\right\rangle 
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $\left\langle P\right\rangle $
+\end_inset
+
+ and 
+\begin_inset Formula $\left\langle K\right\rangle $
+\end_inset
+
+ are the averages of the potential and kinetic energies (actually, these
+ are supposed to be time averages for the total energies of the entire system,
+ but it turns out that the averages of a point in time of the energies per
+ particle is a good approximation to this
+\begin_inset CommandInset citation
+LatexCommand cite
+key "frode"
+
+\end_inset
+
+.
+ It can be shown that this happens at time 
+\begin_inset Formula $\tau_{vir}=0.81\tau_{crunch}$
+\end_inset
+
+ when the sphere has collapsed to half its initial size, so we see that
+ 
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+ is a natural time scale for virialization to occur (some sources do in
+ fact use 
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+ to mark the point when the system is virialized).
+\begin_inset CommandInset citation
+LatexCommand cite
+key "elgaroy2"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+\begin_inset Formula $G$
+\end_inset
+
+ in units of ly, 
+\begin_inset Formula $M_{\sun}$
+\end_inset
+
+ and 
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+With 
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+ given in years, we can rewrite equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:tcrunch"
+
+\end_inset
+
+ as
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+G_{yr}=\frac{3\pi}{32\tau_{crunch}^{2}\rho_{0}}.
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Switching time units to 
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+, we get that 
+\begin_inset Formula $\tau_{crunch}=1$
+\end_inset
+
+ in these units, hence
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+G=\frac{3\pi}{32\rho_{0}}=\frac{\pi^{2}R_{0}^{3}}{8\mu N}\label{eq:G}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where for the latter equality we have used the definitions of average mass
+ 
+\begin_inset Formula $\mu=\frac{M}{N}$
+\end_inset
+
+ and initial mass density for a sphere 
+\begin_inset Formula $\rho_{0}=\frac{M}{V_{0}}=\frac{\mu N}{V_{n}(R_{0})}$
+\end_inset
+
+, where 
+\begin_inset Formula $V_{n}(R_{o})$
+\end_inset
+
+ is the volume of the n-dimensional ball with radius 
+\begin_inset Formula $R_{0}.$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This means our gravitational constant and our time unit both depend on 
+\begin_inset Formula $N$
+\end_inset
+
+, 
+\begin_inset Formula $R_{o}$
+\end_inset
+
+ and 
+\begin_inset Formula $\mu$
+\end_inset
+
+.
+ We can verify that the units for 
+\begin_inset Formula $G$
+\end_inset
+
+ are now correct with 
+\begin_inset Formula $R_{0}$
+\end_inset
+
+ given in light years and 
+\begin_inset Formula $\mu$
+\end_inset
+
+ given in solar masses.
+\end_layout
+
+\begin_layout Subsection
+Calculating 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ automatically
+\end_layout
+
+\begin_layout Standard
+The challenge with the 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ values is that we want it to be as small as possible (to give more realistic
+ results), yet make the number of ejected particles as small as possible,
+ conserving as much of the total energy as we can.
+ We chose to determine a good fit for 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ experimentally (see figures 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Fraction-of-bound"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Energy-conservation-(relative"
+
+\end_inset
+
+), and then we determined how this value would scale to different simulations
+ in the following way:
+\end_layout
+
+\begin_layout Standard
+The basic premise is that when 
+\begin_inset Formula $r=\epsilon$
+\end_inset
+
+ (i.e.
+ when the 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ term starts dominating the gravitational potential), we want to set an
+ upper limit on how much a particle's velocity can change during one time
+ step due to the gravitational attraction from one other particle.
+ We want this upper limit to be invariant across simulations:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\Delta v_{1}=\Delta v_{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+a_{1}\Delta t_{1}=a_{2}\Delta t_{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We will assume all particles have the average mass 
+\begin_inset Formula $\mu$
+\end_inset
+
+ and set 
+\begin_inset Formula $r=\epsilon$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{G_{1}\mu_{1}\Delta t_{1}}{2\epsilon_{1}^{2}}=\frac{G_{2}\mu_{2}\Delta t_{2}}{2\epsilon_{2}^{2}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now, inserting the value of 
+\begin_inset Formula $G$
+\end_inset
+
+ from 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:G"
+
+\end_inset
+
+ with initial radii 
+\begin_inset Formula $R_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $R_{2}$
+\end_inset
+
+, we get:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{\pi^{2}R_{1}^{3}\mu_{1}\Delta t_{1}}{2\epsilon_{1}^{2}\cdot8\mu_{1}N_{1}}=\frac{\pi^{2}R_{2}^{3}\mu_{2}\Delta t_{2}}{2\epsilon_{2}^{2}\cdot8\mu_{2}N_{2}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\frac{R_{1}^{3}\Delta t_{1}}{\epsilon_{1}^{2}N_{1}}=\frac{R_{2}^{3}\Delta t_{2}}{\epsilon_{2}^{2}N_{2}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+giving us this handy formula for 
+\begin_inset Formula $\epsilon_{2}$
+\end_inset
+
+ if we have a good match for 
+\begin_inset Formula $\epsilon_{1}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\epsilon_{2}=\sqrt{\frac{N_{1}}{N_{2}}\left(\frac{R_{2}}{R_{1}}\right)^{3}\frac{\Delta t_{2}}{\Delta t_{1}}}\cdot\epsilon_{1}\label{eq:epsilon}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Gravitational potential with modified gravity
+\end_layout
+
+\begin_layout Standard
+Starting with the magnitude of the force
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+F=\frac{GMm}{r^{2}+\epsilon^{2}}=\frac{GMm}{\epsilon^{2}}\frac{1}{(\frac{r}{\epsilon})^{2}+1}=\frac{GMm}{\epsilon^{2}}\frac{1}{u^{2}+1}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where we have used the subsitution 
+\begin_inset Formula $u=\frac{r}{\epsilon}$
+\end_inset
+
+ which gives 
+\begin_inset Formula $\frac{du}{dr}=\frac{1}{\epsilon}$
+\end_inset
+
+, hence 
+\begin_inset Formula $dr=\epsilon\cdot du$
+\end_inset
+
+, and so
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+E_{p}=m\Phi=\int Fdr=\frac{GMm}{\epsilon^{2}}\int\frac{1}{u^{2}+1}\epsilon du=\frac{GMm}{\epsilon}(\arctan(u)+C)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We want 
+\begin_inset Formula $E_{p}\rightarrow0$
+\end_inset
+
+ as 
+\begin_inset Formula $r\rightarrow\infty$
+\end_inset
+
+, and since 
+\begin_inset Formula $\arctan(u)\rightarrow\frac{\pi}{2}$
+\end_inset
+
+ as 
+\begin_inset Formula $u\rightarrow\infty$
+\end_inset
+
+, we achieve this by choosing 
+\begin_inset Formula $C=-\frac{\pi}{2}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+E_{p}=\frac{GMm}{\epsilon}(\arctan(\frac{r}{\epsilon})-\frac{\pi}{2})\qquad(\epsilon>0)
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Volume of the n-ball
+\end_layout
+
+\begin_layout Standard
+To calculate the gravitational constant with 
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+ as the time unit in any dimension, we need the volume of the sphere in
+ 
+\begin_inset Formula $n$
+\end_inset
+
+ dimensions to calculate the initial mean density 
+\begin_inset Formula $\rho_{0}.$
+\end_inset
+
+ This is accomplished by the following formula
+\begin_inset CommandInset citation
+LatexCommand cite
+key "volume"
+
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+V_{n}=\frac{\pi^{\frac{n}{2}}}{\Gamma(\frac{n}{2}+1)}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Uniform distribution in the n-ball
+\end_layout
+
+\begin_layout Standard
+Our dimension-independent algorithm for generating uniformly distributed
+ points inside the n-ball is
+\begin_inset CommandInset citation
+LatexCommand cite
+key "uniform"
+
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Enumerate
+Generate random points on the surface of the unit n-ball (i.e.
+ randomize the directions of the unit vectors):
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Generate normally distributed n-dimensional vector 
+\begin_inset Formula $\mathbf{x}_{n}=\left[x_{1},x_{2},\dots,x_{n}\right]$
+\end_inset
+
+ where the normal distribution has 
+\begin_inset Formula $\mu=0$
+\end_inset
+
+ and 
+\begin_inset Formula $\sigma=1$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Calculate the n-dimensional norm of the vector 
+\begin_inset Formula $|\mathbf{x}_{n}|$
+\end_inset
+
+.
+ We chose to let Armadillo handle this, but another easy way to do it is
+ using the n-dimensional dot product and taking the square root of this:
+ 
+\begin_inset Formula $|\mathbf{x}_{n}|=\sqrt{\mathbf{x}_{n}\cdot\mathbf{x}_{n}}=\sqrt{\sum_{i}x_{i}^{2}}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Turn it into a unit vector: 
+\begin_inset Formula $\mathbf{u}_{n}=\frac{\mathbf{x}_{n}}{|\mathbf{x}_{n}|}$
+\end_inset
+
+.
+ We refer to (source) for the proof that this is uniformly distriuted in
+ terms of direction.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Generate a radius that results in a uniform distribution within maximum
+ radius 
+\begin_inset Formula $R_{0}$
+\end_inset
+
+:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Generate a uniformly distributed value 
+\begin_inset Formula $r\in[0,1]$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+The desired radius that takes into account that the outer spherical shells
+ have a larger surface area is 
+\begin_inset Formula $R=\sqrt[n]{r}\cdot R_{0}$
+\end_inset
+
+, where 
+\begin_inset Formula $n$
+\end_inset
+
+ is the number of dimensions.
+\end_layout
+
+\end_deeper
+\begin_layout Subsection
+Numerical methods
+\end_layout
+
+\begin_layout Standard
+For both of our algorithms, the step intervalle looks like 
+\begin_inset Formula $[t_{0};t_{max}]$
+\end_inset
+
+.
+ We will work on 
+\begin_inset Formula $n_{Steps}$
+\end_inset
+
+.
+ Let's define h as 
+\begin_inset Formula $h=\frac{t_{max}-t_{0}}{n_{Steps}-1}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+We are here unfolding the results for one dimension, since everything is
+ identical for the other dimensions.
+\end_layout
+
+\begin_layout Subsubsection
+Runge-Kutta
+\end_layout
+
+\begin_layout Standard
+We have
+\begin_inset Formula $t_{i}=t_{0}+i.h\text{ for each i belonging to \ensuremath{{\displaystyle [0,n_{Steps}].}}}$
+\end_inset
+
+ We can now define 
+\begin_inset Formula $x_{i}=x(t_{i})$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The general formulae of Simpson's rule is: 
+\begin_inset Formula $\intop_{t_{i}}^{t_{i}+1}f(t,x)dt=\frac{1}{6}h(f(t_{i},x_{i})+2f(t_{i+\frac{1}{2}},x_{i+\frac{1}{2}})+f(t_{i+1},x_{i+1}))$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+Runge-Kutta's method defines four quantities, to predict and correct the
+ value of 
+\begin_inset Formula $x_{i+1}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+k_{1}=f(t_{i},x_{i})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+k_{2}=f(t_{i+\frac{1}{2}},x_{i+\frac{1}{2}})\qquad x_{i+\frac{1}{2}}=x_{i}+\frac{h}{2}k_{1}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+k_{3}=f(t_{i+\frac{1}{2}},x_{i+\frac{1}{2}}^{^{*}})\qquad y_{i+\frac{1}{2}}=x_{i}+\frac{h}{2}k_{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+k4=f(t_{i+1},x_{i+1})\qquad x_{i+1}=x_{i}+hk_{3}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In our case, we will have to compute this results six times for the x,y
+ and z positions, and once for the x,y and z velocities.
+ 
+\end_layout
+
+\begin_layout Standard
+This Runge-Kutta algorithm is especially interesting since we only need
+ initial conditions to unfold it.
+ Its global error runs like 
+\begin_inset Formula $\mathcal{O}(\Delta h^{4})$
+\end_inset
+
+ .
+\end_layout
+
+\begin_layout Subsubsection
+Leapfrog algorithm
+\end_layout
+
+\begin_layout Standard
+The Leapfrog algorithm is given by the trhee following steps:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x^{(1)}(t+\frac{h}{2})=(x^{(1)}(t)+\frac{h}{2}*x^{(2)}(t)+\mathcal{O}(\Delta h^{2})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x(t+h)=x(t)+x^{(1)}(t+\frac{h}{2})+\mathcal{O}(\Delta h^{3})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x^{(1)}(t+h)=x^{(1)}(t+\frac{h}{2})+\frac{h}{2}*x^{(2)}(t+h)+\mathcal{O}(\Delta h^{2})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now, let's take a look at the approximation error for this algorithm.
+ The first step to derive this algorithm is to use Taylor expansion on the
+ position:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x(t+h)=x(t)+hx^{(1)}(t)+\frac{h^{2}}{2}x^{(2)}(t)+\mathcal{O}(\Delta h^{3})=x(t)+h(x^{(1)}(t)+\frac{h}{2}*x^{(2)}(t))+\mathcal{O}(\Delta h^{3})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In the same way, we have for the velocity:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x^{(1)}(t+\frac{h}{2})=x^{(1)}(t)+\frac{h}{2}*x^{(2)}(t)+\mathcal{O}(\Delta h^{2})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x^{(1)}(t-\frac{h}{2})=x^{(1)}(t)-\frac{h}{2}*x^{(2)}(t)+\mathcal{O}(\Delta h^{2})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x^{(1)}(t+\frac{h}{2})-x^{(1)}(t-\frac{h}{2})=x^{(1)}(t)+\frac{h}{2}*x^{(2)}(t)+\mathcal{O}(\Delta h^{2})-(x^{(1)}(t)-\frac{h}{2}*x^{(2)}(t)+\mathcal{O}(\Delta h^{2}))=h*x^{(2)}(t)+\mathcal{O}(\Delta h^{2})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+So
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x^{(1)}(t+h)=x^{(1)}(t+\frac{h}{2})+\frac{h}{2}*x^{(2)}(t+h)+\mathcal{O}(\Delta h^{2})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We can rewrite the first step thanks to the expression of 
+\begin_inset Formula $x^{(1)}(t+\frac{h}{2})$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+x(t+h)=x(t)+x^{(1)}(t+\frac{h}{2})+\mathcal{O}(\Delta h^{3})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In the end, we can see that the approximation error runs like 
+\begin_inset Formula $\mathcal{O}(\Delta h^{2})$
+\end_inset
+
+ for the Leapfrog algorithm.
+\end_layout
+
+\begin_layout Section
+Implementation
+\end_layout
+
+\begin_layout Subsection
+Overview
+\end_layout
+
+\begin_layout Standard
+The code is designed to be highly modular and independent of dimension to
+ maximise reusability.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Graphics
+	filename Screen/ClassDiagram.jpg
+	scale 80
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Class Diagram
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Main program (Project5)
+\end_layout
+
+\begin_layout Standard
+Sets up a series of simulations so we can plot certain results as a function
+ of either 
+\begin_inset Formula $N$
+\end_inset
+
+ (number of particles), 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ (correction factor for gravitation) or 
+\begin_inset Formula $\Delta t$
+\end_inset
+
+ (time step).
+ This automated approach made the process of plotting considerably easier
+ for us than setting up everything 
+\begin_inset Quotes eld
+\end_inset
+
+by hand
+\begin_inset Quotes erd
+\end_inset
+
+ each time.
+ The main program also contains code to test the simulation against a 2D
+ benchmark (Project 3) and contains helper methods for curve fitting.
+\end_layout
+
+\begin_layout Subsection
+SolarSystem class
+\end_layout
+
+\begin_layout Standard
+Container class for the entire N-body system.
+ This class is dimension independent (number of dimensions is given as a
+ parameter), to make it as general and reusable as possible.
+ Does not specify a method to solve the equations of motion, so any numerical
+ method can be used on this class to update the positions every time step
+ (by iterating over the celestial bodies contained in this class).
+ A SolarSystem can make deep copies of itself (and all its CelestialBody
+ and Gravity objects), which we make use of to be able to run different
+ algorithms on identical copies of a system (for comparison of results and
+ stability analysis).
+ Some resource intensive properties, like potential energy, are only calculated
+ when we need to plot the data - this can be set not to happen at every
+ step to speed up the execution.
+\end_layout
+
+\begin_layout Subsection
+CelestialBody class
+\end_layout
+
+\begin_layout Standard
+Particle class of our N-body simulation, with position and mass.
+ Handles all calculations on the individual particle level (e.g.
+ kinetic energy) and can be set to fixed if desired.
+ Also stores properties calculated by the encompassing SolarSystem (like
+ potential energy) so these will not have to be calculated on the fly every
+ time they are needed.
+ This class inherits dimensionality from the SolarSystem it belongs to,
+ so we avoid creating a sub-dimensional celestial body by accident.
+\end_layout
+
+\begin_layout Subsection
+Gravity class
+\end_layout
+
+\begin_layout Standard
+This class allows each SolarSystem to use a different gravity.
+ One can change both the value of the gravitational constant to fit the
+ time unit of choice and set an 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ value to dampen collisions.
+ For future use it is possible to extend this class to include any form
+ of modified gravity (which is an object of interest in cosmology
+\begin_inset CommandInset citation
+LatexCommand cite
+key "gravity"
+
+\end_inset
+
+).
+ The only thing the SolarSystem class requires of this object is that it
+ is able to return a force and potential energy when two CelestialBody objects
+ are given as input.
+ This way, a SolarSystem does not need to handle the specifics of gravitational
+ forces itself, making the code more modular.
+\end_layout
+
+\begin_layout Subsection
+CelestialBodyInitializer class
+\end_layout
+
+\begin_layout Standard
+Sets up a uniform position distribution given an initial max radius (generalized
+ for any number of dimensions).
+ Also generates normal distributed random masses.
+ Doing this in a separate class allows the SolarSystem class to be as general
+ as possible (we might not want a random distribution every time, but when
+ we do, this class will provide it).
+ Keeping this class dimension independent makes it more general and easier
+ to use in other projects.
+\end_layout
+
+\begin_layout Subsection
+Solvers class
+\end_layout
+
+\begin_layout Standard
+Contains code to iterate over a SolarSystem object over a number of time
+ steps, using the Leapfrog, Runge-Kutta (4th order) and Euler-Cromer algorithms
+ to solve the equations of motion.
+ Creates copies of the system given as a parameter to do this, so we can
+ keep the original system unchanged and also solve using several numerical
+ methods simultaneously and compare the results.
+ Keeping this in a separate class allows adaptation of this code to use
+ other objects than the SolarSystems we employ here.
+\end_layout
+
+\begin_layout Subsection
+GaussPDF class
+\end_layout
+
+\begin_layout Standard
+This is simply a static class wrapper for the code given at:
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+name "https://www.uio.no/studier/emner/matnat/fys/FYS3150/h13/gaussiandeviate.cpp"
+target "https://www.uio.no/studier/emner/matnat/fys/FYS3150/h13/gaussiandeviate.cpp"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It provides random numbers in the uniform and normal probability distributions.
+\end_layout
+
+\begin_layout Section
+Results and analysis
+\end_layout
+
+\begin_layout Subsection
+Benchmarks and validation
+\end_layout
+
+\begin_layout Standard
+We worked during a previous project on the implementation of the Runge Kutta
+ algorithm to simulate the behavior of the Solar System.
+ To test our code, we also wrote the Euler-Cromer algorithm.
+ The outputs of our previous project were validated.
+ In order to testify that our code works, we tested it against our previous
+ results, computed with the Euler-Cromer method in two dimensions, then
+ we extended it in three dimensions.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "c"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Graphics
+	filename Screen/BenchMark/plot2D_for_leapfrog.jpeg
+	scale 35
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Simulation with our Leapfrog algorithm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align right
+\begin_inset Graphics
+	filename Screen/BenchMark/plot2D_for_rk4.jpeg
+	scale 35
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Simulation with our Runge Kutta - 4 algorithm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Screen/BenchMark/Orbite_Earth_Circu.png
+	scale 45
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Simulation of our previous project
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We found equivalent results between the two projects, for the same time
+ step size, one point per day, and the same length of simulation, two years,
+ which lead us to says that our current code is working.
+ 
+\end_layout
+
+\begin_layout Standard
+When we use them for very long times, we can see that the Leapfrog algorithm
+ is way more well-behaved than the Runge Kutta one.
+ Thus, we can say that the Runge Kutta algorithm is not as stable as the
+ Leapfrog one for when being processed for long times
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="4">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Execution time (s)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+For 1000 steps, two bodies
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+For 1000 steps, 100 bodies
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+For 5000 steps, 100 bodies
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Leap-frog
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+19,18
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+86,35
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+405,73
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Forth-order Runge Kutta 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+30,85
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+171,25
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Elapsed Time for different parameters
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We can see here that the Runge Kutta algorithm takes more time to process
+ the same set of data than the Leapfrog.
+ For small data set, the time spent by the forth order Runge Kutta algorithm
+ is twice as much as the time spent by the Leapfrog method.
+ And when we increase the number of steps, or the number of bodies, we increase
+ the time spent during processing.
+ Thus, the difference in the execution time between Runge Kutta and Leapfrog
+ becomes more and more significant.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "c"
+use_parbox 0
+use_makebox 0
+width "60col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Screen/BenchMark/plot3D_for_leapfrog.jpeg
+	scale 45
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Conservation of the Energy -- Leap-frog -- Length
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "20col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Screen/BenchMark/BM-Energy-LeapFrog.jpg
+	scale 45
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Conservation of the Energy -- Leap-frog
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "c"
+use_parbox 0
+use_makebox 0
+width "60col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Screen/BenchMark/plot3D_for_rk4.jpeg
+	scale 45
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Conservation of the energy -- forth-order Runge Kutta = Length = 2 years
+ ~
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "20col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align right
+\begin_inset Graphics
+	filename Screen/a/Energy_BM_3D_Rk4.jpg
+	scale 45
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Conservation of the energy -- forth-order Runge Kutta
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "c"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Graphics
+	filename Screen/a/plot3D_for_sim_BM_leapfrog_ST (2).jpeg
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Behavior of the system with bigger time steps, during 10 years -- Leapfrog
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align right
+\begin_inset Graphics
+	filename Screen/a/plot3D_for_sim_BM_leapfrog_ST_RK4.jpeg
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Behavior of the system with bigger time steps, during 10 years -- Runge
+ Kutta 4
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We saw in the theory part that the forth-order Runge Kutta has an approximation
+ error smaller than the Leapfrog algorithm.
+ It basically means that for small time steps, local data about each particles
+ will be more accurate with the Runge Kutta method than with the Leapfrog
+ method, even though this one still gives us interesting results for reasonably
+ small time steps.
+ The Runge Kutta method is also more accurate to compute the velocity, but
+ here, it does not matter so much.
+ As we can see on the above figures, with bigger time steps, we have a more
+ stable system with the Runge Kutta algorithm than with the Leapfrog algorithm.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "c"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Graphics
+	filename Screen/a/Plot_Conservation_E_Leapfrog.jpeg
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Behavior of the system with smaller time steps, during 4 
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+-- Leapfrog
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align right
+\begin_inset Graphics
+	filename Screen/a/Plot_Conservation_E_rk4.jpeg
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Behavior of the system with smaller time steps, during 4 
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+ -- Runge Kutta 4
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For the choice of the time step size, we simulate the system with two random
+ particles in our 20 light year radius sphere.
+ And we looked at the energy conservation.
+ We can see here that for big time steps, the conservation of the energy
+ becomes really messy.
+ But for small enough one, the energy is well conserved.
+\end_layout
+
+\begin_layout Standard
+But we should expect, as stated in // Source ?! einstein.drexel.edu/courses/Comp_P
+hys/Integrators/leapfrog/ // Will take care of this later ^^', that at some
+ point, the results given by the Runge Kutta method drifts, while they are
+ still rather stable with the Leapfrog algorithm.
+ And since we want to simulate a system over a long time period, with at
+ least 100 particles, we are more interested in the long term statistical
+ accuracy of our system than in the local accuracy of the position or velocity
+ of each particle.
+ Thus, we can say that the most convenient method here is the Leapfrog method.
+\end_layout
+
+\begin_layout Subsection
+Application to a multi-bodies system
+\end_layout
+
+\begin_layout Subsubsection
+Evaluation of 
+\begin_inset Formula $G$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Screen/b/Eval_G_Resized.jpg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Computation of G
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+With a system of 
+\begin_inset Formula $N=100$
+\end_inset
+
+ particles, an initial radius of 
+\begin_inset Formula $R_{0}=20$
+\end_inset
+
+ light years, we found a 
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+ of nearly 8 millions of years.
+ In the figure above, the variable called G_YLS is the gravitational constant,
+ uses meters, seconds, and kg.
+ G is computed in ly, 
+\begin_inset Formula $M_{\sun}$
+\end_inset
+
+ and 
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+ is evaluated in millions of years, thus, its unit could be the megaannum
+ (i.e.
+ the unit for 1,000,000 years).
+\end_layout
+
+\begin_layout Subsubsection
+Choice of the algorithm
+\end_layout
+
+\begin_layout Standard
+We will look for a satisfying time step.To do so, we will look at the total
+ energy conservation over different time steps, for our two algorithms.
+ Our system is the following: 100 particles, and an initial radius of 20
+ light years.
+ 
+\end_layout
+
+\begin_layout Standard
+According to the time required to process equivalent results, the Leapfrog
+ algorithm seems more interesting.
+ Furthermore, we are going now to process on a N-body system, where N is
+ at least equal to 100.
+ Thus, we will be more interested in the statistical properties of our system,
+ than in the local accuracy of the position or the velocity.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "c"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Graphics
+	filename Screen/b/Plot_Conservation_E_Leapfrog.jpeg
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Behavior of the system with smaller time steps, during 4 
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+-- Leapfrog
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align right
+\begin_inset Graphics
+	filename Screen/b/Plot_Conservation_E_rk4.jpeg
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Behavior of the system with smaller time steps, during 4 
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+ -- Runge Kutta 4
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+With more particles than before, we can see that the conservation of the
+ energy did not change so much.
+ The difference between the initial energy and the final energy is mainly
+ due to the fact that without using the smoothing function, we lose up to
+ 45% of our initial particles.
+ So there has to be a difference between the initial energy and the final
+ one.
+ We can see on the above figures that Runge Kutta is less accurate than
+ Leapfrog, which is more stable.
+ As stated before, we are more in a long-term stable algorithm, rather than
+ in locally accurate one.
+ Thus, and due to the astrophysics nature of our problem, we would rather
+ use the Leapfrog method, than the forth order Runge Kutta one.
+ When using the Leapfrog method, we will choose a time step of 
+\begin_inset Formula $2,5.10^{-3}\tau_{crunch}$
+\end_inset
+
+ .
+\end_layout
+
+\begin_layout Subsection
+Energy conservation 
+\end_layout
+
+\begin_layout Subsubsection
+Bound particles
+\end_layout
+
+\begin_layout Standard
+Wher we refer to bound particles, we refer to those particles that are not
+ gravitationally bound.
+ Since potential energy is negative (at most 0), and kinetic energy is positive
+ (at least 0), we say that a particle is bound when its total energy 
+\begin_inset Formula $E_{tot}=E_{k}+E_{p}<0$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Finding a reference value for 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+With a system of 
+\begin_inset Formula $N=100$
+\end_inset
+
+ particles, an initial radius of 
+\begin_inset Formula $R_{0}=20$
+\end_inset
+
+ light years and a time step of 
+\begin_inset Formula $\frac{1}{250}\tau_{crunch}$
+\end_inset
+
+, we did a series of simulations where we varied the gravitational correction
+ parameter in the interval 
+\begin_inset Formula $\epsilon\in[0,$
+\end_inset
+
+0.15].
+ According to equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:epsilon"
+
+\end_inset
+
+, the values are supposed to be independent of mass, but the masses used
+ were a normal distribution with mean 
+\begin_inset Formula $\mu=10$
+\end_inset
+
+ and 
+\begin_inset Formula $\sigma=1$
+\end_inset
+
+ (both in solar masses).
+\end_layout
+
+\begin_layout Standard
+The criteria for accepting an 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ value are that the number of bound particles is as high as possible, while
+ the total energy, at least for the bound particles, is as conserved as
+ possible.
+ In the process, we discovered that these criteria are actually mutually
+ exclusive (see figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Fraction-of-bound"
+
+\end_inset
+
+): The energy conservation for bound particles improves if we eject many
+ particles.
+ Our interpretation of this result is that particles that are bound but
+ close to being unbound will impact the energy bound conservation negatively:
+ If these particles are actually ejected, the remaining particles' total
+ energy is better conserved.
+ Thus, we need to look at both criteria simultaneously when deciding on
+ a value for 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+.
+ Additionally, we want 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ to be as close to 0 (and the Newtonian limit) as possible, so we get more
+ realistic results.
+\end_layout
+
+\begin_layout Standard
+We also see that the number of ejected particles will fluctuate considerably
+ between simulations with the same starting parameters.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "thesource"
+
+\end_inset
+
+ Ideally, we would run many simulations with the same epsilon value to eliminate
+ statistical errors - this is something that could be looked at in a future
+ study.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "c"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Graphics
+	filename Project5/EPSILON/boundFraction.jpeg
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Fraction-of-bound"
+
+\end_inset
+
+Fraction of bound particles at end of simulation for a range of 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ values.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align right
+\begin_inset Graphics
+	filename Project5/EPSILON/energyConservation.jpeg
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Energy-conservation-(relative"
+
+\end_inset
+
+Energy conservation (relative to starting potential energy) for a range
+ of 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ values.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The relative energy conservation in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Energy-conservation-(relative"
+
+\end_inset
+
+ was calculated using the following formula, using the total energy before
+ the simulation as our scale:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\Delta E_{rel}=\frac{E_{after}-E_{before}}{|E_{before}|}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $E_{after}$
+\end_inset
+
+ can be the total energy of all the particles and the bound particles, respectiv
+ely.
+\end_layout
+
+\begin_layout Standard
+The results show that the bound particle fraction reaches a value close
+ to the extrapolated value for 
+\begin_inset Formula $N=100$
+\end_inset
+
+ (see fig.
+ 3 in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "thesource"
+
+\end_inset
+
+) with as low a value as 
+\begin_inset Formula $\epsilon\approx0.04$
+\end_inset
+
+.
+ The energy conservation takes a higher value to approach desired levels.
+ Around 
+\begin_inset Formula $\epsilon\approx0.10$
+\end_inset
+
+ we notice that the two curves start behaving opposite of one another: When
+ one value of 
+\begin_inset Formula $\Delta E_{rel}$
+\end_inset
+
+ goes up, the other goes down for the same 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+.
+ Note also that the curve for the bound particles starts mirroring the fraction
+ in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Fraction-of-bound"
+
+\end_inset
+
+.
+ This is a result of the low number of particles: We expect the bound particle
+ fraction to fluctuate considerably between simulations with the same starting
+ parameters (again, see fig.
+ 3 in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "thesource"
+
+\end_inset
+
+).
+ Thus, when the energy difference for bound particles starts mirroring the
+ number of bound particles, we interpret this as the curve having stabilized
+ (the relative energy diference for all the particles seems to reach a plateau
+ at this point).
+ On the other hand, when 
+\begin_inset Formula $\epsilon<0.10$
+\end_inset
+
+, we do not see this behaviour: Both curves are in decline.
+ Hence our (admittedly shaky) basis for choosing 
+\begin_inset Formula $\epsilon=0.10$
+\end_inset
+
+ is that after this point, we can no longer distinguish improvements in
+ energy conservation from random fluctuactions caused by variations in the
+ fraction of bound particles.
+\end_layout
+
+\begin_layout Standard
+Using this result, we propose inserting the following values into equation
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:epsilon"
+
+\end_inset
+
+: 
+\begin_inset Formula $\epsilon_{1}=0.1$
+\end_inset
+
+, 
+\begin_inset Formula $\Delta t_{1}=\frac{1}{250}$
+\end_inset
+
+, 
+\begin_inset Formula $N_{1}=100$
+\end_inset
+
+, 
+\begin_inset Formula $R_{1}=20$
+\end_inset
+
+.
+ We then get the following formula that we have used in the remaining simulation
+s for automating the process of choosing an acceptable value for 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\epsilon=\sqrt{\frac{100}{N}\left(\frac{R_{0}}{20}\right)^{3}\frac{\Delta t}{\frac{1}{250}}}\cdot0.1=\frac{1}{4}\sqrt{\frac{R_{0}^{3}\Delta t}{2N}}\label{eq:epsilon_N100}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+which we expect could be of use in future versions of this project.
+ This formula gave us consistently acceptable results with regards to energy
+ conservation and particle rejection.
+ However, for future projects, we would look at running many more simulations
+ like the one we used to pick the reference value 
+\begin_inset Formula $\epsilon=0.1$
+\end_inset
+
+, to ensure that the process is statistically sound (and preferrably with
+ a higher number of particles): While the value we chose has been good enough
+ in practice, we do not claim to have found the optimal value for the case
+ we were studying, and expect future projects to be able to achieve much
+ more accurate results using the method we have oulined above.
+ Another interesting prospect is to seek a closed form solution for a reference
+ value for 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ (before scaling it), instead of taking the brute force approach and iterate
+ over a set of possible values like we did here.
+\end_layout
+
+\begin_layout Standard
+One should also keep in mind that the way we scale 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ is linear in the sense that we only consider one pair of particle at a
+ time, not looking at 
+\begin_inset Quotes eld
+\end_inset
+
+crosstalk
+\begin_inset Quotes erd
+\end_inset
+
+ from multi-particle collisions.
+ Furthermore, we have assumed that all the particles have the same mass:
+ If the standard deviation is significantly greater than the 10% of the
+ mean we used to arrive at this result, the above formula may well not be
+ applicable.
+ That said, the particles that receive a change in velocity that is too
+ high for a timestep would tend to be the lighter particles, so we would
+ expect to see the fraction of bound particles decrease while the energy
+ conservation should feel the impact of a greater mass variance less in
+ this case.
+\end_layout
+
+\begin_layout Subsection
+Particles ejection and equilibrium
+\end_layout
+
+\begin_layout Standard
+As discussed in the theory part, the system seems to reach an equilibrium.
+ We can see it happens around 
+\begin_inset Formula $1\tau_{crunch}$
+\end_inset
+
+.
+ And we know, after deriving the theoritical results, that it, in fact,
+ happens after 
+\begin_inset Formula $0.81\tau_{crunch}$
+\end_inset
+
+ (i.e.
+ for circa 6,458 millions of years).
+ 
+\end_layout
+
+\begin_layout Standard
+After this time, we can this on the following plots displaying the number
+ of bound particles in regard to the time, that suddenly, the number of
+ ejected particles blows up.
+ And we can see, as expected, that without using the smoothing function,
+ we lose a lot more of particles in just a few 
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+.
+ The results are stabilized when we add epsilon, and the quantity of lost
+ particles decreased.
+ 
+\end_layout
+
+\begin_layout Standard
+When we increase N, the number of initial particles, we increase the percentage
+ of lost particles too.
+ But we keep the total mass constant, which means that as N increases, the
+ particles become lighter.
+ Since the energies, kinetic and potential, are both a function of the mass
+ of the processed particles, we can see that the quantity of lost energy
+ increases sharply with N and is nearly linear:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Project5/LOST_ENERGY/lostenergy.jpeg
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Lost energy as a function of N, using the 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ scaling in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:epsilon"
+
+\end_inset
+
+).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "c"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Graphics
+	filename Screen/d-e/plot_for_100_Particles_Epsi_0.jpeg
+	scale 35
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Number of bound particles for N initial = 100 bodies, ε = 0
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align right
+\begin_inset Graphics
+	filename Screen/d-e/plot_for_200_Particles_Epsi_0.jpeg
+	scale 35
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Number of bound particles for N initial = 200 bodies, ε = 0
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Screen/d-e/plot_for_300_Particles_Epsi_0.jpeg
+	scale 35
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Number of bound particles for N initial = 300 bodies, ε = 0
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Without using the modified gravitational potential, the energy is clearly
+ not conserved: a lot of particles are ejected out of the system.
+ For these particles, the kinetic energy blows up, and the total energy
+ of theses particles is positive.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "c"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Graphics
+	filename Screen/d-e/plot_for_100_Particles_Epsi_0_10.jpeg
+	scale 35
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Number of bound particles for N initial = 100, ε = 0.10005
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align right
+\begin_inset Graphics
+	filename Screen/d-e/plot_for_200_Particles_Epsi_0_071.jpeg
+	scale 35
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Number of bound particles for N initial = 200, ε = 0,071
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Screen/d-e/plot_for_300_Particles_Epsi_0_06.jpeg
+	scale 35
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Number of bound particles for N initial =300 bodies, ε = 0,06
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+After adding the smoothing part in our gravitational potential, we can see
+ that the quantity kinetic energy does not blow up anymore, and the quantity
+ of energy lost is a lot smaller than before: this was expected, since we
+ reduced the numerical instability by adding this ε factor in the calculation
+ of our Newtonian force.
+ Thus, the behavior of particles when they come closer to each other is
+ more stable: we lose less particles than before.
+\end_layout
+
+\begin_layout Standard
+The energy loss due to particle ejection also drops by a considerable amount
+ when we increase 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+, until 
+\begin_inset Formula $\epsilon\approx0.4$
+\end_inset
+
+, at which point random fluctuations take over.
+ This is the same behaviour that was found for the fraction of bound particles
+ with the same 
+\begin_inset Formula $N$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Project5/EPSILON_LOST/lostenergyepsilon.jpeg
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Energy loss (
+\begin_inset Formula $\Delta E=\sum E_{all}-\sum E_{bound}$
+\end_inset
+
+) for different values of 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+, made using 
+\begin_inset Formula $N=100$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Virial Theorem
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "c"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset Graphics
+	filename Screen/f/Virial_Epsilon.jpg
+	scale 45
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Ratio
+\begin_inset Formula $\frac{\left\langle P\right\rangle }{\left\langle K\right\rangle }$
+\end_inset
+
+for different epsilons, N = 100
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "40col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align right
+\begin_inset Graphics
+	filename Screen/f/Virial_N.jpg
+	scale 45
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Ratio
+\begin_inset Formula $\frac{\left\langle P\right\rangle }{\left\langle K\right\rangle }$
+\end_inset
+
+for different N, epsilon ≈ 0.03
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+After running the system for a few 
+\begin_inset Formula $\tau_{crunch}$
+\end_inset
+
+, we evaluate the kinetic and the potential energies for every particles
+ of our bound system.
+ What is displayed here is the value of the average kinetic energy, 
+\begin_inset Formula $\left\langle K\right\rangle $
+\end_inset
+
+ , and the average of the potential energy,
+\begin_inset Formula $\left\langle P\right\rangle $
+\end_inset
+
+, for our bound system.
+ We can see that the virial theorem is met in the case where the smoothing
+ function is used, with an 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ of 
+\begin_inset Formula $\sqrt{0,0225}$
+\end_inset
+
+, and is not met in our initial case (i.e.
+ without using the smoothing function).
+ The smoothing function helps us to take care of the numerical instability
+ generated when two particles are too close.
+ Indeed, with the standard gravitational potentiel, we lose too many particles.
+ Thus, the introduction of ε solves this problem.
+ 
+\end_layout
+
+\begin_layout Subsection
+Radial distribution and density in equilibrium
+\end_layout
+
+\begin_layout Standard
+The largest simulation we found it practical to make was a series of four
+ simulations 
+\begin_inset Formula $N\in[500,2000]$
+\end_inset
+
+ using the auto-generated 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ values.
+ The total running time in this case was about 12.5 hours on a single processor
+ core as expected for 
+\begin_inset Formula $\mathcal{O}(n^{2})$
+\end_inset
+
+ algorithms when the 
+\begin_inset Formula $N=100$
+\end_inset
+
+ case takes about a minute to run (depending on processor load and frequency).
+\end_layout
+
+\begin_layout Standard
+For the largest simulation (
+\begin_inset Formula $N=2000$
+\end_inset
+
+), we got the following radial distribution of particles:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Project5/curvefit/radial2000.jpeg
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Radial distribution (histogram) for 
+\begin_inset Formula $N=2000$
+\end_inset
+
+, with 
+\begin_inset Formula $r$
+\end_inset
+
+ in the range 
+\begin_inset Formula $[0,\mu_{bound}+1\sigma_{bound}$
+\end_inset
+
+].
+ For the bound particles we got 
+\begin_inset Formula $\mu_{bound}=4.83$
+\end_inset
+
+ ly and 
+\begin_inset Formula $\sigma_{bound}=9.68$
+\end_inset
+
+ ly (measured from the bound particles' center of mass).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In other words, we get a standard deviation that is about twice as large
+ as the average.
+ Looking at these values for all four simulations, we see that this is a
+ general trend:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Project5/curvefit/avgstd.jpeg
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset Formula $\mu{}_{bound}$
+\end_inset
+
+ (black) and 
+\begin_inset Formula $\sigma_{bound}$
+\end_inset
+
+ (red), plotted against 
+\begin_inset Formula $N$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We attribute the large standard deviation to the fact that some particles,
+ while still bound, have been excited to such high kinetic energy levels
+ that they are close to not being bound anymore (these would be the same
+ particles responsible for the virial theorem not holding exactly even for
+ the bound particles).
+ Thus, we expect the standard deviation to vary roughly as the number of
+ bound particles does - more bound particles means a higher changce of high-ener
+gy bound particles (less energy lost to the unbound particles).
+ It is clear, however, that we do not have sufficient data to find an expression
+ for 
+\begin_inset Formula $\mu_{bound}(N)$
+\end_inset
+
+, however we note that the radius does indeed shrink with increased 
+\begin_inset Formula $N$
+\end_inset
+
+ as noted in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "thesource"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+We then proceeded to plot the number density 
+\begin_inset Formula $n(r)=\frac{N(r)}{V(r)}$
+\end_inset
+
+ for each spherical shell in our histogram and used the method of least
+ squares to fit these data to a curve of the form
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+n(r)=\frac{n_{0}}{1+\left(\frac{r}{r_{0}}\right)^{4}}\label{eq:curvefit}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where we seek to determine the value of the constant 
+\begin_inset Formula $n_{0}=n(0)$
+\end_inset
+
+ (the core number density) and 
+\begin_inset Formula $r_{0}$
+\end_inset
+
+.
+ The latter serves as a scale length for 
+\begin_inset Formula $n(r)$
+\end_inset
+
+, as seen by the fact that 
+\begin_inset Formula $n(r_{0})=\frac{n_{0}}{2}$
+\end_inset
+
+, thus 
+\begin_inset Formula $r_{0}$
+\end_inset
+
+ is the radius at which we find that the core density has initially halved
+ (it is easily seen that this trend does not continue as we move further
+ out, however).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Project5/curvefit/fit2000.jpeg
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset Formula $n(r)$
+\end_inset
+
+ (logarithmic) plotted against 
+\begin_inset Formula $r$
+\end_inset
+
+ for 
+\begin_inset Formula $N=2000$
+\end_inset
+
+.
+ The blue curve is from our histogram, the red curve is given by (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:curvefit"
+
+\end_inset
+
+) with 
+\begin_inset Formula $n_{0}=114.59$
+\end_inset
+
+ ly
+\begin_inset Formula $^{-3}$
+\end_inset
+
+, 
+\begin_inset Formula $r_{0}=0.86$
+\end_inset
+
+ ly.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We conclude that this gives a nice fit to our radial distribution.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Project5/curvefit/fitscaling_n0.jpeg
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename Project5/curvefit/fitscaling_r0.jpeg
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Comparison to the scaling behaviour found for 
+\begin_inset Formula $n(r)$
+\end_inset
+
+ in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "thesource"
+
+\end_inset
+
+.
+ We scaled the axes to match these predictions, but did not encounter the
+ expected scaling behavior, where 
+\begin_inset Formula $n_{0}\propto N^{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $r_{0}\propto N^{-1/3}$
+\end_inset
+
+: In that case, we would expect the values to remain more or less constant.
+ However, it may well be that we are simply simulating too few particles
+ to be able to reproduce this behavior.
+ Another possible explanation is that we have not kept our 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ values constant, but used the dynamic scaling of this parameter from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:epsilon_N100"
+
+\end_inset
+
+).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Conclusion
+\end_layout
+
+\begin_layout Standard
+x
+\end_layout
+
+\begin_layout Standard
+Paralellizing the code would indeed be beneficial (due to time constraints,
+ ironically, we were forced not to implement this as we would then need
+ to find out how to do this in Visual C++).
+ It is especially beneficial when doing series of many simulations that
+ should result in a plottable data set over all the values of 
+\begin_inset Formula $N$
+\end_inset
+
+ we are interested in.
+ One could then aim to distribute the load evenly over each processor.
+ Furthermore, even with just one simulation, the 
+\begin_inset Formula $\mathcal{O}(n^{2})$
+\end_inset
+
+ parts of the code (gravitational forces, potential energy), 
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "elgaroy1"
+
+\end_inset
+
+Ø.
+ Elgarøy: Lecture notes in AST 4220, University of Oslo, fall 2009, pp.
+ 31-33: 
+\begin_inset CommandInset href
+LatexCommand href
+target "https://www.uio.no/studier/emner/matnat/astro/AST4220/h09/course-material/lectures.pdf"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "elgaroy2"
+
+\end_inset
+
+Ø.
+ Elgarøy: The Spherical Collapse Model: 
+\begin_inset CommandInset href
+LatexCommand href
+name "https://www.uio.no/studier/emner/matnat/astro/AST4320/h12/undervisningsmateriale/spherecollapse.pdf"
+target "https://www.uio.no/studier/emner/matnat/astro/AST4320/h12/undervisningsmateriale/spherecollapse.pdf"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "peacock"
+
+\end_inset
+
+J.A.
+ Peacock: Large scale surveys and cosmic structure (Lectures delivered at
+ the 2002 Tenerife Winter School, "Dark matter and dark energy in the universe")
+, pp.
+ 15 - 19: 
+\begin_inset CommandInset href
+LatexCommand href
+name "http://arxiv.org/abs/astro-ph/0309240"
+target "http://arxiv.org/abs/astro-ph/0309240"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "thesource"
+
+\end_inset
+
+M.
+ Joyce, B.
+ Marcos, F.
+ Sylos Labini: 
+\begin_inset Quotes eld
+\end_inset
+
+Cold uniform spherical collapse revisited
+\begin_inset Quotes erd
+\end_inset
+
+, 2010: 
+\begin_inset CommandInset href
+LatexCommand href
+name "http://arxiv.org/abs/1011.0614"
+target "http://arxiv.org/abs/1011.0614"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "frode"
+
+\end_inset
+
+F.K.
+ Hansen: 
+\begin_inset Quotes eld
+\end_inset
+
+The Virial Theorem
+\begin_inset Quotes erd
+\end_inset
+
+, lecture notes in AST 1100, University of Oslo, fall 2013: 
+\begin_inset CommandInset href
+LatexCommand href
+name "https://www.uio.no/studier/emner/matnat/astro/AST1100/h13/undervisningsmateriale/lecture5.pdf"
+target "https://www.uio.no/studier/emner/matnat/astro/AST1100/h13/undervisningsmateriale/lecture5.pdf"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "volume"
+
+\end_inset
+
+R.
+ Feres: 
+\begin_inset Quotes eld
+\end_inset
+
+Math 350 Fall 2012 - Homework 8 Solutions
+\begin_inset Quotes erd
+\end_inset
+
+, Washington University in St.
+ Louis: 
+\begin_inset CommandInset href
+LatexCommand href
+name "http://www.math.wustl.edu/~feres/Math350Fall2012/Math350F12HW08Sol.pdf"
+target "http://www.math.wustl.edu/~feres/Math350Fall2012/Math350F12HW08Sol.pdf"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "uniform"
+
+\end_inset
+
+Rubinstein: <title unknown>, photocopy from University of Colorado at Boulder:
+ 
+\begin_inset CommandInset href
+LatexCommand href
+name "http://ecee.colorado.edu/~fmeyer/class/ecen5322/rubinstein.pdf"
+target "http://ecee.colorado.edu/~fmeyer/class/ecen5322/rubinstein.pdf"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "gravity"
+
+\end_inset
+
+T.
+ Clifton, P.
+ G.
+ Ferreira, A.
+ Padilla, C.
+ Skordis: 
+\begin_inset Quotes eld
+\end_inset
+
+Modified Gravity and Cosmology
+\begin_inset Quotes erd
+\end_inset
+
+, 2011: 
+\begin_inset CommandInset href
+LatexCommand href
+name "http://arxiv.org/abs/1106.2476"
+target "http://arxiv.org/abs/1106.2476"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
